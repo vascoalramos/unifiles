@@ -3,9 +3,22 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const mongoose = require("mongoose");
 
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+
+// Connection to MongoDB
+const connectionString = "mongodb://localhost/daw_project";
+mongoose
+    .connect(connectionString, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true,
+    })
+    .then(() => console.log("Connection to MongoDB successfully established."))
+    .catch(() => console.log("Couldn't connect to MongoDB"));
 
 const app = express();
 
