@@ -35,7 +35,7 @@
                             "name": "String"
                         },
                         "description": "String",
-                        "data": "Date/Timestamp"
+                        "date": "Date/Timestamp"
                     }
                 ]
             }
@@ -50,6 +50,7 @@
         "last_name": "String",
         "username": "String",
         "email": "String",
+        "is_active": "Boolean",
         "role": "String -> one of the above",
         "password": "String -> masked",
         "avatar": "String -> image name",
