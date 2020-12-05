@@ -1,0 +1,54 @@
+{
+    "resource": {
+        "name": "String",
+        "path": "String",
+        "mime_type": "String",
+        "type": "String -> our type",
+        "description": "String",
+        "author": {
+            "name": "String",
+            "id": "ID"
+        },
+        "year": "Integer",
+        "size": "Integer",
+        "date_added": "Date/Timestamp",
+        "last_updated": "Date/Timestamp",
+        "subject": "String",
+        "tags": ["String"],
+        "comments": [
+            {
+                "title": "String",
+                "author": {
+                    "name": "String",
+                    "id": "ID"
+                },
+                "text": "String",
+                "tstp": "Date/Timestamp",
+                "comments": [
+                    {
+                        "title": "String",
+                        "author": {
+                            "name": "String",
+                            "id": "ID"
+                        },
+                        "text": "String",
+                        "tstp": "Date/Timestamp"
+                    }
+                ]
+            }
+        ],
+        "rating -> 0 - 5": {
+            "score": "Double",
+            "votes": "Integer"
+        }
+    },
+    "role": ["Admin", "Producer", "Consumer"],
+    "user": {
+        "first_name": "String",
+        "last_name": "String",
+        "username": "String",
+        "email": "String",
+        "role": "String -> one of the above",
+        "password": "String -> masked"
+    }
+}
