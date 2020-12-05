@@ -1,73 +1,58 @@
 {
-    "resouces": [
-        {
-            "_id": "5fcc0ce758cbd7806dfc11ee",
-            "status": "false PARA VALIDAR?",
-            "path": "/../../",
-            "mime_type": ".png",
-            "image": "labore.png",
-            "type": "Livros",
-            "description": "velit laboris ipsum eiusmod in adipisicing cillum ipsum commodo dolor tempor cupidatat anim officia qui",
-            "author": [
-                {
-                "username": "Amparo_396",
-                "_id": "5fcc0ce72c8cdca5be98eb15"
-                }
-            ],
-            "year": 2010,
-            "size": 2000,
-            "date_added": "2014-09-22T02:41:11 -01:00",
-            "last_updated": "2015-12-04T07:51:35 -00:00",
-            "subject": "qui nulla",
-            "tags": [
-                "reprehenderit",
-                "et"
-            ],
-            "comments": [
-                {
-                "title": "excepteur",
-                "author": [
-                    {
-                    "username": "Sarah_888",
-                    "_id": "5fcc0ce7703a0009fda930f9"
-                    }
-                ],
-                "description": "cupidatat qui id laboris aliquip consectetur sunt adipisicing pariatur sint",
-                "date": "2015-03-10T01:12:34 -00:00",
+    "resource": {
+        "_id": "ObjectID",
+        "status": "Boolean",
+        "name": "String",
+        "path": "String",
+        "mime_type": "String",
+        "image": "String -> icon image",
+        "type": "String -> our type",
+        "description": "String",
+        "author": {
+            "_id": "ID",
+            "name": "String"
+        },
+        "year": "Integer",
+        "size": "Integer",
+        "date_added": "Date/Timestamp",
+        "last_updated": "Date/Timestamp",
+        "subject": "String",
+        "tags": ["String"],
+        "comments": [
+            {
+                "title": "String",
+                "author": {
+                    "name": "String",
+                    "id": "ID"
+                },
+                "description": "String",
+                "date": "Date/Timestamp",
                 "comments": [
                     {
-                    "title": "do",
-                    "author": [
-                        {
-                        "username": "Jeanette_648",
-                        "_id": "5fcc0ce727924fdc6e5372ca"
-                        }
-                    ],
-                    "description": "est nisi ipsum adipisicing consectetur eiusmod laboris Lorem in minim",
-                    "date": "2017-01-19T09:56:42 -00:00",
-                    "comments": []
+                        "title": "String",
+                        "author": {
+                            "_id": "ID",
+                            "name": "String"
+                        },
+                        "description": "String",
+                        "data": "Date/Timestamp"
                     }
                 ]
-                }
-            ],
-            "rating": [
-                {
-                "score": 4.878,
-                "votes": 32
-                }
-            ],
-            "user": [
-                {
-                "first_name": "Angelina",
-                "last_name": "Gillespie",
-                "username": "Shaffer_378",
-                "email": "shaffergillespie@tasmania.com",
-                "role": "Admin",
-                "password": "c5e5fa3b-4ae5-467b-bbd0-1dc4cf9dc0fb",
-                "avatar": "reprehenderit.jpg",
-                "institution": "CINCYR"
-                }
-            ]
+            }
+        ],
+        "rating -> 0 - 5": {
+            "score": "Double",
+            "votes": "Integer"
         }
-    ]
+    },
+    "user": {
+        "first_name": "String",
+        "last_name": "String",
+        "username": "String",
+        "email": "String",
+        "role": "String -> one of the above",
+        "password": "String -> masked",
+        "avatar": "String -> image name",
+        "institution": "String"
+    }
 }
