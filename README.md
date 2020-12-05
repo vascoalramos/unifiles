@@ -2,8 +2,8 @@
 
 ## Authors
 
--   **Joel Carvalho:** [joelccarvalho](https://github.com/joelccarvalho)
 -   **Fábio Gonçalves:** [FabioGoncalves](https://github.com/FabioGoncalves)
+-   **Joel Carvalho:** [joelccarvalho](https://github.com/joelccarvalho)
 -   **Vasco Ramos:** [vascoalramos](https://vascoalramos.me)
 
 ## License
