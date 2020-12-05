@@ -33,7 +33,7 @@
         "nodemon": "^2.0.6"
     },
     "nodemonConfig": {
-        "verbose": true,
+        "verbose": false,
         "ignore": [
             "app/public/*"
         ]
