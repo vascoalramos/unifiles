@@ -1,0 +1,52 @@
+[
+    {
+      "first_name": "Barry",
+      "last_name": "Goodwin",
+      "username": "Brady_353",
+      "email": "bradygoodwin@edecine.com",
+      "role": "Admin",
+      "password": "9c1e67bb-606e-402e-92d1-7c0010801b6a",
+      "avatar": "cupidatat.png",
+      "institution": "SONGLINES"
+    },
+    {
+      "first_name": "Luisa",
+      "last_name": "Lawrence",
+      "username": "Velazquez_620",
+      "email": "velazquezlawrence@songlines.com",
+      "role": "Admin",
+      "password": "ac69975d-25fe-4221-8bd2-334f2b3987dc",
+      "avatar": "minim.jpeg",
+      "institution": "RUGSTARS"
+    },
+    {
+      "first_name": "Salazar",
+      "last_name": "Caldwell",
+      "username": "Robbins_385",
+      "email": "robbinscaldwell@rugstars.com",
+      "role": "Regular",
+      "password": "1da9f196-42b5-47b5-9890-352fdc281dde",
+      "avatar": "veniam.jpg",
+      "institution": "ZIZZLE"
+    },
+    {
+      "first_name": "Walsh",
+      "last_name": "Peck",
+      "username": "Lesa_584",
+      "email": "lesapeck@zizzle.com",
+      "role": "Regular",
+      "password": "0a138029-3bae-428d-97e0-bb02f2262768",
+      "avatar": "commodo.png",
+      "institution": "BEZAL"
+    },
+    {
+      "first_name": "Ramsey",
+      "last_name": "Burt",
+      "username": "Stanley_153",
+      "email": "stanleyburt@bezal.com",
+      "role": "Admin",
+      "password": "4fa40ef9-c419-43c7-9f8b-61db674bfe0e",
+      "avatar": "mollit.jpg",
+      "institution": "SUPREMIA"
+    }
+  ]

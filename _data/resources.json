@@ -1,0 +1,553 @@
+[
+    {
+      "_id": "5fcc0f598d67e65af485852f",
+      "status": "true PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpeg",
+      "image": "qui.png",
+      "type": "Artigos",
+      "description": "dolore tempor nostrud ullamco non velit occaecat sit duis Lorem nulla occaecat nisi anim aliquip",
+      "author": [
+        {
+          "username": "Desiree_700",
+          "_id": "5fcc0f59022ab74d718c5d53"
+        }
+      ],
+      "year": 2009,
+      "size": 2019,
+      "date_added": "2020-11-05T05:20:45 -00:00",
+      "last_updated": "2017-09-02T04:32:38 -01:00",
+      "subject": "laborum et",
+      "tags": [
+        "eu",
+        "et"
+      ],
+      "comments": [
+        {
+          "title": "do",
+          "author": [
+            {
+              "username": "Mullen_929",
+              "_id": "5fcc0f590f8a627f502a80fb"
+            }
+          ],
+          "description": "aute dolore ex cupidatat nostrud ea et anim in id",
+          "date": "2016-05-26T05:49:46 -01:00",
+          "comments": []
+        },
+        {
+          "title": "dolor",
+          "author": [
+            {
+              "username": "Sampson_236",
+              "_id": "5fcc0f59eb2145d0d1030d00"
+            }
+          ],
+          "description": "commodo cupidatat duis Lorem tempor et sint sint pariatur sint",
+          "date": "2018-02-03T10:15:05 -00:00",
+          "comments": []
+        }
+      ],
+      "rating": [
+        {
+          "score": 1.7073,
+          "votes": 17
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f5982de1fe3fcb51d1d",
+      "status": "false PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpg",
+      "image": "quis.png",
+      "type": "Livros",
+      "description": "adipisicing sint sunt irure ex ut duis eiusmod minim ad cillum velit magna eiusmod amet",
+      "author": [
+        {
+          "username": "Sears_497",
+          "_id": "5fcc0f594426065542052d6e"
+        }
+      ],
+      "year": 2001,
+      "size": 2013,
+      "date_added": "2016-03-19T05:37:32 -00:00",
+      "last_updated": "2014-08-03T02:57:44 -01:00",
+      "subject": "officia cillum",
+      "tags": [
+        "aute",
+        "esse"
+      ],
+      "comments": [],
+      "rating": [
+        {
+          "score": 3.8519,
+          "votes": 41
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f59646a08c5546a8748",
+      "status": "true PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpeg",
+      "image": "aliqua.jpeg",
+      "type": "Artigos",
+      "description": "consequat duis ex ad minim officia ad deserunt veniam consequat ipsum non minim velit Lorem",
+      "author": [
+        {
+          "username": "Noemi_124",
+          "_id": "5fcc0f59064542d8b650174a"
+        }
+      ],
+      "year": 2002,
+      "size": 2016,
+      "date_added": "2015-08-16T02:30:54 -01:00",
+      "last_updated": "2019-10-08T06:44:58 -01:00",
+      "subject": "Lorem exercitation",
+      "tags": [
+        "esse",
+        "aute"
+      ],
+      "comments": [
+        {
+          "title": "non",
+          "author": [
+            {
+              "username": "Weaver_150",
+              "_id": "5fcc0f59381d2efae37b0696"
+            }
+          ],
+          "description": "adipisicing adipisicing quis amet commodo qui eiusmod sint eu do",
+          "date": "2015-10-12T12:37:38 -01:00",
+          "comments": [
+            {
+              "title": "incididunt",
+              "author": [
+                {
+                  "username": "Louise_528",
+                  "_id": "5fcc0f597fa21917c51d6fc2"
+                }
+              ],
+              "description": "deserunt nulla culpa non labore nulla reprehenderit nisi fugiat enim",
+              "date": "2017-07-09T04:43:42 -01:00",
+              "comments": []
+            }
+          ]
+        }
+      ],
+      "rating": [
+        {
+          "score": 1.7508,
+          "votes": 6
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f5950ef2d69fc64af0e",
+      "status": "true PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpg",
+      "image": "elit.jpeg",
+      "type": "Relatórios",
+      "description": "aliqua velit eu quis culpa tempor laborum magna quis mollit culpa ullamco velit voluptate aliquip",
+      "author": [
+        {
+          "username": "Regina_842",
+          "_id": "5fcc0f59aa1e08e520a131bd"
+        }
+      ],
+      "year": 2013,
+      "size": 2020,
+      "date_added": "2018-12-27T08:35:25 -00:00",
+      "last_updated": "2016-10-12T07:29:17 -01:00",
+      "subject": "ut sunt",
+      "tags": [
+        "irure",
+        "fugiat"
+      ],
+      "comments": [
+        {
+          "title": "cupidatat",
+          "author": [
+            {
+              "username": "Iris_632",
+              "_id": "5fcc0f59a135e8a6edcb3dd1"
+            }
+          ],
+          "description": "qui aute deserunt magna sit voluptate voluptate aliquip fugiat amet",
+          "date": "2018-08-02T07:32:20 -01:00",
+          "comments": [
+            {
+              "title": "laborum",
+              "author": [
+                {
+                  "username": "Vanessa_123",
+                  "_id": "5fcc0f59e3e7c445f0cfef0c"
+                }
+              ],
+              "description": "amet cupidatat voluptate labore labore dolore sunt cupidatat id veniam",
+              "date": "2015-03-22T01:07:46 -00:00",
+              "comments": []
+            }
+          ]
+        }
+      ],
+      "rating": [
+        {
+          "score": 1.3598,
+          "votes": 7
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f593c90a8de2ee111d0",
+      "status": "false PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpg",
+      "image": "sunt.jpg",
+      "type": "Teses",
+      "description": "cupidatat est adipisicing mollit officia laborum est culpa nulla sit nulla enim elit Lorem sint",
+      "author": [
+        {
+          "username": "Morgan_779",
+          "_id": "5fcc0f5919810c65304244ef"
+        }
+      ],
+      "year": 2018,
+      "size": 2008,
+      "date_added": "2019-09-03T07:40:42 -01:00",
+      "last_updated": "2019-01-10T10:09:31 -00:00",
+      "subject": "proident anim",
+      "tags": [
+        "aliqua",
+        "anim"
+      ],
+      "comments": [
+        {
+          "title": "sunt",
+          "author": [
+            {
+              "username": "Morton_419",
+              "_id": "5fcc0f5970c029351f61f506"
+            }
+          ],
+          "description": "proident laborum reprehenderit non labore aliquip proident proident veniam enim",
+          "date": "2018-09-30T05:17:48 -01:00",
+          "comments": []
+        },
+        {
+          "title": "nulla",
+          "author": [
+            {
+              "username": "Tillman_630",
+              "_id": "5fcc0f598d35664e3f04bb1a"
+            }
+          ],
+          "description": "ullamco nisi laboris labore ex adipisicing cupidatat minim dolore duis",
+          "date": "2019-08-18T10:23:08 -01:00",
+          "comments": [
+            {
+              "title": "do",
+              "author": [
+                {
+                  "username": "Small_875",
+                  "_id": "5fcc0f59e16478cdf72622ee"
+                }
+              ],
+              "description": "voluptate consectetur esse Lorem sunt consequat sunt deserunt id ipsum",
+              "date": "2016-08-16T06:29:55 -01:00",
+              "comments": []
+            }
+          ]
+        },
+        {
+          "title": "consectetur",
+          "author": [
+            {
+              "username": "Rosella_830",
+              "_id": "5fcc0f59f43fd64a592059fd"
+            }
+          ],
+          "description": "magna ipsum aliqua officia exercitation voluptate culpa excepteur nulla cupidatat",
+          "date": "2017-11-25T12:09:25 -00:00",
+          "comments": [
+            {
+              "title": "veniam",
+              "author": [
+                {
+                  "username": "Nichols_425",
+                  "_id": "5fcc0f59d4db241270594637"
+                }
+              ],
+              "description": "Lorem labore occaecat do laboris labore aute eiusmod est officia",
+              "date": "2018-01-21T02:34:10 -00:00",
+              "comments": []
+            }
+          ]
+        }
+      ],
+      "rating": [
+        {
+          "score": 2.0014,
+          "votes": 10
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f592bae8f91f586b9e1",
+      "status": "true PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpeg",
+      "image": "qui.jpeg",
+      "type": "Relatórios",
+      "description": "quis enim laboris ad ipsum excepteur non commodo amet irure cillum incididunt sunt Lorem pariatur",
+      "author": [
+        {
+          "username": "Patty_170",
+          "_id": "5fcc0f59e8528df04262b86b"
+        }
+      ],
+      "year": 2002,
+      "size": 2019,
+      "date_added": "2018-01-05T02:44:02 -00:00",
+      "last_updated": "2019-11-22T12:24:52 -00:00",
+      "subject": "cillum qui",
+      "tags": [
+        "officia",
+        "occaecat"
+      ],
+      "comments": [],
+      "rating": [
+        {
+          "score": 4.2348,
+          "votes": 3
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f59c281ec8d2288f567",
+      "status": "true PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".png",
+      "image": "officia.jpg",
+      "type": "Livros",
+      "description": "ullamco aute elit quis exercitation cupidatat duis duis sint cillum nostrud ex Lorem veniam esse",
+      "author": [
+        {
+          "username": "Cheryl_278",
+          "_id": "5fcc0f59d50a8f54c398e73f"
+        }
+      ],
+      "year": 2016,
+      "size": 2018,
+      "date_added": "2015-01-19T02:31:29 -00:00",
+      "last_updated": "2016-11-26T09:17:50 -00:00",
+      "subject": "minim consequat",
+      "tags": [
+        "nostrud",
+        "tempor"
+      ],
+      "comments": [],
+      "rating": [
+        {
+          "score": 4.2126,
+          "votes": 8
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f59b85d36f5961d11ac",
+      "status": "false PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpeg",
+      "image": "id.jpeg",
+      "type": "Livros",
+      "description": "velit commodo dolore fugiat incididunt ipsum proident aliquip dolor eiusmod ad aliquip Lorem tempor consectetur",
+      "author": [
+        {
+          "username": "Juanita_634",
+          "_id": "5fcc0f5949d836d8ffdddf8b"
+        }
+      ],
+      "year": 2020,
+      "size": 2008,
+      "date_added": "2020-11-20T07:53:08 -00:00",
+      "last_updated": "2016-01-12T10:49:04 -00:00",
+      "subject": "magna nulla",
+      "tags": [
+        "officia",
+        "nisi"
+      ],
+      "comments": [
+        {
+          "title": "in",
+          "author": [
+            {
+              "username": "Dalton_483",
+              "_id": "5fcc0f596e07ad2d325e9edf"
+            }
+          ],
+          "description": "aute incididunt adipisicing in amet veniam nulla do esse laboris",
+          "date": "2016-09-22T04:21:47 -01:00",
+          "comments": [
+            {
+              "title": "eiusmod",
+              "author": [
+                {
+                  "username": "Sallie_999",
+                  "_id": "5fcc0f59e67757a63a5da741"
+                }
+              ],
+              "description": "reprehenderit mollit adipisicing mollit elit sint eu commodo ipsum quis",
+              "date": "2016-12-12T02:23:30 -00:00",
+              "comments": []
+            }
+          ]
+        },
+        {
+          "title": "ut",
+          "author": [
+            {
+              "username": "Janell_899",
+              "_id": "5fcc0f5974dab9538f43cb8a"
+            }
+          ],
+          "description": "elit aliquip officia fugiat eu nulla voluptate deserunt occaecat nisi",
+          "date": "2019-12-06T05:27:45 -00:00",
+          "comments": [
+            {
+              "title": "deserunt",
+              "author": [
+                {
+                  "username": "Osborn_855",
+                  "_id": "5fcc0f59072c0b60c8dd1203"
+                }
+              ],
+              "description": "consectetur non magna irure do fugiat magna excepteur non et",
+              "date": "2020-10-16T04:39:03 -01:00",
+              "comments": []
+            }
+          ]
+        }
+      ],
+      "rating": [
+        {
+          "score": 4.6802,
+          "votes": 25
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f59a734b855f73279c9",
+      "status": "false PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".png",
+      "image": "duis.jpg",
+      "type": "Aplicações",
+      "description": "laborum culpa nisi mollit excepteur consectetur deserunt enim tempor amet est duis incididunt veniam sint",
+      "author": [
+        {
+          "username": "Elnora_807",
+          "_id": "5fcc0f59fa7fb8e4835ea777"
+        }
+      ],
+      "year": 2006,
+      "size": 2006,
+      "date_added": "2016-06-02T10:10:47 -01:00",
+      "last_updated": "2017-03-03T04:19:14 -00:00",
+      "subject": "amet reprehenderit",
+      "tags": [
+        "ipsum",
+        "sunt"
+      ],
+      "comments": [
+        {
+          "title": "esse",
+          "author": [
+            {
+              "username": "Carrillo_389",
+              "_id": "5fcc0f5909579d9503402440"
+            }
+          ],
+          "description": "consequat velit sint aute minim eiusmod laborum duis exercitation cillum",
+          "date": "2014-03-16T03:07:25 -00:00",
+          "comments": [
+            {
+              "title": "cupidatat",
+              "author": [
+                {
+                  "username": "Ina_577",
+                  "_id": "5fcc0f599f7716cf7bba5849"
+                }
+              ],
+              "description": "elit veniam eiusmod velit non id aute aliquip mollit Lorem",
+              "date": "2016-07-01T08:33:11 -01:00",
+              "comments": []
+            }
+          ]
+        },
+        {
+          "title": "proident",
+          "author": [
+            {
+              "username": "Sandy_100",
+              "_id": "5fcc0f59a0f227688ada6653"
+            }
+          ],
+          "description": "irure Lorem enim minim mollit eu eiusmod exercitation mollit quis",
+          "date": "2020-06-01T03:31:38 -01:00",
+          "comments": []
+        },
+        {
+          "title": "magna",
+          "author": [
+            {
+              "username": "Caldwell_805",
+              "_id": "5fcc0f59b8c3a42c4807741e"
+            }
+          ],
+          "description": "dolore eu tempor culpa reprehenderit aliquip exercitation aute voluptate labore",
+          "date": "2016-05-18T11:20:40 -01:00",
+          "comments": []
+        }
+      ],
+      "rating": [
+        {
+          "score": 2.6116,
+          "votes": 18
+        }
+      ]
+    },
+    {
+      "_id": "5fcc0f59d1f335350fa9c9e9",
+      "status": "false PARA VALIDAR?",
+      "path": "/../../",
+      "mime_type": ".jpg",
+      "image": "id.jpeg",
+      "type": "Aplicações",
+      "description": "veniam amet irure ipsum veniam id irure est eiusmod ut id dolor incididunt velit est",
+      "author": [
+        {
+          "username": "Lillie_386",
+          "_id": "5fcc0f59b35a1ce31cf8ed95"
+        }
+      ],
+      "year": 2020,
+      "size": 2007,
+      "date_added": "2020-05-20T10:38:57 -01:00",
+      "last_updated": "2019-05-30T04:19:59 -01:00",
+      "subject": "elit do",
+      "tags": [
+        "enim",
+        "amet"
+      ],
+      "comments": [],
+      "rating": [
+        {
+          "score": 1.9044,
+          "votes": 34
+        }
+      ]
+    }
+  ]
