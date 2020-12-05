@@ -5,8 +5,6 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 
-const rolesAPI = require("./routes/api/roles");
-
 // Connection to MongoDB
 const connectionString = "mongodb://localhost/daw_project";
 mongoose
@@ -31,6 +29,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// Interface routes
+const indexRouter = require("./routes/interface/index");
+app.use("/", indexRouter);
+
+// API routes
+const rolesAPI = require("./routes/api/roles");
 app.use("/api/roles", rolesAPI);
 
 // catch 404 and forward to error handler
