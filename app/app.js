@@ -6,6 +6,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
+//mongoose.set('debug', true); // debug queries
 
 // Connection to MongoDB
 const connectionString = "mongodb://localhost/daw_project";

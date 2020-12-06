@@ -25,5 +25,11 @@ module.exports.findByCredentials = async function (username, password) {
         throw { error: "Invalid login credentials" };
     }
 
-    return await User.findOne({ username });
+    return User.findOne({ username });
+};
+
+module.exports.findByAuthToken = (data) => {
+    let token = data.token;
+
+    return User.findOne({ token: token });
 };
