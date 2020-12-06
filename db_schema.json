@@ -37,7 +37,7 @@
                 ]
             }
         ],
-        "rating -> 0 - 5": {
+        "rating": {
             "score": "Double",
             "votes": "Integer"
         }
