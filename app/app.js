@@ -33,7 +33,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Interface routes
 const indexRouter = require("./routes/interface/index");
+const authRouter = require("./routes/interface/auth");
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");
