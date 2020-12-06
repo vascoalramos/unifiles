@@ -28,8 +28,8 @@ module.exports.findByCredentials = async function (username, password) {
     return User.findOne({ username });
 };
 
-module.exports.findByAuthToken = async function (data) {
-    var token = data.token
-    
-    return User.findOne({ token: token })
+module.exports.findByAuthToken = (data) => {
+    let token = data.token;
+
+    return User.findOne({ token: token });
 };
