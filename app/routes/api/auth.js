@@ -1,36 +1,30 @@
-var express = require('express');
-var router = express.Router();
-var jwt  = require('jsonwebtoken');
-var User = require('../../controllers/user')
-var sha1 = require('sha1');
+const express = require("express");
+const router = express.Router();
 
+const User = require("../../controllers/users");
 
-router.post('/login', (req, res) => {
-    var data      = req.body; // Get data from ajax
-    
-    User.lookUp(data).then(user => {
-        console.log(user)
-        if(user){
-            var token = jwt.sign({
-                user: data.email,
-                role: data.role,
-              }, 
-              process.env.JWT_SECRET_KEY, 
-              { expiresIn: process.env.JWT_SECRET_TIME});
-              
-              req.headers.authorization = token;
-              res.cookie('token', token, {
-                sameSite: 'Strict'
-              });
-              //res.redirect('/feed');
-              res.send(JSON.stringify(user))
-        }
-        else
-          res.send("erro")
+router.post("/login", (req, res) => {
+    let data = req.body;
 
-        
-    });
-  });
+    if (!("username" in data && "password" in data)) {
+        return res.status(400).jsonp({ error: "Missing credentials" });
+    }
 
+    User.findByCredentials(data.username, data.password)
+        .then((user) => {
+            User.generateAuthToken(user)
+                .then((data) => {
+                    res.status(200).jsonp(data);
+                })
+                .catch((error) => {
+                    console.log(error.toString());
+                    res.status(401).jsonp(error);
+                });
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
 
 module.exports = router;
