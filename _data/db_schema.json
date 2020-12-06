@@ -1,13 +1,16 @@
 {
     "resource": {
+        "_id": "ObjectID",
+        "status": "Boolean",
         "name": "String",
         "path": "String",
         "mime_type": "String",
+        "image": "String -> icon image",
         "type": "String -> our type",
         "description": "String",
         "author": {
-            "name": "String",
-            "id": "ID"
+            "_id": "ID",
+            "name": "String"
         },
         "year": "Integer",
         "size": "Integer",
@@ -22,17 +25,17 @@
                     "name": "String",
                     "id": "ID"
                 },
-                "text": "String",
-                "tstp": "Date/Timestamp",
+                "description": "String",
+                "date": "Date/Timestamp",
                 "comments": [
                     {
                         "title": "String",
                         "author": {
-                            "name": "String",
-                            "id": "ID"
+                            "_id": "ID",
+                            "name": "String"
                         },
-                        "text": "String",
-                        "tstp": "Date/Timestamp"
+                        "description": "String",
+                        "date": "Date/Timestamp"
                     }
                 ]
             }
@@ -42,13 +45,15 @@
             "votes": "Integer"
         }
     },
-    "role": ["Admin", "Producer", "Consumer"],
     "user": {
         "first_name": "String",
         "last_name": "String",
         "username": "String",
         "email": "String",
+        "is_active": "Boolean",
         "role": "String -> one of the above",
-        "password": "String -> masked"
+        "password": "String -> masked",
+        "avatar": "String -> image name",
+        "institution": "String"
     }
 }
