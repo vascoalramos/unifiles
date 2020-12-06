@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
@@ -31,11 +33,13 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Interface routes
 const indexRouter = require("./routes/interface/index");
+const authRouter = require("./routes/interface/auth");
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 
 // API routes
-const rolesAPI = require("./routes/api/roles");
-app.use("/api/roles", rolesAPI);
+const authAPI = require("./routes/api/auth");
+app.use("/api/auth", authAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
