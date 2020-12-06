@@ -89,7 +89,7 @@ userSchema.pre("save", function (next) {
     "email": "fabiog@gmail.com",
     "is_admin": "false",
     "password": "b6e318dabf42695e3943d896106c3e0cc5254866",
-    "isActive": "true",
+    "is_ctive": "true",
     "avatar": "xpto.png",
     "institution": "Uminho"
     */
