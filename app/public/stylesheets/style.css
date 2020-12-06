@@ -6,3 +6,20 @@ body {
 a {
     color: #00b7ff;
 }
+
+.center-div {
+    height: 100px;
+    position: absolute;
+    top: 0;
+    bottom: 400px;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.error-format {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}

@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  .container.center-div
+    .row
+      .col-sm
+        form.px-4.py-3.needs-validation(action="/auth/login", method='POST', novalidate='')
+          .form-group
+            label(for='username') Username
+            input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
+          .form-group
+            label(for='password') Password
+            input#password.form-control(type='password' placeholder='*******' name='password' required='')
+          if (typeof(errors) !== 'undefined' && errors.length > 0)
+            p.error-format #{errors}
+          button.btn.btn-primary(type='submit') Sign in
+        .dropdown-divider
+      .col-sm
+        | FORM DO REGISTAR
+

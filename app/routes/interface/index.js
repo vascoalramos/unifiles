@@ -2,17 +2,18 @@ var express = require('express');
 var router = express.Router();
 var jwt  = require('jsonwebtoken');
 
-//check auth
+// Check auth
 function isAuthenticated(req, res, next) {
-  if (req.cookies.token != undefined ){
+  if (req.cookies.token != undefined ) {
       if(!isExpired(req.cookies.token))
         return next();
       else
-        res.render('ERRORPAGE');  //nao existe
+        res.render('401');  // 401
   }
   else
-    res.render('ERRORPAGE');//nao existe
+    res.render('401'); // 401
 }
+
 function isExpired(token) {
   if (token && jwt.decode(token)) {
     const expiry = jwt.decode(token).exp;
@@ -23,13 +24,14 @@ function isExpired(token) {
 }
 
 /* GET home page.*/
-router.get('/',  function(req, res, next) {
+router.get('/',  isAuthenticated, function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-//clear cookie aqui ou no front         this.$cookies.remove("token")
-router.get('/logout', isAuthenticated, (req, res) => {
-  res.clearCookie('token');
-  return res.status(200).redirect('/login');//nao existe
+/* POST logout */
+router.post('/logout', isAuthenticated, (req, res) => {
+  res.clearCookie('token'); // delete cookie
+  return res.status(200).redirect('/auth/login');
 });
+
 module.exports = router;
