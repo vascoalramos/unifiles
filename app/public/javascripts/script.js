@@ -1,3 +1,4 @@
+// Errors forms boostrasp
 (function() {
   'use strict';
   window.addEventListener('load', function() {

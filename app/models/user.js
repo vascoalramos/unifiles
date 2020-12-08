@@ -36,10 +36,12 @@ const userSchema = new mongoose.Schema({
     is_admin: {
         type: Boolean,
         required: true,
+        default: false
     },
     is_active: {
         type: Boolean,
         required: true,
+        default: false
     },
     avatar: {
         type: String,

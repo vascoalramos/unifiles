@@ -2,7 +2,11 @@ extends layout
 
 block content
   .container.center-div
-    .row
+    .row.form-user
+      h2.login-title Login
+      h5.register-title
+        | Are you new? 
+        a(href='register') Register
       .col-sm
         form.px-4.py-3.needs-validation(action="/auth/login", method='POST', novalidate='')
           .form-group
@@ -11,10 +15,13 @@ block content
           .form-group
             label(for='password') Password
             input#password.form-control(type='password' placeholder='*******' name='password' required='')
-          if (typeof(errors) !== 'undefined' && errors.length > 0)
-            p.error-format #{errors}
-          button.btn.btn-primary(type='submit') Sign in
-        .dropdown-divider
+          if (typeof(errors_login) !== 'undefined' && errors_login.length > 0)
+            p.error-format #{errors_login}
+          p.forgot-password 
+            a(href='#') Forgot password?
+          .dropdown-divider
+          button.btn.btn-primary.btn-bottom(type='submit') Sign in
       .col-sm
-        | FORM DO REGISTAR
+        h2 Btns de facebook, gmail
+
 

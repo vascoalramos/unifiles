@@ -21,7 +21,7 @@ function isExpired(token) {
 
 /* GET home page.*/
 router.get("/", isAuthenticated, function (req, res, next) {
-    res.render("index", { title: "Express" });
+    res.render("login", { title: "Login" });
 });
 
 /* POST logout */
