@@ -12,6 +12,9 @@ function isExpired(token) {
     return false;
 }
 
+/************/
+/* LOGIN */
+/************/
 router.get("/login", (req, res) => {
     if (req.cookies.token != undefined) {
         if (!isExpired(req.cookies.token)) {
@@ -33,20 +36,52 @@ router.get("/login", (req, res) => {
 router.post("/login", (req, res) => {
     let data = req.body;
 
+    login(res, data) // process login
+});
+
+/************/
+/* REGISTER */
+/************/
+
+router.get("/register", (req, res) => {
+    res.render("register");
+})
+
+router.post("/register", (req, res) => {
+    let data = req.body;
+
+    axios
+        .post("http://localhost:3000/api/auth/register", { data })
+            .then((user) => {
+                login(res, data) // process login
+            })
+            .catch((error) => {
+                var errors = error.response.data;
+                console.log(errors);
+                
+                if (error.response.status) res.render("register", { errors_register: errors.error });
+                else console.log(error.toString());
+                return;
+            });
+});
+
+/************/
+/* AUX FUNCTIONS */
+/************/
+function login(res, data) {
     axios
         .post("http://localhost:3000/api/auth/login", { username: data.username, password: data.password })
-        .then((user) => {
-            // Create cookie
-            res.cookie("token", user.data.token);
-
-            res.render("index", { user: user });
-        })
-        .catch((error) => {
-            var errors = error.response.data;
-            if (error.response.status) res.render("login", { title: "Login", errors: errors.error });
-            else console.log(error.toString());
-            return;
-        });
-});
+            .then((user) => {
+                // Create cookie
+                res.cookie("token", user.data.token);
+                res.render("index", { user: user.data });
+            })
+            .catch((error) => {
+                var errors = error.response.data;
+                if (error.response.status) res.render("login", { title: "Login", errors_login: errors.error });
+                else console.log(error.toString());
+                return;
+            });
+}
 
 module.exports = router;

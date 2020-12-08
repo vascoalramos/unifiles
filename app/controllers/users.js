@@ -1,6 +1,5 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 
 module.exports.generateAuthToken = async function (user) {
@@ -33,3 +32,10 @@ module.exports.findByAuthToken = (data) => {
 
     return User.findOne({ token: token });
 };
+
+// Insert
+module.exports.insert = user => {
+    var newUser = new User(user.data)
+
+    return newUser.save()
+} 

@@ -1,0 +1,44 @@
+extends layout
+
+block content
+  .container.center-div
+    .row.form-user
+      .col-sm
+        h2 Register
+        form.px-4.py-3.needs-validation(action="/auth/register", method='POST', novalidate='')
+          .row
+            .col-sm
+              .form-group
+                label(for='first_name') First Name
+                input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='')
+            .col-sm
+              .form-group
+                label(for='last_name') Last Name
+                input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='')
+          .form-group
+              label(for='email') Email
+              input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
+          .row
+            .col-sm
+              .form-group
+                label(for='institution') Institution
+                input#institution.form-control(type='text' placeholder='Univ. Minho' name='institution' required='')
+            .col-sm
+              .form-group
+                  label(for='username') Username
+                  input#username.form-control(type='text' placeholder='jb_12345' name='username' required='')
+          .row
+            .col-sm
+              .form-group
+                label(for='password') Password
+                input#password.form-control(type='password' placeholder='*******' name='password' required='')
+            .col-sm
+              .form-group
+                  label(for='confirm_password') Confirm Password
+                  input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='')
+          if (typeof(errors_register) !== 'undefined' && errors_register.length > 0)
+            p.error-format #{errors_register}
+          button.btn.btn-primary.btn-bottom(type='submit') Register
+        .dropdown-divider
+
+
