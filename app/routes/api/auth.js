@@ -59,40 +59,4 @@ router.get("/user/:token", (req, res, next) => {
         });
 });
 
-router.post(
-    "/register",
-    [
-        body("data.first_name").isLength({ min: 1 }), 
-        body("data.last_name").isLength({ min: 1 }), 
-        body("data.email").isEmail(),
-        body("data.institution").isLength({ min: 2 }),  // Ex: UM
-        body("data.username").isLength({ min: 2 }),  // Ex: AC
-    ],
-    (req, res) => {
-        let data = req.body;
-        var errors = null;
-
-        errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array() });
-        }
-
-        // if(!schemaPassValidator.validate(data.password))
-        // errors.strong_pass = '1...';
-        // else 
-        //     if (data.password != data.repeatPassword) 
-        //     errors.diff_pass_error = "2..."
-        
-        delete data.confirm_password
-
-        User.insert(data)
-            .then((user) => {
-                res.status(200).jsonp(data);
-            })
-            .catch((error) => {
-                res.status(401).jsonp(error);
-            });
-    },
-);
-
 module.exports = router;
