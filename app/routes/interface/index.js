@@ -1,26 +1,10 @@
 var express = require("express");
 var router = express.Router();
 var jwt = require("jsonwebtoken");
-
-// Check auth
-function isAuthenticated(req, res, next) {
-    if (req.cookies.token != undefined) {
-        if (!isExpired(req.cookies.token)) return next();
-        else res.render("401"); // 401
-    } else res.render("401"); // 401
-}
-
-function isExpired(token) {
-    if (token && jwt.decode(token)) {
-        const expiry = jwt.decode(token).exp;
-        const now = new Date();
-        return now.getTime() > expiry * 1000;
-    }
-    return false;
-}
+const { isAuthenticated } = require("../../middleware/auth");
 
 /* GET home page.*/
-router.get("/", isAuthenticated, function (req, res, next) {
+router.get("/", isAuthenticated, (req, res, next) => {
     res.render("login", { title: "Login" });
 });
 

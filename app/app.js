@@ -9,9 +9,8 @@ const mongoose = require("mongoose");
 //mongoose.set('debug', true); // debug queries
 
 // Connection to MongoDB
-const connectionString = "mongodb://localhost/daw_project";
 mongoose
-    .connect(connectionString, {
+    .connect(process.env.MONGODB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
@@ -19,6 +18,9 @@ mongoose
     })
     .then(() => console.log("Connection to MongoDB successfully established."))
     .catch(() => console.log("Couldn't connect to MongoDB"));
+
+const axios = require("axios");
+axios.defaults.baseURL = process.env.API_URL;
 
 const app = express();
 
@@ -40,7 +42,9 @@ app.use("/auth", authRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");
+const usersAPI = require("./routes/api/users");
 app.use("/api/auth", authAPI);
+app.use("/api/users", usersAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
