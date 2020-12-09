@@ -3,16 +3,22 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../controllers/users");
 
-var passwordValidator = require('password-validator');
+var passwordValidator = require("password-validator");
 var schemaPassValidator = new passwordValidator();
 
 // Strong password
 schemaPassValidator
-    .is().min(8)                                    // Minimum length 8
-    .has().lowercase()                              // Must have letters
-    .has().uppercase()                              // Must have letters
-    .has().digits()                                 // Must have digits
-    .is().not().oneOf(['Passw0rd', 'Password123']); // Blacklist these values
+    .is()
+    .min(8) // Minimum length 8
+    .has()
+    .lowercase() // Must have letters
+    .has()
+    .uppercase() // Must have letters
+    .has()
+    .digits() // Must have digits
+    .is()
+    .not()
+    .oneOf(["Passw0rd", "Password123"]); // Blacklist these values
 
 router.post(
     "/login",
@@ -46,10 +52,20 @@ router.post(
     },
 );
 
-router.get("/user/:token", (req, res, next) => {
-    let data = req.params;
+router.get("/logout", (req, res) => {
+    const token = req.headers.authorization;
+    User.logout(token)
+        .then(() => {
+            res.status(200).jsonp({ message: "Logout successfull" });
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
 
-    User.findByAuthToken(data)
+router.get("/user/:token", (req, res, next) => {
+    User.findByAuthToken(req.params.token)
         .then((user) => {
             res.status(200).jsonp(user);
         })

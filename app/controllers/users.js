@@ -27,15 +27,17 @@ module.exports.findByCredentials = async function (username, password) {
     return User.findOne({ username });
 };
 
-module.exports.findByAuthToken = (data) => {
-    let token = data.token;
-
+module.exports.findByAuthToken = (token) => {
     return User.findOne({ token: token });
 };
 
-// Insert
-module.exports.insert = user => {
-    var newUser = new User(user.data)
+module.exports.logout = (token) => {
+    return User.updateOne({ token: token }, { token: null }).exec();
+};
 
-    return newUser.save()
-} 
+// Insert
+module.exports.insert = (user) => {
+    var newUser = new User(user.data);
+
+    return newUser.save();
+};

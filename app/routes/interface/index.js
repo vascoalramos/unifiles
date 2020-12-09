@@ -1,7 +1,8 @@
 var express = require("express");
-var router = express.Router();
-var jwt = require("jsonwebtoken");
+const axios = require("axios");
 const { isAuthenticated } = require("../../middleware/auth");
+
+var router = express.Router();
 
 /* GET home page.*/
 router.get("/", isAuthenticated, (req, res, next) => {
@@ -10,8 +11,22 @@ router.get("/", isAuthenticated, (req, res, next) => {
 
 /* POST logout */
 router.post("/logout", isAuthenticated, (req, res) => {
-    res.clearCookie("token"); // delete cookie
-    return res.status(200).redirect("/auth/login");
+    axios
+        .get("/auth/logout", {
+            headers: {
+                Authorization: req.cookies.token,
+            },
+        })
+        .then(() => {
+            res.clearCookie("token"); // delete cookie
+            return res.status(200).redirect("/auth/login");
+        })
+        .catch((error) => {
+            var errors = error.response.data;
+            if (error.response.status) res.render("login", { title: "Login", errors: errors.error });
+            else console.log(error.toString());
+            return;
+        });
 });
 
 module.exports = router;

@@ -29,7 +29,7 @@ router.get("/login", (req, res) => {
 router.post("/login", (req, res) => {
     let data = req.body;
 
-    login(res, data); // process login
+    login(req, res, data); // process login
 });
 
 /************/
@@ -45,7 +45,7 @@ router.post("/register", (req, res) => {
     axios
         .post("/users", { data })
         .then((user) => {
-            login(res, data); // process login
+            login(req, res, data); // process login
         })
         .catch((error) => {
             var errors = error.response.data;
@@ -60,7 +60,7 @@ router.post("/register", (req, res) => {
 /************/
 /* AUX FUNCTIONS */
 /************/
-function login(res, data) {
+function login(req, res, data) {
     axios
         .post("/auth/login", { username: data.username, password: data.password })
         .then((user) => {
