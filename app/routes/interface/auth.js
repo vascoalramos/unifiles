@@ -12,9 +12,9 @@ function isExpired(token) {
     return false;
 }
 
-/************/
+/*********/
 /* LOGIN */
-/************/
+/*********/
 router.get("/login", (req, res) => {
     if (req.cookies.token != undefined) {
         if (!isExpired(req.cookies.token)) {
@@ -47,27 +47,9 @@ router.get("/register", (req, res) => {
     res.render("register");
 })
 
-router.post("/register", (req, res) => {
-    let data = req.body;
-
-    axios
-        .post("http://localhost:3000/api/auth/register", { data })
-            .then((user) => {
-                login(res, data) // process login
-            })
-            .catch((error) => {
-                var errors = error.response.data;
-                console.log(errors);
-                
-                if (error.response.status) res.render("register", { errors_register: errors.error });
-                else console.log(error.toString());
-                return;
-            });
-});
-
-/************/
+/*****************/
 /* AUX FUNCTIONS */
-/************/
+/*****************/
 function login(res, data) {
     axios
         .post("http://localhost:3000/api/auth/login", { username: data.username, password: data.password })
