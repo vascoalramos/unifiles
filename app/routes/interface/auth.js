@@ -42,7 +42,7 @@ router.get("/register", (req, res) => {
 /*****************/
 /* AUX FUNCTIONS */
 /*****************/
-function login(res, data) {
+function login(req, res, data) {
     axios
         .post("/auth/login", { username: data.username, password: data.password })
         .then((user) => {
