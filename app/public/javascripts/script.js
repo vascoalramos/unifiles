@@ -37,7 +37,7 @@ $(document).ready(function(){
         $.ajax({
           type: "POST",
           enctype: 'multipart/form-data',
-          url: host + "/auth/login",
+          url: host + "/api/auth/login",
           data: data,
           success: function(d) {
             window.location = host
