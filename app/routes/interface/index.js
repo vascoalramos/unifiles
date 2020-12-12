@@ -1,33 +1,32 @@
 var express = require("express");
+const axios = require("axios");
+const { isAuthenticated } = require("../../middleware/auth");
+
 var router = express.Router();
-var jwt = require("jsonwebtoken");
-
-// Check auth
-function isAuthenticated(req, res, next) {
-    if (req.cookies.token != undefined) {
-        if (!isExpired(req.cookies.token)) return next();
-        else res.render("401"); // 401
-    } else res.render("401"); // 401
-}
-
-function isExpired(token) {
-    if (token && jwt.decode(token)) {
-        const expiry = jwt.decode(token).exp;
-        const now = new Date();
-        return now.getTime() > expiry * 1000;
-    }
-    return false;
-}
 
 /* GET home page.*/
-router.get("/", isAuthenticated, function (req, res, next) {
+router.get("/", isAuthenticated, (req, res, next) => {
     res.render("login", { title: "Login" });
 });
 
 /* POST logout */
 router.post("/logout", isAuthenticated, (req, res) => {
-    res.clearCookie("token"); // delete cookie
-    return res.status(200).redirect("/auth/login");
+    axios
+        .get("/auth/logout", {
+            headers: {
+                Authorization: req.cookies.token,
+            },
+        })
+        .then(() => {
+            res.clearCookie("token"); // delete cookie
+            return res.status(200).redirect("/auth/login");
+        })
+        .catch((error) => {
+            var errors = error.response.data;
+            if (error.response.status) res.render("login", { title: "Login", errors: errors.error });
+            else console.log(error.toString());
+            return;
+        });
 });
 
 module.exports = router;

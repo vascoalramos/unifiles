@@ -1,16 +1,9 @@
 const express = require("express");
 const axios = require("axios");
-const jwt = require("jsonwebtoken");
-const router = express.Router();
 
-function isExpired(token) {
-    if (token && jwt.decode(token)) {
-        const expiry = jwt.decode(token).exp;
-        const now = new Date();
-        return now.getTime() > expiry * 1000;
-    }
-    return false;
-}
+const { isExpired } = require("../../middleware/auth");
+
+const router = express.Router();
 
 /*********/
 /* LOGIN */
@@ -19,7 +12,7 @@ router.get("/login", (req, res) => {
     if (req.cookies.token != undefined) {
         if (!isExpired(req.cookies.token)) {
             axios
-                .get("http://localhost:3000/api/auth/user/" + req.cookies.token)
+                .get(`/auth/user/${req.cookies.token}`)
                 .then((user) => {
                     res.render("index", { user: user });
                 })
@@ -36,34 +29,33 @@ router.get("/login", (req, res) => {
 router.post("/login", (req, res) => {
     let data = req.body;
 
-    login(res, data) // process login
+    login(req, res, data); // process login
 });
 
 /************/
 /* REGISTER */
 /************/
-
 router.get("/register", (req, res) => {
     res.render("register");
-})
+});
 
 /*****************/
 /* AUX FUNCTIONS */
 /*****************/
 function login(res, data) {
     axios
-        .post("http://localhost:3000/api/auth/login", { username: data.username, password: data.password })
-            .then((user) => {
-                // Create cookie
-                res.cookie("token", user.data.token);
-                res.render("index", { user: user.data });
-            })
-            .catch((error) => {
-                var errors = error.response.data;
-                if (error.response.status) res.render("login", { title: "Login", errors_login: errors.error });
-                else console.log(error.toString());
-                return;
-            });
+        .post("/auth/login", { username: data.username, password: data.password })
+        .then((user) => {
+            // Create cookie
+            res.cookie("token", user.data.token);
+            res.render("index", { user: user.data });
+        })
+        .catch((error) => {
+            var errors = error.response.data;
+            if (error.response.status) res.render("login", { title: "Login", errors_login: errors.error });
+            else console.log(error.toString());
+            return;
+        });
 }
 
 module.exports = router;
