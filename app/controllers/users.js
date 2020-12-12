@@ -36,8 +36,8 @@ module.exports.logout = (token) => {
 };
 
 // Insert
-module.exports.insert = (user) => {
-    var newUser = new User(user.data);
+module.exports.insert = user => {
+    var newUser = new User(user)
 
     return newUser.save();
 };

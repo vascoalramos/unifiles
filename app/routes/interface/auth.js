@@ -5,9 +5,9 @@ const { isExpired } = require("../../middleware/auth");
 
 const router = express.Router();
 
-/************/
+/*********/
 /* LOGIN */
-/************/
+/*********/
 router.get("/login", (req, res) => {
     if (req.cookies.token != undefined) {
         if (!isExpired(req.cookies.token)) {
@@ -39,28 +39,10 @@ router.get("/register", (req, res) => {
     res.render("register");
 });
 
-router.post("/register", (req, res) => {
-    let data = req.body;
-
-    axios
-        .post("/users", { data })
-        .then((user) => {
-            login(req, res, data); // process login
-        })
-        .catch((error) => {
-            var errors = error.response.data;
-            console.log(errors);
-
-            if (error.response.status) res.render("register", { errors_register: errors.error });
-            else console.log(error.toString());
-            return;
-        });
-});
-
-/************/
+/*****************/
 /* AUX FUNCTIONS */
-/************/
-function login(req, res, data) {
+/*****************/
+function login(res, data) {
     axios
         .post("/auth/login", { username: data.username, password: data.password })
         .then((user) => {
