@@ -1,10 +1,13 @@
 require("dotenv").config();
-
+require('./middleware/passport-setup');
 const createError = require("http-errors");
+const cors = require('cors')
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+var passport = require('passport')
+
 const mongoose = require("mongoose");
 //mongoose.set('debug', true); // debug queries
 
@@ -20,7 +23,9 @@ mongoose
     .then(() => console.log("Connection to MongoDB successfully established."))
     .catch(() => console.log("Couldn't connect to MongoDB"));
 
+
 const app = express();
+app.use(cors())
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -32,7 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Interface routes
+
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
 app.use("/", indexRouter);
@@ -41,6 +46,7 @@ app.use("/auth", authRouter);
 // API routes
 const authAPI = require("./routes/api/auth");
 app.use("/api/auth", authAPI);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

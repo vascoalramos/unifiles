@@ -46,10 +46,33 @@ router.post(
     },
 );
 
-router.get("/user/:token", (req, res, next) => {
+router.get("/user/:username", (req, res, next) => {
     let data = req.params;
+    User.findByAuthUsername(data)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
+router.get("/email/:email", (req, res, next) => {
+    let data = req.params;
+    User.findByAuthEmail(data)
+        .then((user) => {
+            console.log(user)
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
 
-    User.findByAuthToken(data)
+router.put("/updateAccessToken", (req, res, next) => {
+    let data = req.body;
+    User.updateAccessToken(data)
         .then((user) => {
             res.status(200).jsonp(user);
         })

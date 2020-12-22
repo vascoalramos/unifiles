@@ -1,64 +1,68 @@
 const express = require("express");
 const axios = require("axios");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
+var passport = require('passport');
 
-function isExpired(token) {
-    if (token && jwt.decode(token)) {
-        const expiry = jwt.decode(token).exp;
-        const now = new Date();
-        return now.getTime() > expiry * 1000;
-    }
-    return false;
-}
 
 /************/
 /* LOGIN */
 /************/
 router.get("/login", (req, res) => {
-    if (req.cookies.token != undefined) {
-        if (!isExpired(req.cookies.token)) {
-            axios
-                .get("http://localhost:3000/api/auth/user/" + req.cookies.token)
-                .then((user) => {
-                    res.render("index", { user: user });
-                })
-                .catch((error) => {
-                    var errors = error.response.data;
-                    if (error.response.status) res.render("login", { title: "Login", errors: errors.error });
-                    else console.log(error.toString());
-                    return;
-                });
-        } else res.render("login", { title: "Login" });
-    } else res.render("login", { title: "Login" });
+    passport.authenticate('jwt', {session: false}, (err, user, info) => {
+        if (err || !user) 
+            res.render("login", { title: "Login" });
+        if (user)
+            res.render('index', { user: user });
+    })(req, res);
+  
+});
+// Interface routes
+
+//Login Google
+router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: '/auth/register' }), (req, res) => {
+    const { user } = req;
+
+    req.login(user, {session: false}, (error) => {
+        res.cookie("token", user.token);
+        res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+        res.redirect("/");
+    });  
+});
+router.get('/google', (req, res) => {
+    passport.authenticate('google',{ session: false, scope: ['profile', 'email'] },(err, user) => {
+    })(req, res);
 });
 
-router.post("/login", (req, res) => {
-    let data = req.body;
-
-    login(res, data) // process login
+router.post("/login",  (req, res) => {
+    login(req, res); // process login
 });
+
+
+
 
 /************/
 /* REGISTER */
 /************/
 
 router.get("/register", (req, res) => {
-    res.render("register");
+    
+    passport.authenticate('jwt', {session: false}, (err, user, info) => {
+        if (err || !user)
+            res.render("register");
+        if (user)
+            res.render('index', { user: user });
+    })(req, res);
 })
 
 router.post("/register", (req, res) => {
     let data = req.body;
-
     axios
         .post("http://localhost:3000/api/auth/register", { data })
             .then((user) => {
-                login(res, data) // process login
+                login(req, res) // process login
             })
             .catch((error) => {
-                var errors = error.response.data;
-                console.log(errors);
-                
+                var errors = error.response.data;            
                 if (error.response.status) res.render("register", { errors_register: errors.error });
                 else console.log(error.toString());
                 return;
@@ -68,20 +72,20 @@ router.post("/register", (req, res) => {
 /************/
 /* AUX FUNCTIONS */
 /************/
-function login(res, data) {
-    axios
-        .post("http://localhost:3000/api/auth/login", { username: data.username, password: data.password })
-            .then((user) => {
-                // Create cookie
-                res.cookie("token", user.data.token);
-                res.render("index", { user: user.data });
-            })
-            .catch((error) => {
-                var errors = error.response.data;
-                if (error.response.status) res.render("login", { title: "Login", errors_login: errors.error });
-                else console.log(error.toString());
-                return;
+function login(req, res) {
+    passport.authenticate(
+        'local',
+        { session: false },
+        (err, user) => {
+            if(err)
+                res.render("error");
+
+            req.login(user, {session: false}, (error) => {
+                res.cookie("token", user.token);
+                res.render("index", { user: user });
             });
+        })
+        (req, res);
 }
 
 module.exports = router;

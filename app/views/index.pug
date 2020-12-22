@@ -3,5 +3,5 @@ extends layout
 block content
   h1= title
   p Welcome to #{user.first_name}
-  form.px-4.py-3.needs-validation(action="/logout", method='POST')
+  form.px-4.py-3.needs-validation(action="/logout", method='GET')
     button.btn.btn-primary(type='submit') Logout

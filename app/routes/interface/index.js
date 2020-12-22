@@ -1,33 +1,46 @@
 var express = require("express");
 var router = express.Router();
-var jwt = require("jsonwebtoken");
+var passport = require('passport')
+const axios = require("axios");
 
-// Check auth
-function isAuthenticated(req, res, next) {
-    if (req.cookies.token != undefined) {
-        if (!isExpired(req.cookies.token)) return next();
-        else res.render("401"); // 401
-    } else res.render("401"); // 401
-}
 
-function isExpired(token) {
-    if (token && jwt.decode(token)) {
-        const expiry = jwt.decode(token).exp;
-        const now = new Date();
-        return now.getTime() > expiry * 1000;
-    }
-    return false;
-}
-
-/* GET home page.*/
-router.get("/", isAuthenticated, function (req, res, next) {
-    res.render("login", { title: "Login" });
+router.get("/", passport.authenticate('jwt', {session: false}), (req, res) => {
+    const { user } = req;
+    if (user)
+        res.render('index', { user: user });
+    else
+        res.render("login", { title: "Login" });
 });
-
 /* POST logout */
-router.post("/logout", isAuthenticated, (req, res) => {
-    res.clearCookie("token"); // delete cookie
-    return res.status(200).redirect("/auth/login");
+router.get("/logout", passport.authenticate('jwt', {session: false}), (req, res) => {
+    
+    const { user } = req;
+    
+    if (user.accessToken != null)
+    {
+        axios
+        .post("https://accounts.google.com/o/oauth2/revoke?token=" + user.accessToken)
+        .then(() => {
+            user.accessToken = null;
+            axios
+                .put("http://localhost:3000/api/auth/updateAccessToken", { dados: user })
+                    .then(() => {
+                        res.clearCookie("token");
+                        return res.status(200).redirect("/auth/login");                    
+                    })
+                    .catch(() => {
+                        return res.status(200).redirect("/auth/login");
+                    });
+        })
+        .catch(() => res.render('index', { user: user }))
+    }
+    else
+    {
+        res.clearCookie("token");
+        return res.status(200).redirect("/auth/login");
+    }
+   
+    
+  
 });
-
 module.exports = router;
