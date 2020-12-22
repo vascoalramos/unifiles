@@ -52,11 +52,23 @@ router.post(
     },
 );
 
-router.get("/logout", (req, res) => {
-    const token = req.headers.authorization;
-    User.logout(token)
-        .then(() => {
-            res.status(200).jsonp({ message: "Logout successfull" });
+router.get("/user/:username", (req, res, next) => {
+    let data = req.params;
+    User.findByAuthUsername(data)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
+router.get("/email/:email", (req, res, next) => {
+    let data = req.params;
+    User.findByAuthEmail(data)
+        .then((user) => {
+            console.log(user)
+            res.status(200).jsonp(user);
         })
         .catch((error) => {
             console.log(error.toString());
@@ -64,8 +76,9 @@ router.get("/logout", (req, res) => {
         });
 });
 
-router.get("/user/:token", (req, res, next) => {
-    User.findByAuthToken(req.params.token)
+router.put("/updateAccessToken", (req, res, next) => {
+    let data = req.body;
+    User.updateAccessToken(data)
         .then((user) => {
             res.status(200).jsonp(user);
         })

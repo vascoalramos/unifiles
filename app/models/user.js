@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
     token: {
         type: String,
     },
+    accessToken: {
+        type: String,
+        default : null
+    }
 });
 
 userSchema.pre("save", function (next) {
