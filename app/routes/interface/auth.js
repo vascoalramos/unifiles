@@ -4,9 +4,9 @@ const router = express.Router();
 var passport = require('passport');
 
 
-/************/
+/*********/
 /* LOGIN */
-/************/
+/*********/
 router.get("/login", (req, res) => {
     passport.authenticate('jwt', {session: false}, (err, user, info) => {
         if (err || !user) 
@@ -24,7 +24,6 @@ router.get('/google/callback', passport.authenticate('google', { session: false,
 
     req.login(user, {session: false}, (error) => {
         res.cookie("token", user.token);
-        res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
         res.redirect("/");
     });  
 });
@@ -43,7 +42,6 @@ router.post("/login",  (req, res) => {
 /************/
 /* REGISTER */
 /************/
-
 router.get("/register", (req, res) => {
     
     passport.authenticate('jwt', {session: false}, (err, user, info) => {
@@ -69,7 +67,7 @@ router.post("/register", (req, res) => {
             });
 });
 
-/************/
+/*****************/
 /* AUX FUNCTIONS */
 /************/
 function login(req, res) {

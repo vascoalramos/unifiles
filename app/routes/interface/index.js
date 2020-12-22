@@ -11,6 +11,7 @@ router.get("/", passport.authenticate('jwt', {session: false}), (req, res) => {
     else
         res.render("login", { title: "Login" });
 });
+
 /* POST logout */
 router.get("/logout", passport.authenticate('jwt', {session: false}), (req, res) => {
     
@@ -28,9 +29,6 @@ router.get("/logout", passport.authenticate('jwt', {session: false}), (req, res)
                         res.clearCookie("token");
                         return res.status(200).redirect("/auth/login");                    
                     })
-                    .catch(() => {
-                        return res.status(200).redirect("/auth/login");
-                    });
         })
         .catch(() => res.render('index', { user: user }))
     }

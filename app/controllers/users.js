@@ -40,7 +40,7 @@ module.exports.findByAuthEmail = (data) => {
 };
 // Insert
 module.exports.insert = user => {
-    var newUser = new User(user.data)
+    var newUser = new User(user)
 
     return newUser.save()
 } 
