@@ -12,4 +12,28 @@ html
     script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js' integrity='sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6' crossorigin='anonymous')
     script(src='/javascripts/script.js')
   body
-    block content
+    nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+      a.navbar-brand(href="/")
+        i.fas.fa-user-graduate.pr-2
+        span UniFiles
+
+      button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarsExampleDefault", aria-controls="navbarsExampleDefault", aria-expanded="false", aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+
+      .collapse.navbar-collapse(id="navbarsExampleDefault")
+        ul.navbar-nav.ml-auto
+          li.nav-item
+          if user
+            if user.is_admin
+          else
+            a.nav-link(href="/auth/register") Register
+            a.nav-link(href="/auth/register") Register
+
+    main(role="main", style="padding: 5em 10em 0 10em;")
+      block content
+
+    footer.container(style="background-color: white")
+      hr
+      p.float-right
+        a(href="#") Back to top
+      p &copy; UniFiles | DAW 2020.

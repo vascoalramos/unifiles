@@ -19,12 +19,14 @@ block content
             p.error-format #{errors_login}
           p.forgot-password 
             a(href='#') Forgot password?
-          .dropdown-divider
+          if error_login
+            .span.text-danger.mb-3= error_login
           button.btn.btn-primary.btn-bottom(type='submit') Sign in
-      .col-sm
-        h2 Btns de facebook, gmail
-      form(action='/auth/google' method='get')
-        button.btn.btn-primary.btn-bottom(type='submit') Sign in with Google
+          .dropdown-divider
+      .col-sm.text-center.pl-5.pr-5(style="height: 100%;")
+        .container.pl-3.pr-3
+          form(action='/auth/google' method='get')
+            button.btn.btn-primary.btn-bottom(type='submit') Sign in with Google
 
 
 
