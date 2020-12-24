@@ -5,7 +5,6 @@ const passport = require("passport");
 
 const User = require("../../controllers/users");
 
-
 router.post(
     "/login",
     [
@@ -38,7 +37,6 @@ router.post(
     },
 );
 
-
 router.put("/updateAccessToken", (req, res, next) => {
     let data = req.body;
     User.updateAccessToken(data)
@@ -52,6 +50,7 @@ router.put("/updateAccessToken", (req, res, next) => {
 });
 
 router.put("/tokens", (req, res, next) => {
+    console.log(req.cookies);
     let data = req.body;
     User.updateTokens(data)
         .then((user) => {
