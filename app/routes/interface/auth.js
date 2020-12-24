@@ -41,8 +41,8 @@ router.post("/login", (req, res) => {
 /************/
 router.get("/register", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
-        if (err || !user) res.render("register");
-        if (user) res.render("index", { user: user });
+        if (err || !user) res.render("register", { title: "Register" });
+        if (user) res.render("index", { title: "Home", user: user });
     })(req, res);
 });
 
