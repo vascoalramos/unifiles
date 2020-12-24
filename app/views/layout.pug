@@ -25,9 +25,11 @@ html
           li.nav-item
           if user
             if user.is_admin
+            else
+              a.nav-link(href="/auth/logout") Logout
           else
             a.nav-link(href="/auth/register") Register
-            a.nav-link(href="/auth/register") Register
+            a.nav-link(href="/auth/login") Login
 
     main(role="main", style="padding: 5em 10em 0 10em;")
       block content
