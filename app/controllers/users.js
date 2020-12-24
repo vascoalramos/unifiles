@@ -43,6 +43,12 @@ module.exports.insert = (user) => {
     return newUser.save();
 };
 
+module.exports.update = (user) => {
+    return User.findOneAndUpdate({ username: user.username }, user, {
+        new: true,
+    });
+};
+
 module.exports.updateAccessToken = (user) => {
     return User.findOneAndUpdate(
         { username: user.username },

@@ -96,6 +96,30 @@ userSchema.pre("save", function (next) {
     });
 });
 
+userSchema.pre("findOneAndUpdate", function (next) {
+    if (this._update.password) {
+        // generate a salt
+        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+            if (err) {
+                return next(err);
+            }
+
+            // hash the password along with our new salt
+            bcrypt.hash(this._update.password, salt, (err, hash) => {
+                if (err) {
+                    return next(err);
+                }
+
+                // override the cleartext password with the hashed one
+                this._update.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
+
 const User = mongoose.model("users", userSchema, "users");
 
 module.exports = User;

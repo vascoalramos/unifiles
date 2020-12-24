@@ -1,0 +1,48 @@
+extends layout
+
+block content
+  .container.center-div
+    .row.form-user
+      .col-sm
+        h2 Edit Profile
+        form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
+          .row
+            .col-sm
+              .form-group.first_name
+                label(for='first_name') First Name
+                input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='' value=user.first_name)
+            .col-sm
+              .form-group.last_name
+                label(for='last_name') Last Name
+                input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='' value=user.last_name)
+          .row
+            .col-sm
+              .form-group.username
+                  label(for='username') Username
+                  input#username.form-control(type='text' placeholder='jb_12345' name='username' required='' minlength=2 value=user.username)
+            .col-sm
+              .form-group.email
+                  label(for='email') Email
+                  input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='' value=user.email)
+          .row
+            .col-sm
+              .form-group.institution
+                label(for='institution') Institution
+                input#institution.form-control(type='text' placeholder='Univ. Minho' name='institution' required='' minlength=2 value=user.filiation.institution)
+            .col-sm
+              .form-group.position
+                  label(for='position') Position
+                  input#position.form-control(type='text' placeholder='student' name='position' required='' minlength=2 value=user.filiation.position)
+          .row
+            .col-sm
+              .form-group.password
+                label(for='password') Password
+                input#password.form-control(type='password' placeholder='*******' name='password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+            .col-sm
+              .form-group.confirm_password
+                  label(for='confirm_password') Confirm Password
+                  input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+          button.btn.btn-primary.btn-bottom(onclick=`editProfile("${user.username}");return false`) Edit Profile
+        .dropdown-divider
+
+

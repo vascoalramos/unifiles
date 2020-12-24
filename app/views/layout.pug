@@ -22,14 +22,19 @@ html
 
       .collapse.navbar-collapse(id="navbarsExampleDefault")
         ul.navbar-nav.ml-auto
-          li.nav-item
           if user
             if user.is_admin
             else
-              a.nav-link(href="/auth/logout") Logout
+              li.nav-item.dropdown
+                a.nav-link.dropdown-toggle(href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Account
+                .dropdown-menu.dropdown-menu-right(aria-labelledby="accountDropdown")
+                  a.dropdown-item(href="/profile") Edit Profile
+                  a.dropdown-item(href="/auth/logout") Logout
           else
-            a.nav-link(href="/auth/register") Register
-            a.nav-link(href="/auth/login") Login
+            li.nav-item
+              a.nav-link(href="/auth/register") Register
+            li.nav-item
+              a.nav-link(href="/auth/login") Login
 
     main(role="main", style="padding: 5em 10em 0 10em;")
       block content

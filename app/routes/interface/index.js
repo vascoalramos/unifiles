@@ -10,4 +10,10 @@ router.get("/", (req, res) => {
     })(req, res);
 });
 
+router.get("/profile", passport.authenticate("jwt", { session: false }), (req, res) => {
+    const { user } = req;
+
+    res.render("profile", { title: "Edit Profile", user: user });
+});
+
 module.exports = router;

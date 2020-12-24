@@ -50,8 +50,8 @@ router.put("/updateAccessToken", (req, res, next) => {
 });
 
 router.put("/tokens", (req, res, next) => {
-    console.log(req.cookies);
     let data = req.body;
+    console.log(data);
     User.updateTokens(data)
         .then((user) => {
             res.status(200).jsonp(user);

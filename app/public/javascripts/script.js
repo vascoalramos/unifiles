@@ -30,43 +30,80 @@ var host = "http://localhost:3000";
 $(document).ready(function () {
     $("#register-confirm").click(function (e) {
         e.preventDefault();
-
-        var data = $("#form-register").serializeArray();
-
-        $.ajax(
-            {
-                type: "POST",
-                enctype: "multipart/form-data",
-                url: host + "/api/users",
-                data: data,
-                success: function (data) {
-                    removeErrors(); // Remove errors
-
-                    // Create cookie and login
-                    $.ajax({
-                        type: "POST",
-                        enctype: "multipart/form-data",
-                        url: host + "/auth/login",
-                        data: data,
-                        success: function (d) {
-                            window.location = host;
-                        },
-                        error: function (errors) {
-                            displayErrors(errors);
-                        },
-                    });
-                },
-                error: function (errors) {
-                    displayErrors(errors);
-                },
-            },
-            false,
-        );
+        registerUser();
     });
 });
 
-function displayErrors(errors) {
-    $("#form-register").addClass("was-validated"); // Display red boxes
+function registerUser() {
+    var data = $("#form-register").serializeArray();
+
+    $.ajax(
+        {
+            type: "POST",
+            enctype: "multipart/form-data",
+            url: host + "/api/users",
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                // Create cookie and login
+                $.ajax({
+                    type: "POST",
+                    enctype: "multipart/form-data",
+                    url: host + "/auth/login",
+                    data: data,
+                    success: function (d) {
+                        window.location = host;
+                    },
+                    error: function (errors) {
+                        displayErrors("#form-register", errors);
+                    },
+                });
+            },
+            error: function (errors) {
+                displayErrors("#form-register", errors);
+            },
+        },
+        false,
+    );
+}
+
+function editProfile(username) {
+    var data = $("#form-edit-profile").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: `${host}/api/users/${username}`,
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                // Create cookie and login
+                $.ajax({
+                    type: "POST",
+                    enctype: "multipart/form-data",
+                    url: host + "/auth/login",
+                    data: data,
+                    success: function (d) {
+                        window.location = host;
+                    },
+                    error: function (errors) {
+                        displayErrors("#form-edit-profile", errors);
+                    },
+                });
+            },
+            error: function (errors) {
+                displayErrors("#form-edit-profile", errors);
+            },
+        },
+        false,
+    );
+}
+
+function displayErrors(formId, errors) {
+    $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
     errors.responseJSON.generalErrors.forEach((element) => {
         $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
