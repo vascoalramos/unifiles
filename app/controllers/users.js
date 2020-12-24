@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 module.exports.generateAuthToken = async function (user) {
     const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY, {
-        expiresIn: process.env.JWT_SECRET_TIME,
+        expiresIn: parseInt(process.env.JWT_SECRET_TIME),
     });
     user.token = token;
     return user.save();
@@ -37,15 +37,29 @@ module.exports.findByAuthEmail = (data) => {
     let email = data.email;
     return User.findOne({ email: email });
 };
-// Insert
-module.exports.insert = user => {
-    var newUser = new User(user)
 
-    return newUser.save()
-} 
+module.exports.insert = (user) => {
+    var newUser = new User(user);
+
+    return newUser.save();
+};
+
 module.exports.updateAccessToken = (user) => {
-    return User.findOneAndUpdate({username: user.dados.username}, { accessToken: user.dados.accessToken }, {
-        new: true
-    });
+    return User.findOneAndUpdate(
+        { username: user.dados.username },
+        { accessToken: user.dados.accessToken },
+        {
+            new: true,
+        },
+    );
+};
 
-} 
+module.exports.updateAccessToken = (user) => {
+    return User.findOneAndUpdate(
+        { username: user.username },
+        { accessToken: user.accessToken, token: user.token },
+        {
+            new: true,
+        },
+    );
+};

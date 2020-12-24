@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
+
 const User = require("../../controllers/users");
 
 var passwordValidator = require("password-validator");
@@ -77,6 +79,19 @@ router.get("/email/:email", (req, res, next) => {
 });
 
 router.put("/updateAccessToken", (req, res, next) => {
+    let data = req.body;
+    User.updateAccessToken(data)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
+
+router.put("/tokens", (req, res, next) => {
+    console.log(req.cookies);
     let data = req.body;
     User.updateAccessToken(data)
         .then((user) => {

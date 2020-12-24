@@ -65,9 +65,38 @@ router.post("/register", (req, res) => {
         });
 });
 
+/**********/
+/* LOGOUT */
+/*********/
+router.get("/logout", passport.authenticate("jwt", { session: false }), (req, res) => {
+    const { user } = req;
+
+    if (user.accessToken != null) {
+        axios
+            .post("https://accounts.google.com/o/oauth2/revoke?token=" + user.accessToken)
+            .then(() => {
+                user.accessToken = null;
+                user.token = null;
+                axios.put("http://localhost:3000/api/auth/updateAccessToken", { dados: user }).then(() => {
+                    res.clearCookie("token");
+                    return res.status(200).redirect("/auth/login");
+                });
+            })
+            .catch(() => res.render("index", { user: user }));
+    } else {
+        console.log(user);
+        user.accessToken = null;
+        user.token = null;
+        axios.put("http://localhost:3000/api/auth/tokens", { user }).then(() => {
+            res.clearCookie("token");
+            return res.status(200).redirect("/auth/login");
+        });
+    }
+});
+
 /*****************/
 /* AUX FUNCTIONS */
-/************/
+/*****************/
 function login(req, res) {
     passport.authenticate("local", { session: false }, (err, user) => {
         if (err) {
@@ -76,7 +105,7 @@ function login(req, res) {
 
         req.login(user, { session: false }, (error) => {
             res.cookie("token", user.token);
-            res.render("index", { user: user });
+            res.redirect("/");
         });
     })(req, res);
 }
