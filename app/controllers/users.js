@@ -46,15 +46,15 @@ module.exports.insert = (user) => {
 
 module.exports.updateAccessToken = (user) => {
     return User.findOneAndUpdate(
-        { username: user.dados.username },
-        { accessToken: user.dados.accessToken },
+        { username: user.username },
+        { accessToken: user.accessToken },
         {
             new: true,
         },
     );
 };
 
-module.exports.updateAccessToken = (user) => {
+module.exports.updateTokens = (user) => {
     return User.findOneAndUpdate(
         { username: user.username },
         { accessToken: user.accessToken, token: user.token },

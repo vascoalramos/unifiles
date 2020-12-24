@@ -77,17 +77,16 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
             .then(() => {
                 user.accessToken = null;
                 user.token = null;
-                axios.put("http://localhost:3000/api/auth/updateAccessToken", { dados: user }).then(() => {
+                axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
                     res.clearCookie("token");
                     return res.status(200).redirect("/auth/login");
                 });
             })
             .catch(() => res.render("index", { user: user }));
     } else {
-        console.log(user);
         user.accessToken = null;
         user.token = null;
-        axios.put("http://localhost:3000/api/auth/tokens", { user }).then(() => {
+        axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
             res.clearCookie("token");
             return res.status(200).redirect("/auth/login");
         });
