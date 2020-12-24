@@ -63,11 +63,12 @@ router.get("/user/:username", (req, res, next) => {
             res.status(401).jsonp(error);
         });
 });
+
 router.get("/email/:email", (req, res, next) => {
     let data = req.params;
     User.findByAuthEmail(data)
         .then((user) => {
-            console.log(user)
+            console.log(user);
             res.status(200).jsonp(user);
         })
         .catch((error) => {
@@ -91,38 +92,39 @@ router.put("/updateAccessToken", (req, res, next) => {
 router.post(
     "/register",
     [
-        body("first_name").not().isEmpty().withMessage('First Name field is required.'), 
-        body("last_name").not().isEmpty().withMessage('Last Name field is required.'), 
-        body("email").isEmail().withMessage('Email field must be an email.'),
-        body("institution").isLength({ min: 2 }).withMessage('Institution field must be at least 2 chars long.'),  // Ex: UM
-        body("username").isLength({ min: 2 }).withMessage('Username field must be at least 2 chars long.'),  // Ex: AC
-        body("confirm_password").not().isEmpty().withMessage('Confirm Password field is required.'), 
+        body("first_name").not().isEmpty().withMessage("First Name field is required."),
+        body("last_name").not().isEmpty().withMessage("Last Name field is required."),
+        body("email").isEmail().withMessage("Email field must be an email."),
+        body("institution").isLength({ min: 2 }).withMessage("Institution field must be at least 2 chars long."), // Ex: UM
+        body("username").isLength({ min: 2 }).withMessage("Username field must be at least 2 chars long."), // Ex: AC
+        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
     ],
     (req, res) => {
         let data = req.body;
-        var generalErrors = []
+        var generalErrors = [];
 
         //AINDA FALTA VERIFICAR SE EXISTE EMAIL E USERNAME
         //https://express-validator.github.io/docs/custom-validators-sanitizers.html#example-checking-if-e-mail-is-in-use
-        
+
         var errors = validationResult(req);
 
-        errors.errors.forEach(element => {
-            generalErrors.push({field: element.param, msg: element.msg});
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
         });
 
-        if(!schemaPassValidator.validate(data.password)) {
-            generalErrors.push({field: 'password', msg: 'Password must be complex! At least 8 characters with lowercase, uppercase and digits.'});
-        }
-        else 
-            if (data.password != data.confirm_password) 
-                generalErrors.push({field: 'confirm_password', msg: 'Passwordconfirmation does not match password.'});
+        if (!schemaPassValidator.validate(data.password)) {
+            generalErrors.push({
+                field: "password",
+                msg: "Password must be complex! At least 8 characters with lowercase, uppercase and digits.",
+            });
+        } else if (data.confirm_password && data.password != data.confirm_password)
+            generalErrors.push({ field: "confirm_password", msg: "Password confirmation does not match password." });
 
         if (generalErrors.length > 0) {
             return res.status(400).json({ generalErrors });
         }
 
-        delete data.confirm_password
+        delete data.confirm_password;
 
         User.insert(data)
             .then((user) => {

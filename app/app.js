@@ -1,12 +1,11 @@
 require("dotenv").config();
-require('./middleware/passport-setup');
+require("./middleware/passport-setup");
 const createError = require("http-errors");
-const cors = require('cors')
+const cors = require("cors");
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-var passport = require('passport')
 
 const mongoose = require("mongoose");
 //mongoose.set('debug', true); // debug queries
@@ -26,7 +25,7 @@ const axios = require("axios");
 axios.defaults.baseURL = process.env.API_URL;
 
 const app = express();
-app.use(cors())
+app.use(cors());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -38,10 +37,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(function(req, res, next) {
-    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+app.use(function (req, res, next) {
+    res.set("Cache-Control", "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0");
     next();
-  });
+});
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
 app.use("/", indexRouter);
@@ -52,7 +51,6 @@ const authAPI = require("./routes/api/auth");
 const usersAPI = require("./routes/api/users");
 app.use("/api/auth", authAPI);
 app.use("/api/users", usersAPI);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

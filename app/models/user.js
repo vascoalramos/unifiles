@@ -36,12 +36,12 @@ const userSchema = new mongoose.Schema({
     is_admin: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
     },
     is_active: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
     },
     avatar: {
         type: String,
@@ -54,11 +54,12 @@ const userSchema = new mongoose.Schema({
     },
     token: {
         type: String,
+        default: null,
     },
     accessToken: {
         type: String,
-        default : null
-    }
+        default: null,
+    },
 });
 
 userSchema.pre("save", function (next) {
@@ -88,17 +89,6 @@ userSchema.pre("save", function (next) {
     });
 });
 
-/* Example
-    "first_name": "Fábio",
-    "last_name": "Gonçalves",
-    "username": "fabiog",
-    "email": "fabiog@gmail.com",
-    "is_admin": "false",
-    "password": "b6e318dabf42695e3943d896106c3e0cc5254866",
-    "is_ctive": "true",
-    "avatar": "xpto.png",
-    "institution": "Uminho"
-    */
 const User = mongoose.model("users", userSchema, "users");
 
 module.exports = User;
