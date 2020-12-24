@@ -46,25 +46,6 @@ router.get("/register", (req, res) => {
     })(req, res);
 });
 
-router.post("/register", (req, res) => {
-    let data = req.body;
-    axios
-        .post("http://localhost:3000/api/auth/register", { data })
-        .then((user) => {
-            login(req, res); // process login
-        })
-        .catch((error) => {
-            var errors = error.response.data;
-
-            if (error.response.status) {
-                res.render("register", { errors_register: errors.error });
-            } else {
-                console.log(error.toString());
-            }
-            return;
-        });
-});
-
 /**********/
 /* LOGOUT */
 /*********/

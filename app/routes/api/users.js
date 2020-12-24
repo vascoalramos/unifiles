@@ -66,8 +66,6 @@ router.post(
         delete data.institution;
         delete data.position;
 
-        console.log(data);
-
         User.insert(data)
             .then((user) => {
                 res.status(200).jsonp(data);
@@ -78,5 +76,29 @@ router.post(
             });
     },
 );
+
+router.get("/", (req, res, next) => {
+    let email = req.params.email;
+    User.findByAuthEmail(email)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
+
+router.get("/:username", (req, res, next) => {
+    let data = req.params;
+    User.findByAuthUsername(data)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(401).jsonp(error);
+        });
+});
 
 module.exports = router;

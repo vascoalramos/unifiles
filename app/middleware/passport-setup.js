@@ -39,7 +39,7 @@ passport.use(
                 return done("jwt expired");
             }
             axios
-                .get("http://localhost:3000/api/auth/user/" + jwtPayload.username)
+                .get("http://localhost:3000/api/users/" + jwtPayload.username)
                 .then((dados) => {
                     done(null, dados.data);
                 })
@@ -57,7 +57,7 @@ passport.use(
         },
         function (accessToken, refreshToken, params, profile, done) {
             axios
-                .get("http://localhost:3000/api/auth/email/" + profile._json.email)
+                .get("http://localhost:3000/api/users?email=" + profile._json.email)
                 .then((dados) => {
                     dados.data.accessToken = accessToken;
                     axios

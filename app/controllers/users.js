@@ -33,8 +33,7 @@ module.exports.findByAuthUsername = (data) => {
     return User.findOne({ username: username });
 };
 
-module.exports.findByAuthEmail = (data) => {
-    let email = data.email;
+module.exports.findByAuthEmail = (email) => {
     return User.findOne({ email: email });
 };
 

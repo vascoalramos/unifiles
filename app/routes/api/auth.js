@@ -38,29 +38,6 @@ router.post(
     },
 );
 
-router.get("/user/:username", (req, res, next) => {
-    let data = req.params;
-    User.findByAuthUsername(data)
-        .then((user) => {
-            res.status(200).jsonp(user);
-        })
-        .catch((error) => {
-            console.log(error.toString());
-            res.status(401).jsonp(error);
-        });
-});
-
-router.get("/email/:email", (req, res, next) => {
-    let data = req.params;
-    User.findByAuthEmail(data)
-        .then((user) => {
-            res.status(200).jsonp(user);
-        })
-        .catch((error) => {
-            console.log(error.toString());
-            res.status(401).jsonp(error);
-        });
-});
 
 router.put("/updateAccessToken", (req, res, next) => {
     let data = req.body;
