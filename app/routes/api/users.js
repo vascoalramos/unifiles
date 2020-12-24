@@ -3,8 +3,6 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const User = require("../../controllers/users");
 
-var passwordValidator = require("password-validator");
-
 router.post(
     "/",
     [
@@ -22,12 +20,6 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ error: errors.array() });
         }
-
-        // if(!schemaPassValidator.validate(data.password))
-        // errors.strong_pass = '1...';
-        // else
-        //     if (data.password != data.repeatPassword)
-        //     errors.diff_pass_error = "2..."
 
         delete data.confirm_password;
 

@@ -55,8 +55,12 @@ router.post("/register", (req, res) => {
         })
         .catch((error) => {
             var errors = error.response.data;
-            if (error.response.status) res.render("register", { errors_register: errors.error });
-            else console.log(error.toString());
+
+            if (error.response.status) {
+                res.render("register", { errors_register: errors.error });
+            } else {
+                console.log(error.toString());
+            }
             return;
         });
 });

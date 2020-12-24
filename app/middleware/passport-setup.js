@@ -12,8 +12,6 @@ passport.use(
             passwordField: "password",
         },
         (username, password, done) => {
-            console.log(username);
-
             axios
                 .post("http://localhost:3000/api/auth/login", { username: username, password: password })
                 .then((dados) => {
@@ -37,7 +35,6 @@ passport.use(
             secretOrKey: process.env.JWT_SECRET_KEY,
         },
         (jwtPayload, done) => {
-            console.log(jwtPayload);
             if (Date.now() > jwtPayload.expires) {
                 return done("jwt expired");
             }

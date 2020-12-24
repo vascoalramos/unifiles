@@ -35,7 +35,6 @@ module.exports.findByAuthUsername = (data) => {
 
 module.exports.findByAuthEmail = (data) => {
     let email = data.email;
-    console.log(email)
     return User.findOne({ email: email });
 };
 // Insert
