@@ -79,20 +79,6 @@ function editProfile(username) {
             data: data,
             success: function (data) {
                 removeErrors(); // Remove errors
-
-                // Create cookie and login
-                $.ajax({
-                    type: "POST",
-                    enctype: "multipart/form-data",
-                    url: host + "/auth/login",
-                    data: data,
-                    success: function (d) {
-                        window.location = host;
-                    },
-                    error: function (errors) {
-                        displayErrors("#form-edit-profile", errors);
-                    },
-                });
             },
             error: function (errors) {
                 displayErrors("#form-edit-profile", errors);
@@ -100,6 +86,20 @@ function editProfile(username) {
         },
         false,
     );
+}
+
+function deleteAccount(username) {
+    $.ajax({
+        type: "DELETE",
+        url: `${host}/api/users/${username}`,
+        success: function () {
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+            window.location = "/";
+        },
+        error: function (error) {
+            console.log(error);
+        },
+    });
 }
 
 function displayErrors(formId, errors) {

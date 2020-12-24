@@ -4,7 +4,11 @@ block content
   .container.center-div
     .row.form-user
       .col-sm
-        h2 Edit Profile
+        .row
+          .col-sm-10
+            h2 Edit Profile
+          .col-sm-2
+            button.btn.btn-danger(style="color: white" type="button" onclick=`deleteAccount("${user.username}")`) Delete Account
         form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
           .row
             .col-sm

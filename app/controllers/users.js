@@ -49,6 +49,16 @@ module.exports.update = (user) => {
     });
 };
 
+module.exports.delete = (username) => {
+    return User.findOneAndUpdate(
+        { username: username },
+        { is_active: false, token: null, accessToken: null },
+        {
+            new: true,
+        },
+    );
+};
+
 module.exports.updateAccessToken = (user) => {
     return User.findOneAndUpdate(
         { username: user.username },

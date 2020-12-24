@@ -134,7 +134,18 @@ router.put(
     },
 );
 
-router.get("/", (req, res, next) => {
+router.delete("/:username", (req, res) => {
+    User.delete(req.params.username)
+        .then(() => {
+            res.status(200).jsonp("Success");
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(401).jsonp(error);
+        });
+});
+
+router.get("/", (req, res) => {
     let email = req.params.email;
     User.findByAuthEmail(email)
         .then((user) => {
@@ -146,7 +157,7 @@ router.get("/", (req, res, next) => {
         });
 });
 
-router.get("/:username", (req, res, next) => {
+router.get("/:username", (req, res) => {
     let data = req.params;
     User.findByAuthUsername(data)
         .then((user) => {

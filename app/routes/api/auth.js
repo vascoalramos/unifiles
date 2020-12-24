@@ -21,14 +21,18 @@ router.post(
 
         User.findByCredentials(data.username, data.password)
             .then((user) => {
-                User.generateAuthToken(user)
-                    .then((data) => {
-                        res.status(200).jsonp(data);
-                    })
-                    .catch((error) => {
-                        console.log(error.toString());
-                        res.status(401).jsonp(error);
-                    });
+                if (user.is_active) {
+                    User.generateAuthToken(user)
+                        .then((data) => {
+                            res.status(200).jsonp(data);
+                        })
+                        .catch((error) => {
+                            console.log(error.toString());
+                            res.status(401).jsonp(error);
+                        });
+                } else {
+                    res.status(401).jsonp({ error: "User does not exist" });
+                }
             })
             .catch((error) => {
                 console.log(error.toString());
