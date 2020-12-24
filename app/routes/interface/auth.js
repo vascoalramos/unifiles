@@ -10,7 +10,7 @@ const { token } = require("morgan");
 router.get("/login", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
         if (err || !user) res.render("login", { title: "Login" });
-        if (user) res.render("index", { user: user });
+        if (user) res.redirect("/");
     })(req, res);
 });
 // Interface routes
@@ -79,7 +79,7 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
                 user.token = null;
                 axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
                     res.clearCookie("token");
-                    return res.status(200).redirect("/auth/login");
+                    return res.redirect("/");
                 });
             })
             .catch(() => res.render("index", { user: user }));
@@ -88,7 +88,7 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
         user.token = null;
         axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
             res.clearCookie("token");
-            return res.status(200).redirect("/auth/login");
+            return res.redirect("/");
         });
     }
 });
