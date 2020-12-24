@@ -15,18 +15,24 @@ block content
               .form-group.last_name
                 label(for='last_name') Last Name
                 input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='')
-          .form-group.email
-              label(for='email') Email
-              input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
+          .row
+            .col-sm
+              .form-group.username
+                  label(for='username') Username
+                  input#username.form-control(type='text' placeholder='jb_12345' name='username' required='', minlength=2)
+            .col-sm
+              .form-group.email
+                  label(for='email') Email
+                  input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
           .row
             .col-sm
               .form-group.institution
                 label(for='institution') Institution
                 input#institution.form-control(type='text' placeholder='Univ. Minho' name='institution' required='', minlength=2)
             .col-sm
-              .form-group.username
-                  label(for='username') Username
-                  input#username.form-control(type='text' placeholder='jb_12345' name='username' required='', minlength=2)
+              .form-group.position
+                  label(for='position') Position
+                  input#position.form-control(type='text' placeholder='student' name='position' required='', minlength=2)
           .row
             .col-sm
               .form-group.password

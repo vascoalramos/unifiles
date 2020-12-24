@@ -41,17 +41,24 @@ const userSchema = new mongoose.Schema({
     is_active: {
         type: Boolean,
         required: true,
-        default: false,
+        default: true,
     },
     avatar: {
         type: String,
         required: true,
         default: "/images/UserDefault.png",
     },
-    institution: {
-        type: String,
-        required: false,
+    filiation: {
+        institution: {
+            type: String,
+            required: false,
+        },
+        position: {
+            type: String,
+            required: false,
+        },
     },
+
     token: {
         type: String,
         default: null,

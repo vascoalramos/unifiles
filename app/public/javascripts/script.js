@@ -37,7 +37,7 @@ $(document).ready(function () {
             {
                 type: "POST",
                 enctype: "multipart/form-data",
-                url: host + "/api/auth/register",
+                url: host + "/api/users",
                 data: data,
                 success: function (data) {
                     removeErrors(); // Remove errors
