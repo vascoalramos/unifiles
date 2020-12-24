@@ -5,22 +5,6 @@ const passport = require("passport");
 
 const User = require("../../controllers/users");
 
-var passwordValidator = require("password-validator");
-var schemaPassValidator = new passwordValidator();
-
-// Strong password
-schemaPassValidator
-    .is()
-    .min(8) // Minimum length 8
-    .has()
-    .lowercase() // Must have letters
-    .has()
-    .uppercase() // Must have letters
-    .has()
-    .digits() // Must have digits
-    .is()
-    .not()
-    .oneOf(["Passw0rd", "Password123"]); // Blacklist these values
 
 router.post(
     "/login",
