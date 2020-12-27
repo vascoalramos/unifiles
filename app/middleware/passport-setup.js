@@ -62,7 +62,7 @@ passport.use(
                 .then((dados) => {
                     dados.data.accessToken = accessToken;
                     axios
-                        .put("http://localhost:3000/api/auth/updateAccessToken", { dados: dados.data })
+                        .put("http://localhost:3000/api/auth/updateAccessToken", dados.data)
                         .then((user) => {
                             done(null, user.data);
                         })
