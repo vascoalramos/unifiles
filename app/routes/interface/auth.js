@@ -2,7 +2,6 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 var passport = require("passport");
-const { token } = require("morgan");
 
 /*********/
 /* LOGIN */

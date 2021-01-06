@@ -68,7 +68,7 @@ router.post(
 
         User.insert(data)
             .then((user) => {
-                res.status(200).jsonp(data);
+                res.status(201).jsonp(data);
             })
             .catch((error) => {
                 console.log(error);
