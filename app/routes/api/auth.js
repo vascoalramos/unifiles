@@ -43,8 +43,19 @@ router.post(
 router.put("/updateAccessToken", (req, res, next) => {
     let data = req.body;
     User.updateAccessToken(data)
-        .then((user) => {
-            res.status(200).jsonp(user);
+        .then((user) => { 
+            if (user.is_active) {
+                User.generateAuthToken(user)
+                    .then((data) => {
+                        res.status(200).jsonp(data);
+                    })
+                    .catch((error) => {
+                        console.log(error.toString());
+                        res.status(401).jsonp(error);
+                    });
+            } else {
+                res.status(401).jsonp({ error: "User does not exist" });
+            }
         })
         .catch((error) => {
             console.log(error.toString());
@@ -54,7 +65,6 @@ router.put("/updateAccessToken", (req, res, next) => {
 
 router.put("/tokens", (req, res, next) => {
     let data = req.body;
-    console.log(data);
     User.updateTokens(data)
         .then((user) => {
             res.status(200).jsonp(user);

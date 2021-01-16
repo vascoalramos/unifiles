@@ -60,13 +60,18 @@ passport.use(
             axios
                 .get("http://localhost:3000/api/users?email=" + profile._json.email)
                 .then((dados) => {
-                    dados.data.accessToken = accessToken;
-                    axios
-                        .put("http://localhost:3000/api/auth/updateAccessToken", dados.data)
-                        .then((user) => {
-                            done(null, user.data);
-                        })
-                        .catch((erro) => done(erro, false));
+                    if(dados.data != null){
+                        dados.data.accessToken = accessToken;
+                        axios
+                            .put("http://localhost:3000/api/auth/updateAccessToken", { dados: dados.data })
+                            .then((user) => {
+                                done(null, user.data);
+                            })
+                            .catch((erro) => done(erro, false));
+                    }
+                    else
+                        done(profile._json, false)
+                   
                 })
                 .catch((erro) => done(erro, false));
         },
