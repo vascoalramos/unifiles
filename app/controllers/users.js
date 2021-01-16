@@ -61,8 +61,8 @@ module.exports.delete = (username) => {
 
 module.exports.updateAccessToken = (user) => {
     return User.findOneAndUpdate(
-        { username: user.username },
-        { accessToken: user.accessToken },
+        { username: user.dados.username },
+        { accessToken: user.dados.accessToken },
         {
             new: true,
         },

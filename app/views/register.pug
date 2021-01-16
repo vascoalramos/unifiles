@@ -10,11 +10,11 @@ block content
             .col-sm
               .form-group.first_name
                 label(for='first_name') First Name
-                input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='')
+                input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='' value=user.given_name)
             .col-sm
               .form-group.last_name
                 label(for='last_name') Last Name
-                input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='')
+                input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='' value=user.family_name) 
           .row
             .col-sm
               .form-group.username
@@ -23,7 +23,7 @@ block content
             .col-sm
               .form-group.email
                   label(for='email') Email
-                  input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
+                  input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='' value=user.email)
           .row
             .col-sm
               .form-group.institution

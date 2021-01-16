@@ -16,16 +16,20 @@ router.get("/login", (req, res) => {
 // Interface routes
 
 //Login Google
-router.get(
-    "/google/callback",
-    passport.authenticate("google", { session: false, failureRedirect: "/auth/register" }),
-    (req, res) => {
-        const { user } = req;
+router.get("/google/callback", (req, res) => {
+        passport.authenticate("google", { session: false }, (err, user, info) => {
+            if (!err || user)
+            {
+                req.login(user, { session: false }, (error) => {
+                    res.cookie("token", user["token"]);
+                    res.redirect("/");
+                });
+            }
+            else 
+                res.render("register", { title: "Register", user: err });
 
-        req.login(user, { session: false }, (error) => {
-            res.cookie("token", user.token);
-            res.redirect("/");
-        });
+        })(req, res);
+       
     },
 );
 router.get("/google", (req, res) => {

@@ -146,7 +146,8 @@ router.delete("/:username", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-    let email = req.params.email;
+    let email = req.query.email;
+
     User.findByAuthEmail(email)
         .then((user) => {
             res.status(200).jsonp(user);
