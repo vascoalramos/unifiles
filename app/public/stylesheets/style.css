@@ -1,7 +1,7 @@
 body {
     padding: 50px;
     font: 14px;
-    font-family: 'Lato', sans-serif !important;
+    font-family: "Lato", sans-serif !important;
 }
 
 a {
@@ -20,7 +20,7 @@ a {
 
 .error-format {
     width: 100%;
-    margin-top: .25rem;
+    margin-top: 0.25rem;
     font-size: 80%;
     color: #dc3545;
 }
@@ -56,4 +56,12 @@ a {
 
 a {
     text-decoration: none !important;
+}
+
+footer {
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    bottom: 0;
+    width: 100%;
 }

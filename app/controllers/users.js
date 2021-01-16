@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 module.exports.generateAuthToken = async function (user) {
     const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY, {
-        expiresIn: process.env.JWT_SECRET_TIME,
+        expiresIn: parseInt(process.env.JWT_SECRET_TIME),
     });
     user.token = token;
     return user.save();
@@ -33,20 +33,48 @@ module.exports.findByAuthUsername = (data) => {
     return User.findOne({ username: username });
 };
 
-module.exports.findByAuthEmail = (data) => {
-    let email = data.email;
-    console.log(email)
+module.exports.findByAuthEmail = (email) => {
     return User.findOne({ email: email });
 };
-// Insert
-module.exports.insert = user => {
-    var newUser = new User(user)
 
-    return newUser.save()
-} 
-module.exports.updateAccessToken = (user) => {
-    return User.findOneAndUpdate({username: user.dados.username}, { accessToken: user.dados.accessToken }, {
-        new: true
+module.exports.insert = (user) => {
+    var newUser = new User(user);
+
+    return newUser.save();
+};
+
+module.exports.update = (user) => {
+    return User.findOneAndUpdate({ username: user.username }, user, {
+        new: true,
     });
+};
 
-} 
+module.exports.delete = (username) => {
+    return User.findOneAndUpdate(
+        { username: username },
+        { is_active: false, token: null, accessToken: null },
+        {
+            new: true,
+        },
+    );
+};
+
+module.exports.updateAccessToken = (user) => {
+    return User.findOneAndUpdate(
+        { username: user.username },
+        { accessToken: user.accessToken },
+        {
+            new: true,
+        },
+    );
+};
+
+module.exports.updateTokens = (user) => {
+    return User.findOneAndUpdate(
+        { username: user.username },
+        { accessToken: user.accessToken, token: user.token },
+        {
+            new: true,
+        },
+    );
+};

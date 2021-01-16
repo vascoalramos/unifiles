@@ -36,29 +36,37 @@ const userSchema = new mongoose.Schema({
     is_admin: {
         type: Boolean,
         required: true,
-        default: false
+        default: false,
     },
     is_active: {
         type: Boolean,
         required: true,
-        default: false
+        default: true,
     },
     avatar: {
         type: String,
         required: true,
         default: "/images/UserDefault.png",
     },
-    institution: {
-        type: String,
-        required: false,
+    filiation: {
+        institution: {
+            type: String,
+            required: false,
+        },
+        position: {
+            type: String,
+            required: false,
+        },
     },
+
     token: {
         type: String,
+        default: null,
     },
     accessToken: {
         type: String,
-        default : null
-    }
+        default: null,
+    },
 });
 
 userSchema.pre("save", function (next) {
@@ -88,17 +96,30 @@ userSchema.pre("save", function (next) {
     });
 });
 
-/* Example
-    "first_name": "Fábio",
-    "last_name": "Gonçalves",
-    "username": "fabiog",
-    "email": "fabiog@gmail.com",
-    "is_admin": "false",
-    "password": "b6e318dabf42695e3943d896106c3e0cc5254866",
-    "is_ctive": "true",
-    "avatar": "xpto.png",
-    "institution": "Uminho"
-    */
+userSchema.pre("findOneAndUpdate", function (next) {
+    if (this._update.password) {
+        // generate a salt
+        bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
+            if (err) {
+                return next(err);
+            }
+
+            // hash the password along with our new salt
+            bcrypt.hash(this._update.password, salt, (err, hash) => {
+                if (err) {
+                    return next(err);
+                }
+
+                // override the cleartext password with the hashed one
+                this._update.password = hash;
+                next();
+            });
+        });
+    } else {
+        next();
+    }
+});
+
 const User = mongoose.model("users", userSchema, "users");
 
 module.exports = User;
