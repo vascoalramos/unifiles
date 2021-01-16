@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
-const passport = require("passport");
 
 const User = require("../../controllers/users");
 
@@ -24,7 +23,7 @@ router.post(
                 if (user.is_active) {
                     User.generateAuthToken(user)
                         .then((data) => {
-                            res.status(200).jsonp(data);
+                            res.status(201).jsonp(data);
                         })
                         .catch((error) => {
                             console.log(error.toString());

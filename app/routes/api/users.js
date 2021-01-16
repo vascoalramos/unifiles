@@ -68,7 +68,7 @@ router.post(
 
         User.insert(data)
             .then((user) => {
-                res.status(200).jsonp(data);
+                res.status(201).jsonp(data);
             })
             .catch((error) => {
                 console.log(error);
@@ -147,7 +147,6 @@ router.delete("/:username", (req, res) => {
 
 router.get("/", (req, res) => {
     let email = req.query.email;
-
     User.findByAuthEmail(email)
         .then((user) => {
             res.status(200).jsonp(user);
