@@ -50,8 +50,10 @@ app.use("/auth", authRouter);
 // API routes
 const authAPI = require("./routes/api/auth");
 const usersAPI = require("./routes/api/users");
+const resourcesAPI = require("./routes/api/resources");
 app.use("/api/auth", authAPI);
 app.use("/api/users", usersAPI);
+app.use("/api/resources", resourcesAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -9,3 +9,9 @@
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Complilation
+
+- <code>npm install</code> - pull dependencies
+- <code>mongod</code> - run mongo
+- <code>npm run develop</code> - run app

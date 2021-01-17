@@ -32,6 +32,32 @@ $(document).ready(function () {
         e.preventDefault();
         registerUser();
     });
+
+    // Upload confirm
+    $("#upload-confirm").click(function (e) {
+        e.preventDefault();
+        uploadContent();
+    });
+
+    // Add new form to upload
+    $("#add-upload-form").click(function (e) {
+        var block = `
+            <div>
+                <label for="formFile">
+                    Example file input
+                    <input class="form-control-file" id="formFile" type="file" name="files" />
+                </label>
+                <span class="btn btn-danger remove-form-upload">-</span>
+            </div>
+            `;
+
+        $(".form-uploads").append(block)
+    });
+
+    // Remove form from uploads
+    $('#form-upload').on('click','.remove-form-upload',function() {
+        $(this).parent().remove();
+   });
 });
 
 function registerUser() {
@@ -62,6 +88,30 @@ function registerUser() {
             },
             error: function (errors) {
                 displayErrors("#form-register", errors);
+            },
+        },
+        false,
+    );
+}
+
+function uploadContent() {
+    var form = $('#form-upload')[0];
+    var data = new FormData(form);
+    //data.append("CustomField", "This is some extra data, testing");
+
+    $.ajax(
+        {
+            type: "POST",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources",
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (errors) {
+                console.log(errors);
             },
         },
         false,

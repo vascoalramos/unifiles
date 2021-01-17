@@ -1,6 +1,14 @@
 extends layout
 
 block content
+  form.px-4.py-3#form-upload(method='POST', enctype='multipart/form-data')
+    .form-group
+      label(for='files') Example file input
+      input#files.form-control-file(type='file' name='files')
+      div.form-uploads
+    button.btn.btn-primary#upload-confirm(type='submit') Upload content 
+  button.btn.btn-secondary#add-upload-form +
+  <hr/>
   h1= title
   p Welcome to #{user.first_name} #{user.last_name}
   form.px-4.py-3.needs-validation(action="/auth/logout", method='GET')

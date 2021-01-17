@@ -5,7 +5,7 @@ const axios = require("axios");
 
 router.get("/", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
-        if (err || !user) res.redirect("/auth/login");
+        if (err || !user) res.render("index", { title: "Home", user: user });
         if (user) res.render("index", { title: "Home", user: user });
     })(req, res);
 });
