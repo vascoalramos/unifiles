@@ -44,8 +44,21 @@ router.get("/:id", (req, res) => {
         })
 });
 
-router.put("/comments", (req, res) => {
+router.put("/comments", 
+[
+    body("comment").not().isEmpty().withMessage("Comment field is required."),
+],
+(req, res) => {
     let data = req.body;
+    var generalErrors = [];
+    var errors = validationResult(req);
+
+    errors.errors.forEach((element) => {
+        generalErrors.push({ field: element.param, msg: element.msg });
+    });
+    
+    if (generalErrors.length > 0)
+        return res.status(401).json({generalErrors});
 
     Resources.CommentsInsert(data)
         .then((newData) => {

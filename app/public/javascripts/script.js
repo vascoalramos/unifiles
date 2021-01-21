@@ -28,6 +28,11 @@ var host = "http://localhost:3000";
 })();
 
 $(document).ready(function () {
+    $("#login-confirm").click(function (e) {
+        e.preventDefault();
+        loginUser();
+    });
+
     $("#register-confirm").click(function (e) {
         e.preventDefault();
         registerUser();
@@ -64,6 +69,27 @@ $(document).ready(function () {
         $(this).parent().remove();
     });
 });
+
+function loginUser() {
+    var data = $("#form-login").serializeArray();
+
+    // Create cookie and login
+    $.ajax({
+        type: "POST",
+        enctype: "multipart/form-data",
+        url: host + "/auth/login",
+        data: data,
+        success: function (d) {
+            window.location = host;
+        },
+        error: function (errors) {
+            displayErrors("#form-login", errors);
+        },
+    },
+    false
+    );
+
+}
 
 function registerUser() {
     var data = $("#form-register").serializeArray();
@@ -133,7 +159,8 @@ function commentResource() {
             url: host + "/api/resources/comments",
             data: data,
             success: function (data) {
-                //removeErrors(); // Remove errors
+                removeErrors(); // Remove errors
+                
                 $(".scroll-comments").find('.resource-comment').remove();
                 $(".scroll-comments").find('.resource-comment-date').remove();
                 $(".commentsTotal").text(data.comments.length + " comments")
@@ -157,6 +184,7 @@ function commentResource() {
                 });
             },
             error: function (errors) {
+                console.log(errors);
                 displayErrors("#form-add-comment", errors);
             },
         },
@@ -201,9 +229,17 @@ function deleteAccount(username) {
 function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
-    errors.responseJSON.generalErrors.forEach((element) => {
-        $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
-    });
+
+    if (errors.responseJSON.error != undefined) {
+        errors.responseJSON.error.generalErrors.forEach((element) => {
+            $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
+        });
+    }
+    else if (errors.responseJSON.generalErrors != undefined) {
+        errors.responseJSON.generalErrors.forEach((element) => {
+            $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
+        });
+    }
 }
 
 function removeErrors() {
@@ -214,6 +250,7 @@ function removeErrors() {
     $("div .username .error-format").empty();
     $("div .password .error-format").empty();
     $("div .confirm_password .error-format").empty();
+    $("div .error-format").empty();
 }
 
 /* Resource Feed */
