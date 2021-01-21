@@ -81,11 +81,16 @@ footer {
     border-top: 1px solid;
     width: 100%;
     text-align: right;
-    margin-top: 2px;
+	margin-top: 2px;
 }
 
 .resource-comments a {
 	color: #343a40;
+}
+
+.scroll-comments {
+	height: 200px;
+    overflow-y: scroll;
 }
 
 .resource-post {

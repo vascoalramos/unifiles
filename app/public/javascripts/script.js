@@ -38,6 +38,11 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
+    
+    $("#comment-confirm").click(function (e) {
+        e.preventDefault();
+        commentResource();
+    });
 
     // Add new form to upload
     $("#add-upload-form").click(function (e) {
@@ -57,7 +62,7 @@ $(document).ready(function () {
     // Remove form from uploads
     $('#form-upload').on('click','.remove-form-upload',function() {
         $(this).parent().remove();
-   });
+    });
 });
 
 function registerUser() {
@@ -112,6 +117,47 @@ function uploadContent() {
             },
             error: function (errors) {
                 console.log(errors);
+            },
+        },
+        false,
+    );
+}
+
+function commentResource() {
+    var data = $("#form-add-comment").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/comments",
+            data: data,
+            success: function (data) {
+                //removeErrors(); // Remove errors
+                $(".scroll-comments").find('.resource-comment').remove();
+                $(".scroll-comments").find('.resource-comment-date').remove();
+                $(".commentsTotal").text(data.comments.length + " comments")
+
+                var today = new Date()
+
+                data.comments.forEach(element => {
+                    var commentDate = new Date(element.date)
+                    var diffTime = today.getTime() - commentDate.getTime()
+                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+
+                    $(".scroll-comments").append(`
+                        <div class='resource-comment'>
+                            <div class='resource-comment-info'>
+                                <p class='resource-comment-author'>${element.author.name}</p>
+                                <span class='resource-general-color'>${element.description}</span>
+                            </div>
+                        </div>
+                        <p class='resource-comment-date'>${diffInDays} day(s)</p>
+                    `);
+                });
+            },
+            error: function (errors) {
+                displayErrors("#form-add-comment", errors);
             },
         },
         false,
@@ -184,8 +230,9 @@ window.addEventListener('scroll', () => {
 	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
 	
 	if(clientHeight + scrollTop >= scrollHeight - 5) {
-		// show the loading animation
-		showLoading();
+        if (location.pathname == "/")
+            // show the loading animation
+            showLoading();
 	}
 });
 

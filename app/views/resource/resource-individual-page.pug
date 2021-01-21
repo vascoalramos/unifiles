@@ -17,9 +17,9 @@ block content
     br
     p
     p.resource-comments
-      a(data-toggle='collapse' href='#collapseComments' role='button' aria-expanded='false' aria-controls='collapseComments')
+      a.commentsTotal(data-toggle='collapse' href='#collapseComments' role='button' aria-expanded='false' aria-controls='collapseComments')
         | #{resource.comments.length} comments
-    #collapseComments.collapse
+    #collapseComments.collapse.scroll-comments
       each comments in resource.comments
         .resource-comment
           .resource-comment-info
@@ -31,4 +31,19 @@ block content
         //-     .resource-comment-info 
         //-       each comments_comments in comments.comments
         //-         p.resource-general-color #{comments_comments.title} 
-        //-         p.resource-general-color #{comments_comments.description} 
+        //-         p.resource-general-color #{comments_comments.description}
+    .row
+      .col-sm
+        form.needs-validation#form-add-comment(method='POST', enctype='multipart/form-data', novalidate='')
+          .form-group.comment
+            input(type='hidden' name='user_id' value=user._id)
+            input(type='hidden' name='user_name' value=user.first_name + " " + user.last_name)
+            input(type='hidden' name='resource_id' value=resource._id)
+            .input-group.mb-3
+              input#comment.form-control(type='text' placeholder='Write a comment ...' name='comment' required='')
+              .input-group-append
+                button.btn.btn-bottom.btn-outline-secondary#comment-confirm
+                  i.fa.fa-chevron-right
+
+
+

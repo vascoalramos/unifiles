@@ -5,7 +5,8 @@ const Resources = require("../../controllers/resources");
 const path = require('path');
 const decompress = require('decompress');
 const formidable = require('formidable');
-var fs = require('fs')
+var fs = require('fs');
+const Resource = require("../../models/resource");
 
 function fileFilter(name) {
     // Accept zips only
@@ -41,6 +42,18 @@ router.get("/:id", (req, res) => {
         .catch(error => {
             res.status(401).jsonp(error);
         })
+});
+
+router.put("/comments", (req, res) => {
+    let data = req.body;
+
+    Resources.CommentsInsert(data)
+        .then((newData) => {
+            res.status(201).jsonp(newData);
+        })
+        .catch((error) => {
+            res.status(401).jsonp(error);
+        });
 });
 
 router.post("/", (req, res) => {
