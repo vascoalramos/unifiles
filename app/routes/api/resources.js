@@ -18,6 +18,31 @@ function bagItConventions() {
 
 }
 
+router.get("/", (req, res) => {
+    var lim = req.query.lim;
+    var skip = req.query.skip;
+
+    Resources.GetAll(Number(skip), Number(lim))
+        .then(data => {
+            res.status(200).jsonp(data);
+        })
+        .catch(error => {
+            res.status(401).jsonp(error);
+        })
+});
+
+router.get("/:id", (req, res) => {
+    var id = req.params.id;
+    
+    Resources.GetResourceById(id)
+        .then(data => {
+            res.status(200).jsonp(data);
+        })
+        .catch(error => {
+            res.status(401).jsonp(error);
+        })
+});
+
 router.post("/", (req, res) => {
     const form = formidable({ multiples: true });
     let errorZip = "The folder should be zipped."

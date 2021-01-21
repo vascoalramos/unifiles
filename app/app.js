@@ -45,8 +45,10 @@ app.use(function (req, res, next) {
 
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
+const resourceRouter = require("./routes/interface/resource");
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
+app.use("/resource", resourceRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");

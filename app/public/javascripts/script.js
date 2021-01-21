@@ -169,3 +169,82 @@ function removeErrors() {
     $("div .password .error-format").empty();
     $("div .confirm_password .error-format").empty();
 }
+
+/* Resource Feed */
+
+var limitGetResource = 5;
+var skipGetResource = 0;
+var counterGetResource = 0;
+var totalResource = 0;
+
+if (location.pathname == "/")
+    getResource();
+
+window.addEventListener('scroll', () => {
+	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+	
+	if(clientHeight + scrollTop >= scrollHeight - 5) {
+		// show the loading animation
+		showLoading();
+	}
+});
+
+function showLoading() {
+	document.querySelector('.loading').classList.add('show');
+	
+	// load more data
+	setTimeout(getResource, 1000)
+}
+
+async function getResource() {
+    counterGetResource++;
+    skipGetResource = (counterGetResource == 1 ? 0 : skipGetResource + 5);
+
+    if (skipGetResource <= totalResource) {
+        const resourceResponse = await fetch(host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource);
+        const resourceData = await resourceResponse.json();
+        const data = { resource: resourceData };
+        totalResource = 2; /// !!!!!!! PRECISO DO TOTAL
+        
+        addDataToDOM(data);
+    }
+    else
+        document.querySelector('.loading').classList.remove('show');
+}
+
+function addDataToDOM(data) {
+
+    if (data.resource.length == 0) {
+        $(".feed").append(`
+            <div class='without-resources-box'>
+                <p class='without-resources'> No resources yet! Be the first to post!</p>
+                <a href="#">Here!</a>
+            </div>`);
+    }
+    else { 
+        data.resource.forEach(element => {
+            const resourceElement = document.createElement('div');
+            resourceElement.classList.add('resource-post');
+    
+            resourceElement.innerHTML = `
+                <div class="resource-user-info">
+                    <img src="../images/${element.image}" alt="${element.image}" />
+                    <span>${element.author.name}</span>
+                </div>
+                <div class="resource-rating"><i class="fa fa-star"></i>/${element.rating.votes} Votes</div>
+                <p class="resource-type-year">${element.type} - ${element.year}</p>
+                <a class="resource-link" href="resource/${element._id}">
+                    <h2 class="resource-title">${element.subject}</h2>
+                    <p class="resource-description">${element.description}</p>
+                </a>
+                <p class="resource-tags">
+                    ${Object.keys(element.tags).map(function (key) {
+                        return "<a href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>"      
+                    }).join(" ")}
+                </p>
+            `;
+            document.getElementById("feed").append(resourceElement);
+        });        
+    }
+    document.querySelector('.loading').classList.remove('show');
+}
