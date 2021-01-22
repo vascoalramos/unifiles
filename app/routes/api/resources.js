@@ -5,7 +5,10 @@ const Resources = require("../../controllers/resources");
 const path = require('path');
 const decompress = require('decompress');
 const formidable = require('formidable');
-var fs = require('fs')
+var passport = require("passport");
+
+var fs = require('fs');
+const { waitForDebugger } = require("inspector");
 
 function fileFilter(name) {
     // Accept zips only
@@ -13,111 +16,209 @@ function fileFilter(name) {
         return false;
     return true;
 };
+function imgFilter(name) {
+    // Accept zips only
+    if (!name.match(/\.(png|PNG|jpg|jpeg|JPG|JPEG)$/)) 
+        return false;
+    return true;
+};
 
-function bagItConventions() {
+function bagItConventions(files) {
+    // Analyze data
+    var flag = true;
+    files.forEach(file => {
+        // Only files
+        if (file.type == "file" && !file.path.match(/__MACOSX\//)) {
+            
+            // ADD BAGIT LOGIC
 
+
+        
+            flag = true;
+            
+        }else{
+            flag = false;
+        }
+        // Move data to content-appoved
+    
+    });
+
+    if(flag)
+        return true;
+    else
+        return false;    
 }
 
-router.post("/", (req, res) => {
-    const form = formidable({ multiples: true });
-    let errorZip = "The folder should be zipped."
+function checkImage(files, pathFolder){
+    var imagePath = pathFolder + '/img';
+    var imagePathFinal="";
 
+    if (imgFilter(files.image.name)) { 
+        if (!fs.existsSync(imagePath)){
+            fs.mkdir(imagePath, { recursive: true }, e => {
+                if(e) {
+                    console.error(e);
+                }else {
+                    fs.rename(files.image.path, imagePath + '/' + files.image.name, err => {
+                        if (err) throw err;
+                    })
+                }
+            });
+        }else{
+            fs.rename(files.image.path, imagePath + '/' + files.image.name, err => {
+                if (err) throw err;
+            })
+        }
+        imagePathFinal = imagePath + '/' + files.image.name;
+        return imagePathFinal;
+    }
+}
+function checkZips(files, pathFolder){
+       if (!fs.existsSync(pathFolder)){
+        fs.mkdir(pathFolder, { recursive: true }, e => {
+            if (e) {
+                console.error(e);
+            } else {
+                fs.renameSync(files.path, pathFolder + '/' + files.name, err => {
+                    if (err) throw err;                                        
+                })
+            }
+            
+        });
+    }else{
+        fs.renameSync(files.path, pathFolder + '/' + files.name, err => {
+            if (err) throw err;
+        })
+    }
+    return pathFolder + '/' + files.name
+}
+function saveResource(data, res){
+    Resources.insert(data)
+        .then((resource) => {
+            res.status(201).jsonp(resource);
+        })
+        .catch((error) => {
+            res.status(401).jsonp(error);
+        });
+}
+
+router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
+    const { user } = req;
+
+    const form = formidable({ multiples: true });
+
+    let errorZip = "The folder should be zipped."
+    var username = user.username + '_' + new Date().getTime();
+    var pathFolder ='app/public/uploads/content-approved/' + username;
+    var size = 0;
+    var mime_type="";
+    var imagePathFinal ="";
     form.parse(req, (err, fields, files) => {
-    //form.on('file', function (name, file) {
-        
+        if (err) {
+            next(err);
+            return;
+        }
         if (files.files.size == 0) { // empty
             res.status(401).jsonp("A zip folder is required.");
         }
         else if (files.files.size > 0) { // single upload
-            if (fileFilter(files.files.name)) {
-                var path = 'app/public/uploads/unzipped-files/' + files.files.name;
+            
+            if (fileFilter(files.files.name)) { 
+                if(files.image.size > 0){
+                    imagePathFinal = checkImage(files, pathFolder);
+                    mime_type = files.image.type;
+                }
+                //Decompress zip to unzipped-files   Se quiserem adicionar o conteudo do zip numa pasta metem decompress(files.files.path, OUTPUT)
+                decompress(files.files.path).then(filesDecompressed => {
+                    if(bagItConventions(filesDecompressed)){
+                        var zippedCreated = checkZips(files.files, pathFolder)
+                        size = files.files.size;  
 
-                // Decompress zip to unzipped-files
-                decompress(files.files.path, path).then(files => {
-
-                    // Get username: username_timestamp !!!!!!!
-                    var username = 'Bob_' + new Date().getTime();
-
-                    // Create new folder
-                    fs.mkdir('app/public/uploads/content-approved/' + username, { recursive: true }, (err) => {
-                        if (err) throw err;
-                    });
-                    
-                    // Analyze data
-                    files.forEach(file => {
-                        // Only files
-                        if (file.type == "file" && !file.path.match(/__MACOSX\//)) {
-                            var fileName = file.path.split('/')[1];
-                            
-                            // Apply BagIt HERE
-                            bagItConventions()
-
-                            // Move data to content-appoved
-                            fs.rename(path + '/' + file.path, 'app/public/uploads/content-approved/' + username + '/' + (fileName == undefined ? file.path : fileName), err => {
-                                if (err) throw err;
-                            })
-                        }
-                    });
+                        var data = {
+                            path: zippedCreated,
+                            mime_type: mime_type,
+                            image: imagePathFinal != ""?  imagePathFinal: undefined,
+                            type: fields.type,
+                            description: fields.description,
+                            author: {
+                                _id:user._id,
+                                name:  user.first_name+ ' ' +user.last_name
+                            },
+                            year: fields.year,
+                            size: size,
+                            date_added: new Date().getTime(),
+                            subject: fields.subject,
+                            tags: fields.tags
+                        };
+                        console.log(data)
+                        saveResource(data, res);
+                    }
+                    else{
+                        res.status(401).jsonp("The folder does not contain the right files");
+                    }
                 });
-
-                res.status(201).jsonp("Success!");
 
             }
             else
                 res.status(401).jsonp(errorZip);
-        } 
-        else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
-            // Get username: username_timestamp !!!!!!!
-            var username = 'Bob_' + new Date().getTime();
-
-            files.files.forEach(element => {
-
-                if (fileFilter(element.name)) {
-                    var path = 'app/public/uploads/unzipped-files/' + element.name;
-    
-                    // Decompress zip to unzipped-files
-                    decompress(element.path, path).then(files => {
-    
-                        // Create new folder
-                        fs.mkdir('app/public/uploads/content-approved/' + username, { recursive: true }, (err) => {
-                            if (err) throw err;
-                        });
-                        
-                        // Analyze data
-                        files.forEach(file => {
-                            // Only files
-                            if (file.type == "file" && !file.path.match(/__MACOSX\//)) {
-                                var fileName = file.path.split('/')[1];
-                                
-                                // Apply BagIt HERE
-                                bagItConventions()
-    
-                                // Move data to content-appoved
-                                fs.rename(path + '/' + file.path, 'app/public/uploads/content-approved/' + username + '/' + (fileName == undefined ? file.path : fileName), err => {
-                                    if (err) throw err;
-                                })
-                            }
-                        });
-                    });
-        
-                }
-                else
-                    res.status(401).jsonp(errorZip);
-            });
-            res.status(201).jsonp("Success!");
         }
-    });
+        // else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
+        //     var zipExists = true;
+        //     files.files.forEach(element => {
+        //         if (fileFilter(element.name)) {
+        //             size += element.size; 
+        //             decompress(element.path).then(filesDecompressed => {
+        //                 if(bagItConventions(filesDecompressed)){
+        //                     var zippedCreated = checkZips(element, pathFolder)
+        //                     paths.push(zippedCreated)
+                            
+        //                 }
+        //                 else{
+        //                     zipExists = false;
+        //                     res.status(401).jsonp("The folder does not contain the right files");
+        //                 }
+        //             });    
 
-    // Resources.insert(data)
-    //     .then((resource) => {
-    //         res.status(201).jsonp(data);
-    //     })
-    //     .catch((error) => {
-    //         console.log(error);
-    //         res.status(401).jsonp(error);
-    //     });
-    }
-);
+        //         }
+        //         else
+        //             res.status(401).jsonp(errorZip);
+                
+               
+        //     });
+        //     if(zipExists){
+        //         if(files.image.size > 0){
+        //             imagePathFinal = checkImage(files, pathFolder);
+        //             mime_type = files.image.type;
+        //         }
+        //     }
+        //     var data = {
+        //         files: paths,
+        //         mime_type: mime_type,
+        //         image: imagePathFinal != ""?  imagePathFinal: undefined,
+        //         type: fields.type,
+        //         description: fields.description,
+        //         author: {
+        //             _id:user._id,
+        //             name:  user.first_name+ ' ' +user.last_name
+        //         },
+        //         year: fields.year,
+        //         size: size,
+        //         date_added: new Date().getTime(),
+        //         subject: fields.subject,
+        //         tags: fields.tags
+        //     };
+        //      //console.log(data)
+            
+        //     // res.status(201).jsonp("Success!");
+
+            
+            
+        // }
+
+        
+    });    
+    
+});
 
 
 module.exports = router;
