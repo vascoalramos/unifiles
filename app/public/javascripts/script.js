@@ -38,16 +38,55 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
+    $("#tags").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        if(code == 13 && ($("input[value='"+$.trim($(this).val())+"']").length==0) && $('.removeTag').length <5 && $.trim($(this).val())!= '') { //Enter keycode
+            $("#tags").before('<label class="d-inline-flex mr-1 mb-0" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;background: #f0f2f5;padding: 0px 8px;border-radius: 10px;font-size:12px;"> <input type="hidden" name="tags[]" value="'+$(this).val()+'"><span style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">'+$(this).val()+'</span> <span class="ml-1 removeTag" style="cursor:pointer;font-weight:bold">x</span></label>')
+            $(this).val('')
+        
+        }
+    });
 
+    $(document).on('change','.fileInput',function() {
+        var files = this.files;
+        var extension = files[0].name.match(/\.(.*)/);
+        
+        var nomeDoc = "";
+        if(files[0].name.length >= 10){
+            nomeDoc = files[0].name.substring(0,10)+'...'+extension[0] 
+        }else{
+            nomeDoc = files[0].name;
+        }
+        $(this).parent().find('.iSpan').html('<span >' + nomeDoc + '</span>');
+        $(".remove-form-upload").css({"right": "-10px"});
+    });
+    $(document).on('change','.imgInput',function() {
+        var files = this.files;
+        var extension = files[0].name.match(/\.(.*)/);
+        
+        var nomeDoc = "";
+        if(files[0].name.length >= 10){
+            nomeDoc = files[0].name.substring(0,10)+'...'+extension[0]
+        }else{
+            nomeDoc = files[0].name;
+        }
+        $(this).parent().find('.imgSpan').html('<span >' + nomeDoc + '</span>');
+    });
+    $(document).on('click','.removeTag',function() {
+        console.log($(this).parent())
+        $(this).parent().remove();
+   });
     // Add new form to upload
     $("#add-upload-form").click(function (e) {
         var block = `
-            <div>
-                <label for="formFile">
-                    Example file input
-                    <input class="form-control-file" id="formFile" type="file" name="files" />
+            <div class="mr-3" style="display: flex;align-items: center;position: relative;">
+                <label class="mb-0" >
+                    <span class="iSpan" style="font-size:12px">
+                        <i class="fas fa-folder-plus" style="height: 100%;font-size: 39px;line-height: 40px;"></i>
+                    </span>    
+                    <input class="d-none fileInput form-control-file" type="file" name="files" accept="application/x-zip-compressed" />
                 </label>
-                <span class="btn btn-danger remove-form-upload">-</span>
+                <span class="btn btn-danger remove-form-upload fas fa-times"  style="padding: 0;position: absolute;top: 0px;background: transparent;border: 0;right:-9px;color: red;font-size: 12px;"></span>
             </div>
             `;
 
@@ -96,13 +135,14 @@ function registerUser() {
 
 function uploadContent() {
     var form = $('#form-upload')[0];
+    console.log(form)
+
     var data = new FormData(form);
     //data.append("CustomField", "This is some extra data, testing");
 
     $.ajax(
         {
             type: "POST",
-            enctype: "multipart/form-data",
             url: host + "/api/resources",
             data: data,
             processData: false,

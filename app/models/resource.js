@@ -1,7 +1,26 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const SALT_WORK_FACTOR = 10;
+const commentsSchema = new mongoose.Schema({
+    author: {
+        _id: {
+            type: String,
+            required: true,
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+        required: true,
+    },
+})
 
 const resourceSchema = new mongoose.Schema({
     _id: {
@@ -19,12 +38,12 @@ const resourceSchema = new mongoose.Schema({
     },
     mime_type: {
         type: String,
-        required: true,
+        default: "image/jpeg",
+
     },
     image: {
         type: String,
-        required: true,
-        default: "/images/ResourceDefault.png",
+        default: "/images/ResourceDefault.jpeg",
     },
     type: {
         type: String,
@@ -58,51 +77,23 @@ const resourceSchema = new mongoose.Schema({
         required: true,
     },
     last_updated: {
-        type: Date,
-        default: Date.now,
-        required: true,
+        type: Date
     },
     subject: {
         type: String,
         required: true,
     },
     tags: {
-        type: String,
+        type: Array,
         required: false,
     },
-    comments: {
-        title: {
-            type: String,
-            required: true,
-        },
-        author: {
-            _id: {
-                type: String,
-                required: true,
-            },
-            name: {
-                type: String,
-                required: true,
-            },
-        },
-        description: {
-            type: String,
-            required: true,
-        },
-        date: {
-            type: Date,
-            default: Date.now,
-            required: true,
-        },
-    },
+    comments: [commentsSchema],
     rating: {
         score: {
-            type: Number,
-            required: true,
+            type: Number
         },
         votes: {
-            type: Number,
-            required: true,
+            type: Number
         },
     },
 });
