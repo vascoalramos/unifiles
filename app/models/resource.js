@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const commentsSchema = new mongoose.Schema({
     author: {
@@ -52,7 +51,7 @@ const resourceSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Artigos', 'Teses', 'Livros', 'Relatorios', 'Aplicacoes'],
+        enum: ["Artigos", "Teses", "Livros", "Relatorios", "Aplicacoes"],
         required: true,
     },
     description: {

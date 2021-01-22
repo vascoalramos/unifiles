@@ -1,20 +1,22 @@
 const Resource = require("../models/resource");
 
 module.exports.GetAll = (skip, lim) => {
-    return Resource.find().skip(skip).limit(lim).sort({date_added : -1});
+    return Resource.find().skip(skip).limit(lim).sort({ date_added: -1 });
+};
+
+module.exports.GetTotal = () => {
+    return Resource.find().count();
 };
 
 module.exports.GetResourceById = (id) => {
-    return Resource
-        .findOne({_id: id})
-        .exec()
+    return Resource.findOne({ _id: id }).exec();
 };
 
 module.exports.CommentsInsert = (data) => {
     var newData = {
         author: {
             _id: data.user_id,
-            name: data.user_name
+            name: data.user_name,
         },
         description: data.comment,
         date: new Date().getTime()

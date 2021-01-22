@@ -66,11 +66,11 @@ $(document).ready(function () {
             </div>
             `;
 
-        $(".form-uploads").append(block)
+        $(".form-uploads").append(block);
     });
 
     // Remove form from uploads
-    $('#form-upload').on('click','.remove-form-upload',function() {
+    $("#form-upload").on("click", ".remove-form-upload", function () {
         $(this).parent().remove();
     });
 });
@@ -79,21 +79,21 @@ function loginUser() {
     var data = $("#form-login").serializeArray();
 
     // Create cookie and login
-    $.ajax({
-        type: "POST",
-        enctype: "multipart/form-data",
-        url: host + "/auth/login",
-        data: data,
-        success: function (d) {
-            window.location = host;
+    $.ajax(
+        {
+            type: "POST",
+            enctype: "multipart/form-data",
+            url: host + "/auth/login",
+            data: data,
+            success: function (d) {
+                window.location = host;
+            },
+            error: function (errors) {
+                displayErrors("#form-login", errors);
+            },
         },
-        error: function (errors) {
-            displayErrors("#form-login", errors);
-        },
-    },
-    false
+        false,
     );
-
 }
 
 function registerUser() {
@@ -131,7 +131,7 @@ function registerUser() {
 }
 
 function uploadContent() {
-    var form = $('#form-upload')[0];
+    var form = $("#form-upload")[0];
     var data = new FormData(form);
     //data.append("CustomField", "This is some extra data, testing");
 
@@ -171,12 +171,12 @@ function commentResource() {
                 $(".scroll-comments").find('form').remove();
                 $(".commentsTotal").text(data.data.comments.length + " comments")
 
-                var today = new Date()
+                var today = new Date();
 
-                data.data.comments.forEach(element => {
-                    var commentDate = new Date(element.date)
-                    var diffTime = today.getTime() - commentDate.getTime()
-                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                data.comments.forEach((element) => {
+                    var commentDate = new Date(element.date);
+                    var diffTime = today.getTime() - commentDate.getTime();
+                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                     $(".scroll-comments").append(`
                         <div class='resource-comment'>
@@ -319,8 +319,7 @@ function displayErrors(formId, errors) {
         errors.responseJSON.error.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
-    }
-    else if (errors.responseJSON.generalErrors != undefined) {
+    } else if (errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
@@ -345,56 +344,53 @@ var skipGetResource = 0;
 var counterGetResource = 0;
 var totalResource = 0;
 
-if (location.pathname == "/")
-    getResource();
+if (location.pathname == "/") getResource();
 
-window.addEventListener('scroll', () => {
-	const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-	
-	if(clientHeight + scrollTop >= scrollHeight - 5) {
+window.addEventListener("scroll", () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+    if (clientHeight + scrollTop >= scrollHeight - 5) {
         if (location.pathname == "/")
             // show the loading animation
             showLoading();
-	}
+    }
 });
 
 function showLoading() {
-	document.querySelector('.loading').classList.add('show');
-	
-	// load more data
-	setTimeout(getResource, 1000)
+    document.querySelector(".loading").classList.add("show");
+
+    // load more data
+    setTimeout(getResource, 1000);
 }
 
 async function getResource() {
     counterGetResource++;
-    skipGetResource = (counterGetResource == 1 ? 0 : skipGetResource + 5);
+    skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
 
     if (skipGetResource <= totalResource) {
-        const resourceResponse = await fetch(host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource);
+        const resourceResponse = await fetch(
+            host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
+        );
         const resourceData = await resourceResponse.json();
-        const data = { resource: resourceData };
-        totalResource = 2; /// !!!!!!! PRECISO DO TOTAL
-        
+        const data = { resource: resourceData.resources };
+        totalResource = resourceData.total;
+
         addDataToDOM(data);
-    }
-    else
-        document.querySelector('.loading').classList.remove('show');
+    } else document.querySelector(".loading").classList.remove("show");
 }
 
 function addDataToDOM(data) {
-
     if (data.resource.length == 0) {
         $(".feed").append(`
             <div class='without-resources-box'>
                 <p class='without-resources'> No resources yet! Be the first to post!</p>
                 <a href="#">Here!</a>
             </div>`);
-    }
-    else { 
-        data.resource.forEach(element => {
-            const resourceElement = document.createElement('div');
-            resourceElement.classList.add('resource-post');
-    
+    } else {
+        data.resource.forEach((element) => {
+            const resourceElement = document.createElement("div");
+            resourceElement.classList.add("resource-post");
+
             resourceElement.innerHTML = `
                 <div class="resource-user-info">
                     <img src="../images/${element.image}" alt="${element.image}" />
@@ -407,13 +403,15 @@ function addDataToDOM(data) {
                     <p class="resource-description">${element.description}</p>
                 </a>
                 <p class="resource-tags">
-                    ${Object.keys(element.tags).map(function (key) {
-                        return "<a href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>"      
-                    }).join(" ")}
+                    ${Object.keys(element.tags)
+                        .map(function (key) {
+                            return "<a href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
+                        })
+                        .join(" ")}
                 </p>
             `;
             document.getElementById("feed").append(resourceElement);
-        });        
+        });
     }
-    document.querySelector('.loading').classList.remove('show');
+    document.querySelector(".loading").classList.remove("show");
 }
