@@ -3,6 +3,7 @@ const decompress = require("decompress");
 const formidable = require("formidable");
 const passport = require("passport");
 const fs = require("fs");
+const fsPath = require("fs-path");
 
 const Resources = require("../../controllers/resources");
 
@@ -69,23 +70,16 @@ function checkImage(files, pathFolder) {
     }
 }
 
-function checkZips(files, pathFolder) {
-    if (!fs.existsSync(pathFolder)) {
-        fs.mkdir(pathFolder, { recursive: true }, (e) => {
-            if (e) {
-                console.error(e);
-            } else {
-                fs.renameSync(files.path, pathFolder + "/" + files.name, (err) => {
-                    if (err) throw err;
-                });
-            }
-        });
-    } else {
-        fs.renameSync(files.path, pathFolder + "/" + files.name, (err) => {
-            if (err) throw err;
-        });
-    }
-    return pathFolder + "/" + files.name;
+function storeResource(files, pathFolder) {
+    files.forEach((file) => {
+        if (file.type !== "directory") {
+            fsPath.writeFile(pathFolder + "/" + file.path, file.data, function (err) {
+                if (err) {
+                    console.error(err);
+                }
+            });
+        }
+    });
 }
 
 function saveResource(data, res) {
@@ -105,7 +99,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 
     let errorZip = "The folder should be zipped.";
     var username = user.username + "_" + new Date().getTime();
-    var pathFolder = "app/public/uploads/content-approved/" + username;
+    var pathFolder = "app/uploads/" + username;
     var size = 0;
     var mime_type = "";
     var imagePathFinal = "";
@@ -125,14 +119,14 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                     imagePathFinal = checkImage(uploads, pathFolder);
                     mime_type = uploads.image.type;
                 }
-                //Decompress zip to unzipped-files   Se quiserem adicionar o conteudo do zip numa pasta metem decompress(files.files.path, OUTPUT)
+
                 decompress(uploads.files.path).then((filesDecompressed) => {
                     if (bagItConventions(filesDecompressed)) {
-                        var zippedCreated = checkZips(uploads.files, pathFolder);
+                        storeResource(filesDecompressed, pathFolder);
                         size = uploads.files.size;
 
                         var data = {
-                            path: zippedCreated,
+                            path: pathFolder,
                             mime_type: mime_type,
                             image: imagePathFinal != "" ? imagePathFinal : undefined,
                             type: fields.type,
