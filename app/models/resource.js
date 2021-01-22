@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
 const commentsSchema = new mongoose.Schema({
     title: {
@@ -25,7 +24,7 @@ const commentsSchema = new mongoose.Schema({
         default: Date.now,
         required: true,
     },
-})
+});
 
 const resourceSchema = new mongoose.Schema({
     _id: {
@@ -52,7 +51,7 @@ const resourceSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Artigos', 'Teses', 'Livros', 'Relatorios', 'Aplicacoes'],
+        enum: ["Artigos", "Teses", "Livros", "Relatorios", "Aplicacoes"],
         required: true,
     },
     description: {
