@@ -12,22 +12,32 @@ module.exports.GetResourceById = (id) => {
 
 module.exports.CommentsInsert = (data) => {
     var newData = {
-        title: "APAGAR",
         author: {
             _id: data.user_id,
             name: data.user_name
         },
         description: data.comment,
-        date: new Date()
+        date: new Date().getTime()
     }
 
-    return Resource.findOneAndUpdate(
-        { _id: data.resource_id }, 
-        { $push: { comments: newData } } ,
-        function (error, success) {
-            if (error) {
-                console.log(error);
-            } 
-        }   
-    );
+    return new Promise(function (resolve, reject) {
+        Resource.findOne({  
+            _id: data.resource_id }, 
+            function (error, item) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    if (data.comment_index)
+                        item.comments[data.comment_index].comments.push(newData);
+                    else
+                        item.comments.push(newData);
+
+                    item.save().then((result) => {
+                        resolve(result)
+                    }).catch((err) => {
+                        reject(err)
+                    });
+                }
+            });
+    });
 };

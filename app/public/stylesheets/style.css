@@ -114,6 +114,10 @@ footer {
 	margin-left: 35px;
 }
 
+.reply-comment {
+	background-color: red;
+}
+
 .resource-title {
 	margin: 0;
 }

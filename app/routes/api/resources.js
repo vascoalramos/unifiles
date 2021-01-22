@@ -7,6 +7,7 @@ const decompress = require('decompress');
 const formidable = require('formidable');
 var fs = require('fs');
 const Resource = require("../../models/resource");
+var passport = require("passport");
 
 function fileFilter(name) {
     // Accept zips only
@@ -48,21 +49,29 @@ router.put("/comments",
 [
     body("comment").not().isEmpty().withMessage("Comment field is required."),
 ],
+passport.authenticate("jwt", { session: false }),
 (req, res) => {
     let data = req.body;
     var generalErrors = [];
     var errors = validationResult(req);
+    const { user } = req;
 
     errors.errors.forEach((element) => {
         generalErrors.push({ field: element.param, msg: element.msg });
     });
-    
+
     if (generalErrors.length > 0)
         return res.status(401).json({generalErrors});
 
     Resources.CommentsInsert(data)
         .then((newData) => {
-            res.status(201).jsonp(newData);
+            var dataReturn = {
+                data: newData,
+                name: user.first_name + " " + user.last_name,
+                user_id: user._id
+            }
+
+            res.status(201).jsonp(dataReturn);
         })
         .catch((error) => {
             res.status(401).jsonp(error);

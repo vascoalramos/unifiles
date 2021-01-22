@@ -43,11 +43,16 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
-    
-    $("#comment-confirm").click(function (e) {
+
+    $(document).on("click", "#comment-confirm", function(e) {
         e.preventDefault();
-        commentResource();
-    });
+        replyCommentResource("form-add-comment");
+    })
+
+    $(document).on("click", "#reply-comment-confirm", function(e) {
+        e.preventDefault();
+        replyCommentResource($(this).parent().parent().parent().parent().attr('id'));
+    })
 
     // Add new form to upload
     $("#add-upload-form").click(function (e) {
@@ -163,11 +168,12 @@ function commentResource() {
                 
                 $(".scroll-comments").find('.resource-comment').remove();
                 $(".scroll-comments").find('.resource-comment-date').remove();
-                $(".commentsTotal").text(data.comments.length + " comments")
+                $(".scroll-comments").find('form').remove();
+                $(".commentsTotal").text(data.data.comments.length + " comments")
 
                 var today = new Date()
 
-                data.comments.forEach(element => {
+                data.data.comments.forEach(element => {
                     var commentDate = new Date(element.date)
                     var diffTime = today.getTime() - commentDate.getTime()
                     var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
@@ -186,6 +192,85 @@ function commentResource() {
             error: function (errors) {
                 console.log(errors);
                 displayErrors("#form-add-comment", errors);
+            },
+        },
+        false,
+    );
+}
+
+function replyCommentResource(id) {
+    var data = $("#" + id).serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/comments",
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                $(".scroll-comments").find('.resource-comment').remove();
+                $(".scroll-comments").find('.resource-comment-date').remove();
+                $(".scroll-comments").find('form').remove();
+                $(".commentsTotal").text(data.data.comments.length + " comments")
+
+                var today = new Date()
+                var index = 0;
+                var _id = window.location.href.substring(window.location.href.lastIndexOf('/') + 1);
+
+                data.data.comments.forEach(element => {
+                    var commentDate = new Date(element.date)
+                    var diffTime = today.getTime() - commentDate.getTime()
+                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                    var idForm = "form-reply-comment-" + index;
+
+                    $(".scroll-comments").append(`
+                        <div class='resource-comment'>
+                            <div class='resource-comment-info'>
+                                <p class='resource-comment-author'>${element.author.name}</p>
+                                <span class='resource-general-color'>${element.description}</span>
+                            </div>
+                        </div>
+                        <span class='resource-comment-date'>${diffInDays} day(s)</span>
+                        <form class="needs-validation" action="#" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
+                            <div class="form-group reply_comment">
+                                <input type="hidden" name="comment_index" value="${index}"/>
+                                <input type="hidden" name="user_id" value="${data.user_id}"/>
+                                <input type="hidden" name="user_name" value="${data.name}"/>
+                                <input type="hidden" name="resource_id" value="${_id}"/>
+                                <div class="input-group mb-3">
+                                    <input class="reply-comment form-control" id="comment" type="text" placeholder="Reply ..." name="comment" required="" />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-bottom btn-outline-secondary" id="reply-comment-confirm" type="button">
+                                            <i class="fa fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                    `);
+                    element.comments.forEach(el => {
+                        el.date = diffInDays  + " day(s)"
+
+                        $(".scroll-comments").append(`
+                                <div class="resource-comment resource-comment-reply">
+                                    <div class="resource-comment-info">
+                                        <p class="resource-comment-author">${el.author.name}</p>
+                                        <span class="resource-general-color">${el.description}</span>
+                                    </div>
+                                </div>
+                                <span class="resource-comment-date">${el.date}</span>
+                            </div>
+                        </form>
+                        `);
+                    });
+                    
+                    index++;
+                });
+
+                document.getElementById('collapseComments').scrollTop = document.getElementById('collapseComments').scrollHeight;
+            },
+            error: function (errors) {
+                displayErrors(id, errors);
             },
         },
         false,

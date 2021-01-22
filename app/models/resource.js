@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const commentsSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
     author: {
         _id: {
             type: String,
@@ -24,6 +20,10 @@ const commentsSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         required: true,
+    },
+    comments: {
+        type: Array,
+        required: false,
     },
 })
 
