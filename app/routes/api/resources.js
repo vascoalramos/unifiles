@@ -21,24 +21,25 @@ function imgFilter(name) {
 }
 
 function bagItConventions(files) {
-    let filesPath = files.map((file) => file.path);
+    let filesPath = files.filter((file) => file.type !== "directory").map((file) => file.path);
+
+    // check for manifest file
     if (!filesPath.includes("manifest.json")) {
         return false;
     }
 
-    let manifest = JSON.parse(files[filesPath.indexOf("manifest.json")].data.toString());
-    filesPath.splice(filesPath.indexOf("manifest.json"), 1);
+    // check if all data is under "data/" folder
+    if (filesPath.filter((path) => !/^data\//.test(path)).length !== 1) {
+        return false;
+    }
 
+    // check if all files in manifest are the same in the package
+    let manifest = JSON.parse(files[files.map((file) => file.path).indexOf("manifest.json")].data.toString());
+    filesPath.splice(filesPath.indexOf("manifest.json"), 1);
 
     if (!(JSON.stringify(manifest.data.sort()) === JSON.stringify(filesPath.sort()))) {
         return false;
     }
-
-    files.forEach((file) => {
-        if (!file.path.match(/__MACOSX\//) && file.type != "file") {
-            return false;
-        }
-    });
 
     return true;
 }
