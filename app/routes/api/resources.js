@@ -112,7 +112,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         }
         if (files.files.size == 0) {
             // empty
-            res.status(401).jsonp("A zip folder is required.");
+            res.status(400).jsonp("A zip folder is required.");
         } else if (files.files.size > 0) {
             // single upload
 
