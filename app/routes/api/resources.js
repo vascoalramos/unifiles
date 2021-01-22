@@ -143,7 +143,6 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                             subject: fields.subject,
                             tags: fields.tags,
                         };
-                        console.log(data);
                         saveResource(data, res);
                     } else {
                         res.status(401).jsonp("The folder does not contain the right files");
