@@ -1,13 +1,12 @@
 const express = require("express");
-const router = express.Router();
-const { body, validationResult } = require("express-validator");
-const Resources = require("../../controllers/resources");
-const path = require("path");
 const decompress = require("decompress");
 const formidable = require("formidable");
-var passport = require("passport");
+const passport = require("passport");
+const fs = require("fs");
 
-var fs = require("fs");
+const Resources = require("../../controllers/resources");
+
+const router = express.Router();
 
 function fileFilter(name) {
     // Accept zips only
@@ -22,22 +21,26 @@ function imgFilter(name) {
 }
 
 function bagItConventions(files) {
-    // Analyze data
-    var flag = true;
-    files.forEach((file) => {
-        // Only files
-        if (file.type == "file" && !file.path.match(/__MACOSX\//)) {
-            // ADD BAGIT LOGIC
+    let filesPath = files.map((file) => file.path);
+    if (!filesPath.includes("manifest.json")) {
+        return false;
+    }
 
-            flag = true;
-        } else {
-            flag = false;
+    let manifest = JSON.parse(files[filesPath.indexOf("manifest.json")].data.toString());
+    filesPath.splice(filesPath.indexOf("manifest.json"), 1);
+
+
+    if (!(JSON.stringify(manifest.data.sort()) === JSON.stringify(filesPath.sort()))) {
+        return false;
+    }
+
+    files.forEach((file) => {
+        if (!file.path.match(/__MACOSX\//) && file.type != "file") {
+            return false;
         }
-        // Move data to content-appoved
     });
 
-    if (flag) return true;
-    else return false;
+    return true;
 }
 
 function checkImage(files, pathFolder) {
@@ -105,27 +108,27 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     var size = 0;
     var mime_type = "";
     var imagePathFinal = "";
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (err, fields, uploads) => {
         if (err) {
             next(err);
             return;
         }
-        if (files.files.size == 0) {
+        if (uploads.files.size == 0) {
             // empty
             res.status(400).jsonp("A zip folder is required.");
-        } else if (files.files.size > 0) {
+        } else if (uploads.files.size > 0) {
             // single upload
 
-            if (fileFilter(files.files.name)) {
-                if (files.image.size > 0) {
-                    imagePathFinal = checkImage(files, pathFolder);
-                    mime_type = files.image.type;
+            if (fileFilter(uploads.files.name)) {
+                if (uploads.image.size > 0) {
+                    imagePathFinal = checkImage(uploads, pathFolder);
+                    mime_type = uploads.image.type;
                 }
                 //Decompress zip to unzipped-files   Se quiserem adicionar o conteudo do zip numa pasta metem decompress(files.files.path, OUTPUT)
-                decompress(files.files.path).then((filesDecompressed) => {
+                decompress(uploads.files.path).then((filesDecompressed) => {
                     if (bagItConventions(filesDecompressed)) {
-                        var zippedCreated = checkZips(files.files, pathFolder);
-                        size = files.files.size;
+                        var zippedCreated = checkZips(uploads.files, pathFolder);
+                        size = uploads.files.size;
 
                         var data = {
                             path: zippedCreated,
@@ -145,7 +148,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         };
                         saveResource(data, res);
                     } else {
-                        res.status(401).jsonp("The folder does not contain the right files");
+                        res.status(400).jsonp("The package is not valid");
                     }
                 });
             } else res.status(401).jsonp(errorZip);
