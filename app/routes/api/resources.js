@@ -63,7 +63,6 @@ function resolveMimeType(buffer) {
 async function getMimeType(files) {
     let uniqueFiles = files.filter((file) => file.type !== "directory" && file.path !== "manifest.json");
     if (uniqueFiles.length === 1 && uniqueFiles[0].type !== "directory") {
-        console.log(await resolveMimeType(uniqueFiles[0].data));
         try {
             return await resolveMimeType(uniqueFiles[0].data);
         } catch {
@@ -219,7 +218,6 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         storeResource(filesDecompressed, pathFolder);
                         size = uploads.files.size;
                         mime_type = await getMimeType(filesDecompressed);
-                        console.log(mime_type);
 
                         var data = {
                             path: pathFolder,
