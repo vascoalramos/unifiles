@@ -15,13 +15,13 @@ module.exports.findByCredentials = async function (username, password) {
     const user = await User.findOne({ username }).select("password");
 
     if (!user) {
-        throw { error: "Invalid login credentials" };
+        throw { error: "Invalid login credentials." };
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
-        throw { error: "Invalid login credentials" };
+        throw { error: "Invalid login credentials." };
     }
 
     return User.findOne({ username });

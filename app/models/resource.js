@@ -20,6 +20,10 @@ const commentsSchema = new mongoose.Schema({
         default: Date.now,
         required: true,
     },
+    comments: {
+        type: Array,
+        required: false,
+    },
 });
 
 const resourceSchema = new mongoose.Schema({
@@ -38,7 +42,7 @@ const resourceSchema = new mongoose.Schema({
     },
     mime_type: {
         type: String,
-        default: "image/jpeg",
+        default: "application/octet-stream",
     },
     image: {
         type: String,
@@ -90,9 +94,11 @@ const resourceSchema = new mongoose.Schema({
     rating: {
         score: {
             type: Number,
+            default: 0,
         },
         votes: {
             type: Number,
+            default: 0,
         },
     },
 });

@@ -1,4 +1,5 @@
 const express = require("express");
+const { body, validationResult } = require("express-validator");
 const decompress = require("decompress");
 const formidable = require("formidable");
 const passport = require("passport");
@@ -104,6 +105,72 @@ function saveResource(data, res) {
             res.status(401).jsonp(error);
         });
 }
+
+router.get("/", (req, res) => {
+    var lim = req.query.lim;
+    var skip = req.query.skip;
+    let response = {};
+
+    Resources.GetAll(Number(skip), Number(lim))
+        .then((data) => {
+            response["resources"] = data;
+            Resources.GetTotal()
+                .then((data) => {
+                    response["total"] = data;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    res.status(401).jsonp(error);
+                });
+        })
+        .catch((error) => {
+            res.status(401).jsonp(error);
+        });
+});
+
+router.get("/:id", (req, res) => {
+    var id = req.params.id;
+
+    Resources.GetResourceById(id)
+        .then((data) => {
+            res.status(200).jsonp(data);
+        })
+        .catch((error) => {
+            res.status(401).jsonp(error);
+        });
+});
+
+router.put(
+    "/comments",
+    [body("comment").not().isEmpty().withMessage("Comment field is required.")],
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        let data = req.body;
+        var generalErrors = [];
+        var errors = validationResult(req);
+        const { user } = req;
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) return res.status(401).json({ generalErrors });
+
+        Resources.CommentsInsert(data)
+            .then((newData) => {
+                var dataReturn = {
+                    data: newData,
+                    name: user.first_name + " " + user.last_name,
+                    user_id: user._id,
+                };
+
+                res.status(201).jsonp(dataReturn);
+            })
+            .catch((error) => {
+                res.status(401).jsonp(error);
+            });
+    },
+);
 
 router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     const { user } = req;

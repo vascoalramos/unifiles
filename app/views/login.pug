@@ -8,20 +8,16 @@ block content
         | Are you new? 
         a(href='register') Register
       .col-sm
-        form.px-4.py-3.needs-validation(action="/auth/login", method='POST', novalidate='')
-          .form-group
+        form.px-4.py-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
+          .form-group.username
             label(for='username') Username
             input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
-          .form-group
+          .form-group.password
             label(for='password') Password
             input#password.form-control(type='password' placeholder='*******' name='password' required='')
-          if (typeof(errors_login) !== 'undefined' && errors_login.length > 0)
-            p.error-format #{errors_login}
           p.forgot-password 
             a(href='#') Forgot password?
-          if error_login
-            .span.text-danger.mb-3= error_login
-          button.btn.btn-primary.btn-bottom(type='submit') Sign in
+          button.btn.btn-primary.btn-bottom#login-confirm Sign in
           .dropdown-divider
       .col-sm.text-center.pl-5.pr-5(style="height: 100%;")
         .container.pl-3.pr-3
