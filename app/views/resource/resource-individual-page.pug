@@ -3,7 +3,7 @@ extends ../layout
 block content
   .resource-post
     .resource-user-info
-      img(src="../../images/" + resource.image alt=resource.image)
+      img(src="../" + resource.image alt=resource.image)
       span #{resource.author.name}
     .resource-rating
       i.fa.fa-star 
