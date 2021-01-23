@@ -5,12 +5,12 @@ const formidable = require("formidable");
 const passport = require("passport");
 const fs = require("fs");
 const fsPath = require("fs-path");
-const mime = require("mime-types");
-const fileType = require("file-type");
+const { MAGIC_MIME_TYPE, Magic } = require("mmmagic");
 
 const Resources = require("../../controllers/resources");
 
 const router = express.Router();
+const magic = new Magic(MAGIC_MIME_TYPE);
 
 function fileFilter(name) {
     // Accept zips only
@@ -48,12 +48,27 @@ function bagItConventions(files) {
     return true;
 }
 
+function resolveMimeType(buffer) {
+    return new Promise((resolve, reject) => {
+        magic.detect(buffer, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
 async function getMimeType(files) {
     let uniqueFiles = files.filter((file) => file.type !== "directory" && file.path !== "manifest.json");
     if (uniqueFiles.length === 1 && uniqueFiles[0].type !== "directory") {
-        let mimeObj = await fileType.fromBuffer(uniqueFiles[0].data);
-        console.log(mimeObj);
-        return mimeObj.mime;
+        console.log(await resolveMimeType(uniqueFiles[0].data));
+        try {
+            return await resolveMimeType(uniqueFiles[0].data);
+        } catch {
+            return "application/octet-stream";
+        }
     } else {
         return "application/octet-stream";
     }
@@ -204,6 +219,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         storeResource(filesDecompressed, pathFolder);
                         size = uploads.files.size;
                         mime_type = await getMimeType(filesDecompressed);
+                        console.log(mime_type);
 
                         var data = {
                             path: pathFolder,
