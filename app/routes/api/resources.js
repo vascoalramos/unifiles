@@ -195,7 +195,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         let size = 0;
         let mime_type = "";
         let imagePathFinal = "";
-        let pathFolder = "app/uploads/" + fields.type + "/" + new Date().getTime();
+        let pathFolder = `app/uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
         if (err) {
             next(err);

@@ -50,7 +50,7 @@ const resourceSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["Artigo", "Tese", "Livro", "Relatorio", "Aplicação"],
+        enum: ["artigo", "tese", "livro", "relatorio", "aplicacao"],
         required: true,
     },
     description: {
