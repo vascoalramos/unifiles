@@ -7,15 +7,20 @@ const User = require("../../controllers/users");
 router.post(
     "/login",
     [
-        body("username").isLength({ min: 1 }), // Need upgrade
-        body("password").isLength({ min: 1 }), // Need upgrade
+        body("username").not().isEmpty().withMessage("Username field is required."), // Ex: AC
+        body("password").not().isEmpty().withMessage("Password field is required."),
     ],
     (req, res) => {
         let data = req.body;
+        var generalErrors = [];
+        var errors = validationResult(req);
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ error: errors.array() });
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) {
+            return res.status(401).json({ generalErrors });
         }
 
         User.findByCredentials(data.username, data.password)
@@ -26,16 +31,16 @@ router.post(
                             res.status(201).jsonp(data);
                         })
                         .catch((error) => {
-                            console.log(error.toString());
                             res.status(401).jsonp(error);
                         });
                 } else {
-                    res.status(401).jsonp({ error: "User does not exist" });
+                    generalErrors.push({ field: "password", msg: "User does not exist" });
+                    res.status(401).jsonp({ generalErrors });
                 }
             })
             .catch((error) => {
-                console.log(error.toString());
-                res.status(401).jsonp(error);
+                generalErrors.push({ field: "password", msg: error.error });
+                res.status(401).jsonp({ generalErrors });
             });
     },
 );

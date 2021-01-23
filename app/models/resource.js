@@ -1,7 +1,30 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 
-const SALT_WORK_FACTOR = 10;
+const commentsSchema = new mongoose.Schema({
+    author: {
+        _id: {
+            type: String,
+            required: true,
+        },
+        name: {
+            type: String,
+            required: true,
+        },
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+        required: true,
+    },
+    comments: {
+        type: Array,
+        required: false,
+    },
+})
 
 const resourceSchema = new mongoose.Schema({
     _id: {
@@ -67,33 +90,12 @@ const resourceSchema = new mongoose.Schema({
         required: true,
     },
     tags: {
-        type: String,
+        type: Array,
         required: false,
     },
-    comments: {
-        title: {
-            type: String,
-            required: true,
-        },
-        author: {
-            _id: {
-                type: String,
-                required: true,
-            },
-            name: {
-                type: String,
-                required: true,
-            },
-        },
-        description: {
-            type: String,
-            required: true,
-        },
-        date: {
-            type: Date,
-            default: Date.now,
-            required: true,
-        },
+    comments: [commentsSchema],
+        type: String,
+        required: false,
     },
     rating: {
         score: {
