@@ -4,6 +4,8 @@ const formidable = require("formidable");
 const passport = require("passport");
 const fs = require("fs");
 const fsPath = require("fs-path");
+const mime = require("mime-types");
+const fileType = require("file-type");
 
 const Resources = require("../../controllers/resources");
 
@@ -38,11 +40,22 @@ function bagItConventions(files) {
     let manifest = JSON.parse(files[files.map((file) => file.path).indexOf("manifest.json")].data.toString());
     filesPath.splice(filesPath.indexOf("manifest.json"), 1);
 
-    if (!(JSON.stringify(manifest.data.sort()) === JSON.stringify(filesPath.sort()))) {
+    if (!(JSON.stringify(manifest.files.sort()) === JSON.stringify(filesPath.sort()))) {
         return false;
     }
 
     return true;
+}
+
+async function getMimeType(files) {
+    let uniqueFiles = files.filter((file) => file.type !== "directory" && file.path !== "manifest.json");
+    if (uniqueFiles.length === 1 && uniqueFiles[0].type !== "directory") {
+        let mimeObj = await fileType.fromBuffer(uniqueFiles[0].data);
+        console.log(mimeObj);
+        return mimeObj.mime;
+    } else {
+        return "application/octet-stream";
+    }
 }
 
 function checkImage(files, pathFolder) {
@@ -117,13 +130,13 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
             if (fileFilter(uploads.files.name)) {
                 if (uploads.image.size > 0) {
                     imagePathFinal = checkImage(uploads, pathFolder);
-                    mime_type = uploads.image.type;
                 }
 
-                decompress(uploads.files.path).then((filesDecompressed) => {
+                decompress(uploads.files.path).then(async (filesDecompressed) => {
                     if (bagItConventions(filesDecompressed)) {
                         storeResource(filesDecompressed, pathFolder);
                         size = uploads.files.size;
+                        mime_type = await getMimeType(filesDecompressed);
 
                         var data = {
                             path: pathFolder,
@@ -146,7 +159,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         res.status(400).jsonp("The package is not valid");
                     }
                 });
-            } else res.status(401).jsonp(errorZip);
+            } else res.status(400).jsonp(errorZip);
         }
         // else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
         //     var zipExists = true;
