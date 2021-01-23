@@ -47,11 +47,11 @@ const resourceSchema = new mongoose.Schema({
     image: {
         type: String,
         required: true,
-        default: "/images/ResourceDefault.jpeg",
+        default: "/images/ResourceDefault.png",
     },
     type: {
         type: String,
-        enum: ["Artigos", "Teses", "Livros", "Relatorios", "Aplicacoes"],
+        enum: ['Artigos', 'Teses', 'Livros', 'Relatorios', 'Aplicacoes'],
         required: true,
     },
     description: {
@@ -94,6 +94,9 @@ const resourceSchema = new mongoose.Schema({
         required: false,
     },
     comments: [commentsSchema],
+        type: String,
+        required: false,
+    },
     rating: {
         score: {
             type: Number,
