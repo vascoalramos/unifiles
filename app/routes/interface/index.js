@@ -10,7 +10,6 @@ router.get("/", (req, res) => {
             axios
                 .get("/resources")
                 .then((data) => {
-                    console.log(data.data.resources[0]);
                     res.render("index", { user: user, resources: data.data });
                 })
                 .catch((e) => res.render("error", { error: e }));

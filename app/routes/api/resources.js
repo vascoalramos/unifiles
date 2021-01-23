@@ -190,14 +190,13 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     const { user } = req;
 
     const form = formidable({ multiples: true });
-
-    let errorZip = "The folder should be zipped.";
-    var username = user.username + "_" + new Date().getTime();
-    var pathFolder = "app/uploads/" + username;
-    var size = 0;
-    var mime_type = "";
-    var imagePathFinal = "";
     form.parse(req, (err, fields, uploads) => {
+        let errorZip = "The folder should be zipped.";
+        let size = 0;
+        let mime_type = "";
+        let imagePathFinal = "";
+        let pathFolder = "app/uploads/" + fields.type + "/" + new Date().getTime();
+
         if (err) {
             next(err);
             return;
