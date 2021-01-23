@@ -31,12 +31,11 @@ const resourceSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         auto: true,
     },
-    status: {
-        type: Boolean,
-        required: true,
-        default: false,
-    },
     path: {
+        type: String,
+        required: true,
+    },
+    name: {
         type: String,
         required: true,
     },

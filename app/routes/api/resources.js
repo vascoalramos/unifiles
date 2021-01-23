@@ -220,6 +220,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 
                         var data = {
                             path: pathFolder,
+                            name: uploads.files.name,
                             mime_type: mime_type,
                             image: imagePathFinal != "" ? imagePathFinal : undefined,
                             type: fields.type,
