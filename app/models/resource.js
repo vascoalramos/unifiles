@@ -94,9 +94,6 @@ const resourceSchema = new mongoose.Schema({
         required: false,
     },
     comments: [commentsSchema],
-        type: String,
-        required: false,
-    },
     rating: {
         score: {
             type: Number,
