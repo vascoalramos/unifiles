@@ -114,6 +114,6 @@ dist
 .vscode-test
 
 # Uploads
-app/public/uploads/
+app/uploads/
 
 # End of https://www.toptal.com/developers/gitignore/api/node

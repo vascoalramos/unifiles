@@ -24,34 +24,32 @@ const commentsSchema = new mongoose.Schema({
         type: Array,
         required: false,
     },
-})
+});
 
 const resourceSchema = new mongoose.Schema({
     _id: {
         type: mongoose.Types.ObjectId,
         auto: true,
     },
-    status: {
-        type: Boolean,
-        required: true,
-        default: false,
-    },
     path: {
+        type: String,
+        required: true,
+    },
+    name: {
         type: String,
         required: true,
     },
     mime_type: {
         type: String,
-        required: true,
+        default: "application/octet-stream",
     },
     image: {
         type: String,
-        required: true,
-        default: "/images/ResourceDefault.png",
+        default: "/images/ResourceDefault.jpeg",
     },
     type: {
         type: String,
-        enum: ['Artigos', 'Teses', 'Livros', 'Relatorios', 'Aplicacoes'],
+        enum: ["artigo", "tese", "livro", "relatorio", "aplicacao"],
         required: true,
     },
     description: {
@@ -82,8 +80,6 @@ const resourceSchema = new mongoose.Schema({
     },
     last_updated: {
         type: Date,
-        default: Date.now,
-        required: true,
     },
     subject: {
         type: String,
@@ -97,11 +93,11 @@ const resourceSchema = new mongoose.Schema({
     rating: {
         score: {
             type: Number,
-            required: true,
+            default: 0,
         },
         votes: {
             type: Number,
-            required: true,
+            default: 0,
         },
     },
 });
