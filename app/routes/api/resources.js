@@ -116,7 +116,7 @@ function saveResource(data, res) {
             res.status(201).jsonp(resource);
         })
         .catch((error) => {
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 }
 
@@ -134,11 +134,11 @@ router.get("/", (req, res) => {
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
-                    res.status(401).jsonp(error);
+                    res.status(400).jsonp(error);
                 });
         })
         .catch((error) => {
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 });
 
@@ -150,7 +150,7 @@ router.get("/:id", (req, res) => {
             res.status(200).jsonp(data);
         })
         .catch((error) => {
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 });
 
@@ -168,7 +168,7 @@ router.put(
             generalErrors.push({ field: element.param, msg: element.msg });
         });
 
-        if (generalErrors.length > 0) return res.status(401).json({ generalErrors });
+        if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
 
         Resources.CommentsInsert(data)
             .then((newData) => {

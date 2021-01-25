@@ -272,7 +272,7 @@ function replyCommentResource(id) {
                                         <span class="resource-general-color">${el.description}</span>
                                     </div>
                                 </div>
-                                <span class="resource-comment-date">${el.date}</span>
+                                <span class="resource-comment-date reply-date">${el.date}</span>
                             </div>
                         </form>
                         `);
@@ -286,7 +286,7 @@ function replyCommentResource(id) {
                 ).scrollHeight;
             },
             error: function (errors) {
-                displayErrors(id, errors);
+                alert(errors.responseJSON.generalErrors[0].msg);
             },
         },
         false,
