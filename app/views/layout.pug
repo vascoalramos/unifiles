@@ -2,9 +2,11 @@ doctype html
 html
   head
     title UniFiles
+    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')  
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css' integrity='sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh' crossorigin='anonymous')
+    link(rel='stylesheet', href='/stylesheets/fontawesome.min.css')
     link(rel='preconnect' href='https://fonts.gstatic.com')
+    script(src="/javascripts/jquery-3.5.1.min.js")
     link(href='https://fonts.googleapis.com/css2?family=Lato:wght@100;300&display=swap' rel='stylesheet')
     link(rel="icon" type="image/png" href="https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png")
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
@@ -38,7 +40,7 @@ html
             li.nav-item
               a.nav-link(href="/auth/login") Login
 
-    main(role="main", style="padding: 5em 10em 0 10em;")
+    main(role="main", style="padding: 0em 10em 0 10em;")
       block content
 
     footer.container(style="background-color: white")
