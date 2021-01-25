@@ -181,7 +181,7 @@ router.put(
                 res.status(201).jsonp(dataReturn);
             })
             .catch((error) => {
-                res.status(401).jsonp(error);
+                res.status(400).jsonp(error);
             });
     },
 );

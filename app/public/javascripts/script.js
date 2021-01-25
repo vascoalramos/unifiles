@@ -212,50 +212,6 @@ function uploadContent() {
     );
 }
 
-function commentResource() {
-    var data = $("#form-add-comment").serializeArray();
-
-    $.ajax(
-        {
-            type: "PUT",
-            enctype: "multipart/form-data",
-            url: host + "/api/resources/comments",
-            data: data,
-            success: function (data) {
-                removeErrors(); // Remove errors
-
-                $(".scroll-comments").find(".resource-comment").remove();
-                $(".scroll-comments").find(".resource-comment-date").remove();
-                $(".scroll-comments").find("form").remove();
-                $(".commentsTotal").text(data.data.comments.length + " comments");
-
-                var today = new Date();
-
-                data.comments.forEach((element) => {
-                    var commentDate = new Date(element.date);
-                    var diffTime = today.getTime() - commentDate.getTime();
-                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                    $(".scroll-comments").append(`
-                        <div class='resource-comment'>
-                            <div class='resource-comment-info'>
-                                <p class='resource-comment-author'>${element.author.name}</p>
-                                <span class='resource-general-color'>${element.description}</span>
-                            </div>
-                        </div>
-                        <p class='resource-comment-date'>${diffInDays} day(s)</p>
-                    `);
-                });
-            },
-            error: function (errors) {
-                console.log(errors);
-                displayErrors("#form-add-comment", errors);
-            },
-        },
-        false,
-    );
-}
-
 function replyCommentResource(id) {
     var data = $("#" + id).serializeArray();
 
@@ -291,7 +247,7 @@ function replyCommentResource(id) {
                             </div>
                         </div>
                         <span class='resource-comment-date'>${diffInDays} day(s)</span>
-                        <form class="needs-validation" action="#" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
+                        <form class="needs-validation" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
                             <div class="form-group reply_comment">
                                 <input type="hidden" name="comment_index" value="${index}"/>
                                 <input type="hidden" name="user_id" value="${data.user_id}"/>
@@ -300,7 +256,7 @@ function replyCommentResource(id) {
                                 <div class="input-group mb-3">
                                     <input class="reply-comment form-control" id="comment" type="text" placeholder="Reply ..." name="comment" required="" />
                                     <div class="input-group-append">
-                                        <button class="btn btn-bottom btn-outline-secondary" id="reply-comment-confirm" type="button">
+                                        <button class="btn btn-bottom btn-outline-secondary" id="reply-comment-confirm">
                                             <i class="fa fa-chevron-right"></i>
                                         </button>
                                     </div>
