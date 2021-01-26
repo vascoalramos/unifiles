@@ -47,7 +47,7 @@ const resourceSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ['Artigos', 'Teses', 'Livros', 'Relatorios', 'Aplicacoes'],
+        enum: ['Articles', 'Theses', 'Books', 'Reports', 'Aplications'],
         required: true,
     },
     description: {

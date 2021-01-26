@@ -220,5 +220,26 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     
 });
 
+router.get('/tags', (req, res) => {
+    
+    Resources.getTags().then((resources) => {
+        res.status(200).jsonp(resources);
+    })
+    .catch((error) => {
+        res.status(401).jsonp(error);
+    });
+});
+
+
+router.get('/filters',  passport.authenticate("jwt", { session: false }), (req, res) => {
+    
+    Resources.getFilters(req.query).then((resources) => {
+        res.status(200).jsonp(resources);
+    })
+    .catch((error) => {
+        res.status(401).jsonp(error);
+    });
+});
+
 
 module.exports = router;

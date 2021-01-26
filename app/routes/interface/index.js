@@ -3,10 +3,29 @@ var router = express.Router();
 var passport = require("passport");
 const axios = require("axios");
 
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }
+
 router.get("/", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
+        tagsArray = new Array();
         if (err || !user) res.redirect("/auth/login");
-        if (user) res.render("index", { title: "Home", user: user });
+        if (user){
+            axios
+            .get("http://localhost:3000/api/resources/tags")
+            .then((tags) => {
+                tags.data.forEach(element => {
+                    element.tags.forEach(tag => {
+                        tagsArray.push(tag)
+                    });
+                });
+                var unique = tagsArray.filter(onlyUnique);
+                res.render("index", { title: "Home", user: user , tags: unique});
+            })
+            .catch(() => res.render("index", { user: user }));
+        }
     })(req, res);
 });
 
