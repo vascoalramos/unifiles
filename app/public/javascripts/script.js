@@ -444,7 +444,7 @@ function addDataToDOM(data) {
                 </div>
                 <div class="resource-rating"><i class="fa fa-star"></i>/${element.rating.votes} Votes</div>
                 <p class="resource-type-year">${element.type} - ${element.year}</p>
-                <a class="resource-link" href="resource/${element._id}">
+                <a class="resource-link" href="resources/${element._id}">
                     <h2 class="resource-title">${element.subject}</h2>
                     <p class="resource-description">${element.description}</p>
                 </a>

@@ -39,7 +39,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public"))); 
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(function (req, res, next) {
     res.set("Cache-Control", "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0");
@@ -51,7 +51,7 @@ const authRouter = require("./routes/interface/auth");
 const resourceRouter = require("./routes/interface/resource");
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/resource", resourceRouter);
+app.use("/resources", resourceRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");

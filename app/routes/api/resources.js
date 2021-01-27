@@ -84,7 +84,7 @@ function checkImage(files, pathFolder) {
                 console.error(err);
             }
         });
-        imagePathFinal = imagePath + "/" + files.image.name;
+        imagePathFinal = imagePath + files.image.name;
         return imagePathFinal;
     }
 }

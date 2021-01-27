@@ -4,7 +4,7 @@ block content
   .container
     .resource-post
       .resource-user-info
-        img(src="../" + resource.image alt=resource.image)
+        img(src="/api/resources/" + resource._id + "/image" alt=resource.image)
         span #{resource.author.name}
       .resource-rating
         i.fa.fa-star 
@@ -15,6 +15,9 @@ block content
       each tags in resource.tags
         p.resource-tags
           a(href="#" + tags) ##{tags} 
+
+      a.btn.btn-bottom.btn-outline-primary(href=`/api/resources/${resource._id}/download` role="button") Download
+
       br
       p
       p.resource-comments
@@ -57,6 +60,8 @@ block content
                 .input-group-append
                   button.btn.btn-bottom.btn-outline-secondary#comment-confirm
                     i.fa.fa-chevron-right
+
+  script(src='/javascripts/resource.js')
   
   
   
