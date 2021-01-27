@@ -92,7 +92,7 @@ function checkImage(files, pathFolder) {
 function storeResource(files, image, pathFolder) {
     files.forEach((file) => {
         if (file.type !== "directory") {
-            fsPath.writeFile("app/" + pathFolder + "/" + file.path, file.data, function (err) {
+            fsPath.writeFile("app/" + pathFolder + "/content/" + file.path, file.data, function (err) {
                 if (err) {
                     console.error(err);
                 }
@@ -197,7 +197,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         mime_type = await getMimeType(filesDecompressed);
 
                         var data = {
-                            path: pathFolder,
+                            path: pathFolder + "/content",
                             name: uploads.files.name,
                             mime_type: mime_type,
                             image: imagePathFinal != "" ? imagePathFinal : undefined,
@@ -307,8 +307,23 @@ router.get("/:id/image", (req, res) => {
         });
 });
 
-router.get("/:id/", (req, res) => {
-    res.status(200).jsonp({ hello: "ola" });
+router.get("/:id/zip", (req, res) => {
+    let id = req.params.id;
+    Resources.GetResourceContent(id)
+        .then((data) => {
+            let dirPath = path.join(__dirname, "../../", data.path);
+            res.zip({
+                files: [
+                    { path: path.join(dirPath, "manifest.json"), name: "manifest.json" },
+                    { path: path.join(dirPath, "data/"), name: "data" },
+                ],
+                filename: data.name,
+            });
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
 });
 
 module.exports = router;

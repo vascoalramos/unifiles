@@ -7,6 +7,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const zip = require("express-easy-zip");
 
 const mongoose = require("mongoose");
 //mongoose.set('debug', true); // debug queries
@@ -27,6 +28,8 @@ axios.defaults.baseURL = process.env.API_URL;
 
 const app = express();
 app.use(cors());
+
+app.use(zip());
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

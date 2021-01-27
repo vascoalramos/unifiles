@@ -36,6 +36,10 @@ module.exports.GetResourceImage = async (id) => {
     return imagePath;
 };
 
+module.exports.GetResourceContent = (id) => {
+    return Resource.findOne({ _id: id }, { _id: 0, path: 1, name: 1 }).exec();
+};
+
 module.exports.CommentsInsert = (data) => {
     var newData = {
         author: {
