@@ -299,7 +299,6 @@ router.get("/:id/image", (req, res) => {
     let id = req.params.id;
     Resources.GetResourceImage(id)
         .then((imagePath) => {
-            console.log(path.join(__dirname, "../../", imagePath));
             res.sendFile(path.join(__dirname, "../../", imagePath));
         })
         .catch((error) => {

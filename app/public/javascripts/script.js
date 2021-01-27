@@ -210,9 +210,7 @@ function uploadContent() {
             data: data,
             processData: false,
             contentType: false,
-            success: function (data) {
-                console.log(data);
-            },
+            success: function (data) {},
             error: function (errors) {
                 console.log(errors);
             },
@@ -230,7 +228,6 @@ function applyFilter() {
             url: host + "/api/resources/filters",
             data: data,
             success: function (data) {
-                console.log({ resource: data });
                 $("#feed").empty();
                 addDataToDOM({ resource: data });
             },
