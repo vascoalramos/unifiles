@@ -326,4 +326,23 @@ router.get("/:id/download", (req, res) => {
         });
 });
 
+router.get("/:id/content", (req, res) => {
+    let id = req.params.id;
+    Resources.GetResourceContent(id)
+        .then((data) => {
+            if (data.mime_type !== "application/octet-stream") {
+                let dirPath = path.join(__dirname, "../../", data.path + "/data");
+                let files = fs.readdirSync(dirPath);
+                console.log(files);
+                res.sendFile(path.join(dirPath, files[0]));
+            } else {
+                res.status(400).jsonp({ error: "Content not possible to send!" });
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
+});
+
 module.exports = router;

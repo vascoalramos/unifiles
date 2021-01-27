@@ -37,7 +37,7 @@ module.exports.GetResourceImage = async (id) => {
 };
 
 module.exports.GetResourceContent = (id) => {
-    return Resource.findOne({ _id: id }, { _id: 0, path: 1, name: 1 }).exec();
+    return Resource.findOne({ _id: id }, { _id: 0, path: 1, name: 1, mime_type: 1 }).exec();
 };
 
 module.exports.CommentsInsert = (data) => {

@@ -16,7 +16,15 @@ block content
         p.resource-tags
           a(href="#" + tags) ##{tags} 
 
-      a.btn.btn-bottom.btn-outline-primary(href=`/api/resources/${resource._id}/download` role="button") Download
+      a.btn.btn-bottom.btn-outline-primary.mb-5(href=`/api/resources/${resource._id}/download` role="button") Download
+
+      if resource.mime_type == "application/pdf"
+        iframe(src=`/api/resources/${resource._id}/content` width="100%" height="500px")
+      else if resource.mime_type.match(/^image\//)
+        img(src=`/api/resources/${resource._id}/content` width="100%")
+      else if resource.mime_type.match(/^video\//)
+        video(width="100%" controls)
+          source(src=`/api/resources/${resource._id}/content` type=`${resource.mime_type}`)
 
       br
       p
