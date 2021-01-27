@@ -284,11 +284,8 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 
 router.get('/filters',  passport.authenticate("jwt", { session: false }), (req, res) => {
 
-    var id = req.params.id;
-
-    console.log("id")
-    console.log(id)
     Resources.getFilters(req.query).then((resources) => {
+        console.log(resources)
         res.status(200).jsonp(resources);
     })
     .catch((error) => {
@@ -298,9 +295,6 @@ router.get('/filters',  passport.authenticate("jwt", { session: false }), (req, 
 
 router.get("/:id", (req, res) => {
     var id = req.params.id;
-
-    console.log("id2")
-    console.log(id)
 
     Resources.GetResourceById(id)
         .then((data) => {
