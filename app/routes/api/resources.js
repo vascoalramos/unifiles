@@ -307,7 +307,7 @@ router.get("/:id/image", (req, res) => {
         });
 });
 
-router.get("/:id/zip", (req, res) => {
+router.get("/:id/download", (req, res) => {
     let id = req.params.id;
     Resources.GetResourceContent(id)
         .then((data) => {
