@@ -254,7 +254,11 @@ function replyCommentResource(id) {
                 $(".scroll-comments").find(".resource-comment").remove();
                 $(".scroll-comments").find(".resource-comment-date").remove();
                 $(".scroll-comments").find("form").remove();
-                $(".commentsTotal").text(data.data.comments.length + " comments");
+                $(".commentsTotal").text(
+                    data.data.comments.reduce((acc, e) => {
+                        return acc + e.comments.length;
+                    }, data.data.comments.length) + " comments",
+                );
 
                 var today = new Date();
                 var index = 0;
