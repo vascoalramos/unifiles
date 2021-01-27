@@ -25,6 +25,8 @@ block content
       else if resource.mime_type.match(/^video\//)
         video(width="100%" controls)
           source(src=`/api/resources/${resource._id}/content` type=`${resource.mime_type}`)
+      else if resource.mime_type.match(/^text\//)
+        iframe(src=`/api/resources/${resource._id}/content` width="100%" height="500px" style="background: white")
 
       br
       p
