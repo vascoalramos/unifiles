@@ -49,7 +49,7 @@ const resourceSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["artigo", "tese", "livro", "relatorio", "aplicacao"],
+        enum: ['article', 'thesis', 'book', 'report', 'aplication'],
         required: true,
     },
     description: {

@@ -37,6 +37,10 @@ $(document).ready(function () {
         e.preventDefault();
         registerUser();
     });
+    $("#filter-confirm").click(function (e) {
+        e.preventDefault();
+        applyFilter();
+    });
 
     // Upload confirm
     $("#upload-confirm").click(function (e) {
@@ -95,9 +99,17 @@ $(document).ready(function () {
             .find(".imgSpan")
             .html("<span >" + nomeDoc + "</span>");
     });
+   
+    $(document).on('click','.slider',function() {
+        if($(".slider").css('background-color') == 'rgb(52, 58, 64)')
+            $(".cImage").css({"font-weight": "normal"});
+        else{
+            $(".cImage").css({"font-weight": "bold"});
 
-    $(document).on("click", ".removeTag", function () {
-        console.log($(this).parent());
+        }
+   });
+    $(document).on('click','.removeTag',function() {
+        console.log($(this).parent())
         $(this).parent().remove();
     });
 
@@ -206,6 +218,31 @@ function uploadContent() {
             },
             error: function (errors) {
                 console.log(errors);
+            },
+        },
+        false,
+    );
+}
+function applyFilter(){
+    var data = $("#form-filter").serializeArray();
+    var htmlFeed = '';
+    $.ajax(
+        {
+            type: "GET",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/filters",
+            data: data,
+            success: function (data) {
+                console.log(data)
+
+                data.forEach(element => {
+                    htmlFeed += `<span> `+element.subject +`</span>`
+                    
+                })
+                $('#feed2').html(htmlFeed)
+            },
+            error: function (errors) {
+                console.log(errors)
             },
         },
         false,

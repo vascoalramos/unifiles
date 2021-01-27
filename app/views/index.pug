@@ -1,8 +1,37 @@
 extends layout
 
 block content
+  .div(style="position:fixed;left:0;width:100%;background:white;top:56px;box-shadow:0px 8px 8px -11px black;z-index:1")
+    .container
+      form#form-filter(method='GET', enctype='multipart/form-data')
+        .row.my-3(style="align-items: center;")
+          .col-2(style="height:100%;")
+            input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
+          .col-2(style="height:100%;")
+            input.form-control(type="text" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
+          .col-2(style="height:100%;")
+          
+            if tags.length > 0
+              select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Tags" multiple data-live-search='true' data-style="form-control tagsInput" name="tags[]")
+                each item in tags
+                  option(data-tokens='#{item}') #{item}
+
+          .col-2(style="height:100%;")
+            select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Type" multiple data-style="form-control tagsInput" name="types[]")
+              option(value="article") Articles
+              option(value="thesis") Theses
+              option(value="book") Books
+              option(value="report") Reports
+              option(value="aplication") Aplications
+          .col-2(style="display: flex;align-items: center;")
+            b.cImage(style="margin-right:6%")
+              | Com Imagem  
+            label.switch.m-0
+              input(type='checkbox' checked='' name="img")
+              span.slider.round
+          .col-2(style="height:100%;")
+            button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
   .container
-    <hr/>
     .row.m-0.mb-4
       .col-12(style="background:#ffffff;border-radius:5px;padding:5px;background-color: white;border-radius:10px;box-shadow:0px 8px 8px -11px black;")
         .row.m-0
@@ -36,11 +65,11 @@ block content
                           .input-group
                             select#inputGroupSelect01.custom-select(style="font-size:12px" name="type")
                               option(selected='') Type
-                              option(value='artigo') Article
-                              option(value='tese') These
-                              option(value='livro') Book
-                              option(value='relatorio') Report
-                              option(value='aplicacao') Aplication  
+                              option(value="article") Article
+                              option(value="thesis") These
+                              option(value="book") Book
+                              option(value="report") Report
+                              option(value="aplication") Aplication
                         .col-12
                           textarea.form-control(type='text' name="description" rows="6" cols="50" style="font-size: 14px;height: auto;outline:none!important;box-shadow: none;border:none;resize:none;border-radius:20px;padding:8px 12px;" placeholder=`Do you want insert content, ${user.first_name}?`)
                         .col-12(style="font-size:12px")
@@ -72,6 +101,11 @@ block content
           .col-12
 
 
+    .col-12.py-3#feed2(style="background-color: white;border-radius:5px;box-shadow:0px 8px 8px -11px black;")
+      h1= title 
+      p Welcome to #{user.first_name} #{user.last_name}
+      form.px-4.py-3.needs-validation(action="/auth/logout", method='GET')
+        button.btn.btn-primary(type='submit') Logout
     .col-12.py-3(style="background-color: white;border-radius:5px;box-shadow:0px 8px 8px -11px black;")
       #feed.feed
       .loading

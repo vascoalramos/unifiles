@@ -142,18 +142,6 @@ router.get("/", (req, res) => {
         });
 });
 
-router.get("/:id", (req, res) => {
-    var id = req.params.id;
-
-    Resources.GetResourceById(id)
-        .then((data) => {
-            res.status(200).jsonp(data);
-        })
-        .catch((error) => {
-            res.status(400).jsonp(error);
-        });
-});
-
 router.put(
     "/comments",
     [body("comment").not().isEmpty().withMessage("Comment field is required.")],
@@ -293,5 +281,29 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         // }
     });
 });
+
+router.get('/filters',  passport.authenticate("jwt", { session: false }), (req, res) => {
+
+    Resources.getFilters(req.query).then((resources) => {
+        console.log(resources)
+        res.status(200).jsonp(resources);
+    })
+    .catch((error) => {
+        res.status(400).jsonp(error);
+    });
+});
+
+router.get("/:id", (req, res) => {
+    var id = req.params.id;
+
+    Resources.GetResourceById(id)
+        .then((data) => {
+            res.status(200).jsonp(data);
+        })
+        .catch((error) => {
+            res.status(400).jsonp(error);
+        });
+});
+
 
 module.exports = router;
