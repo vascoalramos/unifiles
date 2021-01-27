@@ -1,0 +1,61 @@
+extends ../layout
+
+block content
+  .resource-post
+    .resource-user-info
+      img(src="../" + resource.image alt=resource.image)
+      span #{resource.author.name}
+    .resource-rating
+      i.fa.fa-star 
+      | / #{resource.rating.votes} Votes
+    p.resource-type-year #{resource.type} - #{resource.year}
+    h2.resource-title.resource-general-color #{resource.subject} 
+    p.resource-description.resource-general-color #{resource.description} 
+    each tags in resource.tags
+      p.resource-tags
+        a(href="#" + tags) ##{tags} 
+    br
+    p
+    p.resource-comments
+      a.commentsTotal(data-toggle='collapse' href='#collapseComments' role='button' aria-expanded='false' aria-controls='collapseComments')
+        | #{resource.comments.length} comments
+    #collapseComments.collapse.scroll-comments
+      each comments, index in resource.comments
+        .resource-comment
+          .resource-comment-info
+            p.resource-comment-author #{comments.author.name} 
+            span.resource-general-color #{comments.description}
+        span.resource-comment-date #{comments.date}
+        form.needs-validation(id='form-reply-comment-' + index method='POST', enctype='multipart/form-data', novalidate='')
+          .form-group.reply_comment
+            input(type='hidden' name='comment_index' value=index)
+            input(type='hidden' name='user_id' value=user._id)
+            input(type='hidden' name='user_name' value=user.first_name + " " + user.last_name)
+            input(type='hidden' name='resource_id' value=resource._id)
+            .input-group.mb-3
+              input#comment.reply-comment.form-control(type='text' placeholder='Reply ...' name='comment' required='')
+              .input-group-append
+                button.btn.btn-bottom.btn-outline-secondary#reply-comment-confirm
+                  i.fa.fa-chevron-right
+        if (comments.comments.length)
+          each comments_comments in comments.comments
+            .resource-comment.resource-comment-reply
+              .resource-comment-info 
+                p.resource-comment-author #{comments_comments.author.name} 
+                span.resource-general-color #{comments_comments.description}
+            span.resource-comment-date.reply-date #{comments_comments.date}
+    .row
+      .col-sm
+        form.needs-validation#form-add-comment(method='POST', enctype='multipart/form-data', novalidate='')
+          .form-group.comment
+            input(type='hidden' name='user_id' value=user._id)
+            input(type='hidden' name='user_name' value=user.first_name + " " + user.last_name)
+            input(type='hidden' name='resource_id' value=resource._id)
+            .input-group.mb-3
+              input#comment.form-control(type='text' placeholder='Write a comment ...' name='comment' required='')
+              .input-group-append
+                button.btn.btn-bottom.btn-outline-secondary#comment-confirm
+                  i.fa.fa-chevron-right
+
+
+

@@ -72,7 +72,7 @@ router.post(
             })
             .catch((error) => {
                 console.log(error);
-                res.status(401).jsonp(error);
+                res.status(400).jsonp(error);
             });
     },
 );
@@ -129,7 +129,7 @@ router.put(
             })
             .catch((error) => {
                 console.log(error);
-                res.status(401).jsonp(error);
+                res.status(400).jsonp(error);
             });
     },
 );
@@ -141,7 +141,7 @@ router.delete("/:username", (req, res) => {
         })
         .catch((error) => {
             console.log(error);
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 });
 
@@ -153,7 +153,7 @@ router.get("/", (req, res) => {
         })
         .catch((error) => {
             console.log(error.toString());
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 });
 
@@ -165,7 +165,7 @@ router.get("/:username", (req, res) => {
         })
         .catch((error) => {
             console.log(error.toString());
-            res.status(401).jsonp(error);
+            res.status(400).jsonp(error);
         });
 });
 

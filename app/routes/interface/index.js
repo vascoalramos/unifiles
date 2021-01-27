@@ -14,17 +14,17 @@ router.get("/", (req, res) => {
         if (err || !user) res.redirect("/auth/login");
         if (user){
             axios
-            .get("http://localhost:3000/api/resources/tags")
-            .then((tags) => {
-                tags.data.forEach(element => {
-                    element.tags.forEach(tag => {
+            .get("/resources")
+            .then((data) => {
+                data.data.resources.forEach(ele => {
+                    ele.tags.forEach(tag => {
                         tagsArray.push(tag)
                     });
-                });
+                })
                 var unique = tagsArray.filter(onlyUnique);
-                res.render("index", { title: "Home", user: user , tags: unique});
+                res.render("index", { user: user, resources: data.data, tags: unique});
             })
-            .catch(() => res.render("index", { user: user }));
+            .catch((e) => res.render("error", { error: e }));
         }
     })(req, res);
 });

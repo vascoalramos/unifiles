@@ -82,9 +82,9 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
 /*****************/
 function login(req, res) {
     passport.authenticate("local", { session: false }, (err, user) => {
-        console.log(err);
         if (err) {
-            return res.render("login", { error_login: err.response.data.error });
+            var error = err.response.data
+            return res.status(401).json({ error });
         }
 
         req.login(user, { session: false }, (error) => {
