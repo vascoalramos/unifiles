@@ -99,17 +99,15 @@ $(document).ready(function () {
             .find(".imgSpan")
             .html("<span >" + nomeDoc + "</span>");
     });
-   
-    $(document).on('click','.slider',function() {
-        if($(".slider").css('background-color') == 'rgb(52, 58, 64)')
-            $(".cImage").css({"font-weight": "normal"});
-        else{
-            $(".cImage").css({"font-weight": "bold"});
 
+    $(document).on("click", ".slider", function () {
+        if ($(".slider").css("background-color") == "rgb(52, 58, 64)") $(".cImage").css({ "font-weight": "normal" });
+        else {
+            $(".cImage").css({ "font-weight": "bold" });
         }
-   });
-    $(document).on('click','.removeTag',function() {
-        console.log($(this).parent())
+    });
+    $(document).on("click", ".removeTag", function () {
+        console.log($(this).parent());
         $(this).parent().remove();
     });
 
@@ -204,7 +202,6 @@ function registerUser() {
 function uploadContent() {
     var form = $("#form-upload")[0];
     var data = new FormData(form);
-    //data.append("CustomField", "This is some extra data, testing");
 
     $.ajax(
         {
@@ -223,9 +220,9 @@ function uploadContent() {
         false,
     );
 }
-function applyFilter(){
+function applyFilter() {
     var data = $("#form-filter").serializeArray();
-    var htmlFeed = '';
+    var htmlFeed = "";
     $.ajax(
         {
             type: "GET",
@@ -233,16 +230,12 @@ function applyFilter(){
             url: host + "/api/resources/filters",
             data: data,
             success: function (data) {
-                console.log(data)
-
-                data.forEach(element => {
-                    htmlFeed += `<span> `+element.subject +`</span>`
-                    
-                })
-                $('#feed2').html(htmlFeed)
+                console.log({ resource: data });
+                $("#feed").empty();
+                addDataToDOM({ resource: data });
             },
             error: function (errors) {
-                console.log(errors)
+                console.log(errors);
             },
         },
         false,
@@ -445,7 +438,7 @@ function addDataToDOM(data) {
 
             resourceElement.innerHTML = `
                 <div class="resource-user-info">
-                    <img src="${element.image}" alt="${element.image}" />
+                    <img src="/api/resources/${element._id}/image" alt="${element.image}" />
                     <span>${element.author.name}</span>
                 </div>
                 <div class="resource-rating"><i class="fa fa-star"></i>/${element.rating.votes} Votes</div>

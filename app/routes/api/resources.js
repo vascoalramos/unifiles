@@ -6,6 +6,7 @@ const passport = require("passport");
 const fs = require("fs");
 const fsPath = require("fs-path");
 const { MAGIC_MIME_TYPE, Magic } = require("mmmagic");
+const path = require("path");
 
 const Resources = require("../../controllers/resources");
 
@@ -74,34 +75,24 @@ async function getMimeType(files) {
 }
 
 function checkImage(files, pathFolder) {
-    var imagePath = pathFolder + "/img";
+    var imagePath = pathFolder + "/img/";
     var imagePathFinal = "";
 
     if (imgFilter(files.image.name)) {
-        if (!fs.existsSync(imagePath)) {
-            fs.mkdir(imagePath, { recursive: true }, (e) => {
-                if (e) {
-                    console.error(e);
-                } else {
-                    fs.rename(files.image.path, imagePath + "/" + files.image.name, (err) => {
-                        if (err) throw err;
-                    });
-                }
-            });
-        } else {
-            fs.rename(files.image.path, imagePath + "/" + files.image.name, (err) => {
-                if (err) throw err;
-            });
-        }
+        fsPath.writeFile("app/" + imagePath + files.image.name, fs.readFileSync(files.image.path), function (err) {
+            if (err) {
+                console.error(err);
+            }
+        });
         imagePathFinal = imagePath + "/" + files.image.name;
         return imagePathFinal;
     }
 }
 
-function storeResource(files, pathFolder) {
+function storeResource(files, image, pathFolder) {
     files.forEach((file) => {
         if (file.type !== "directory") {
-            fsPath.writeFile(pathFolder + "/" + file.path, file.data, function (err) {
+            fsPath.writeFile("app/" + pathFolder + "/" + file.path, file.data, function (err) {
                 if (err) {
                     console.error(err);
                 }
@@ -183,7 +174,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         let size = 0;
         let mime_type = "";
         let imagePathFinal = "";
-        let pathFolder = `app/uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
+        let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
         if (err) {
             next(err);
@@ -202,7 +193,6 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 
                 decompress(uploads.files.path).then(async (filesDecompressed) => {
                     if (bagItConventions(filesDecompressed)) {
-                        storeResource(filesDecompressed, pathFolder);
                         size = uploads.files.size;
                         mime_type = await getMimeType(filesDecompressed);
 
@@ -223,6 +213,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                             subject: fields.subject,
                             tags: fields.tags,
                         };
+                        storeResource(filesDecompressed, uploads.image, pathFolder);
                         saveResource(data, res);
                     } else {
                         res.status(400).jsonp("The package is not valid");
@@ -282,15 +273,14 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     });
 });
 
-router.get('/filters',  passport.authenticate("jwt", { session: false }), (req, res) => {
-
-    Resources.getFilters(req.query).then((resources) => {
-        console.log(resources)
-        res.status(200).jsonp(resources);
-    })
-    .catch((error) => {
-        res.status(400).jsonp(error);
-    });
+router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
+    Resources.getFilters(req.query)
+        .then((resources) => {
+            res.status(200).jsonp(resources);
+        })
+        .catch((error) => {
+            res.status(400).jsonp(error);
+        });
 });
 
 router.get("/:id", (req, res) => {
@@ -305,5 +295,21 @@ router.get("/:id", (req, res) => {
         });
 });
 
+router.get("/:id/image", (req, res) => {
+    let id = req.params.id;
+    Resources.GetResourceImage(id)
+        .then((imagePath) => {
+            console.log(path.join(__dirname, "../../", imagePath));
+            res.sendFile(path.join(__dirname, "../../", imagePath));
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
+});
+
+router.get("/:id/", (req, res) => {
+    res.status(200).jsonp({ hello: "ola" });
+});
 
 module.exports = router;
