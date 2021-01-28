@@ -1,7 +1,6 @@
 {
-    "name": "app",
+    "name": "uni-files",
     "version": "1.0.0",
-    "private": true,
     "scripts": {
         "start": "node app/bin/www",
         "develop": "nodemon app/bin/www"

@@ -1,0 +1,24 @@
+{
+    "name": "create-dataset",
+    "version": "1.0.0",
+    "description": "Tool to create UniFiles base dataset",
+    "main": "create_dataset.js",
+    "scripts": {
+        "start": "node create_dataset.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vascoalramos/daw-project.git"
+    },
+    "author": "Vasco Ramos <vascoalramos@gmail.com> (https://vascoalramos.me)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/vascoalramos/daw-project/issues"
+    },
+    "homepage": "https://github.com/vascoalramos/daw-project#readme",
+    "dependencies": {
+        "fs-path": "0.0.25",
+        "node-zip": "^1.1.1"
+    }
+}
