@@ -20,7 +20,7 @@ module.exports.getFilters = (query) => {
 };
 
 module.exports.GetTotal = () => {
-    return Resource.find().count();
+    return Resource.find().countDocuments();
 };
 
 module.exports.GetResourceById = (id) => {

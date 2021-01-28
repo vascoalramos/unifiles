@@ -333,7 +333,6 @@ router.get("/:id/content", (req, res) => {
             if (data.mime_type !== "application/octet-stream") {
                 let dirPath = path.join(__dirname, "../../", data.path + "/data");
                 let files = fs.readdirSync(dirPath);
-                console.log(files);
                 res.sendFile(path.join(dirPath, files[0]));
             } else {
                 res.status(400).jsonp({ error: "Content not possible to send!" });

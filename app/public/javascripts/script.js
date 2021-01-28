@@ -107,7 +107,6 @@ $(document).ready(function () {
         }
     });
     $(document).on("click", ".removeTag", function () {
-        console.log($(this).parent());
         $(this).parent().remove();
     });
 
