@@ -21,7 +21,7 @@ mongoose
         useCreateIndex: true,
     })
     .then(() => console.log("Connection to MongoDB successfully established."))
-    .catch(() => console.error("Connection failed...", err));
+    .catch((err) => console.error("Connection failed...", err));
 
 const axios = require("axios");
 axios.defaults.baseURL = process.env.API_URL;
