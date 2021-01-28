@@ -10,7 +10,6 @@ const logger = require("morgan");
 const zip = require("express-easy-zip");
 
 const mongoose = require("mongoose");
-//mongoose.set('debug', true); // debug queries
 
 // Connection to MongoDB
 mongoose
