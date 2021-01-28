@@ -26,7 +26,7 @@ jobs:
             - name: Commit Env file
               run: |
                 git config --global user.name vascoalramos
-                git add .
+                git add .env
                 git commit -m "Add Env file"
                     
             - name: Deploy to Heroku       
