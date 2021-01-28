@@ -19,7 +19,7 @@ jobs:
                 cat .env
                     
             - name: Deploy to Heroku       
-            - uses: actions/checkout@v2
+              uses: actions/checkout@v2
             - uses: akhileshns/heroku-deploy@v3.8.9
               with:
                 heroku_api_key: ${{secrets.HEROKU_API_KEY}}
