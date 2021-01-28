@@ -13,7 +13,7 @@ passport.use(
         },
         (username, password, done) => {
             axios
-                .post("http://localhost:3000/api/auth/login", { username: username, password: password })
+                .post("auth/login", { username: username, password: password })
                 .then((dados) => {
                     const user = dados.data;
                     if (!user) {
@@ -39,11 +39,13 @@ passport.use(
                 return done("jwt expired");
             }
             axios
-                .get("http://localhost:3000/api/users/" + jwtPayload.username)
+                .get("users/" + jwtPayload.username)
                 .then((dados) => {
-                    done(null, dados.data);
+                    return done(null, dados.data);
                 })
-                .catch((erro) => done(erro, false));
+                .catch((erro) => {
+                    return done(erro, false);
+                });
         },
     ),
 );
@@ -53,24 +55,21 @@ passport.use(
         {
             clientID: "313913673363-l3m5rvls35f7ujid9qt204mlflerj1v4.apps.googleusercontent.com",
             clientSecret: "JBTuuxQm93KnxjoRlFd1kywy",
-            callbackURL: "http://localhost:3000/auth/google/callback",
+            callbackURL: "/auth/google/callback",
         },
         function (accessToken, refreshToken, params, profile, done) {
             axios
-                .get("http://localhost:3000/api/users?email=" + profile._json.email)
+                .get("users?email=" + profile._json.email)
                 .then((dados) => {
-                    if(dados.data != null){
+                    if (dados.data != null) {
                         dados.data.accessToken = accessToken;
                         axios
-                            .put("http://localhost:3000/api/auth/updateAccessToken", { dados: dados.data })
+                            .put("auth/updateAccessToken", { dados: dados.data })
                             .then((user) => {
                                 done(null, user.data);
                             })
                             .catch((erro) => done(erro, false));
-                    }
-                    else
-                        done(profile._json, false)
-                   
+                    } else done(profile._json, false);
                 })
                 .catch((erro) => done(erro, false));
         },

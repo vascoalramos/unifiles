@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 const User = require("../../controllers/users");
 
@@ -79,6 +80,7 @@ router.post(
 
 router.put(
     "/:username",
+    passport.authenticate("jwt", { session: false }),
     [
         body("first_name").not().isEmpty().withMessage("First Name field is required."),
         body("last_name").not().isEmpty().withMessage("Last Name field is required."),
@@ -134,7 +136,7 @@ router.put(
     },
 );
 
-router.delete("/:username", (req, res) => {
+router.delete("/:username", passport.authenticate("jwt", { session: false }), (req, res) => {
     User.delete(req.params.username)
         .then(() => {
             res.status(200).jsonp("Success");

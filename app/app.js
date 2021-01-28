@@ -10,7 +10,6 @@ const logger = require("morgan");
 const zip = require("express-easy-zip");
 
 const mongoose = require("mongoose");
-//mongoose.set('debug', true); // debug queries
 
 // Connection to MongoDB
 mongoose
@@ -25,6 +24,7 @@ mongoose
 
 const axios = require("axios");
 axios.defaults.baseURL = process.env.API_URL;
+axios.defaults.withCredentials = true;
 
 const app = express();
 app.use(cors());

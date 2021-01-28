@@ -209,6 +209,9 @@ function uploadContent() {
             data: data,
             processData: false,
             contentType: false,
+            xhrFields: {
+                withCredentials: true,
+            },
             success: function (data) {},
             error: function (errors) {
                 console.log(errors);
@@ -247,6 +250,9 @@ function replyCommentResource(id) {
             enctype: "multipart/form-data",
             url: host + "/api/resources/comments",
             data: data,
+            xhrFields: {
+                withCredentials: true,
+            },
             success: function (data) {
                 removeErrors(); // Remove errors
 
@@ -332,6 +338,9 @@ function editProfile(username) {
             enctype: "multipart/form-data",
             url: `${host}/api/users/${username}`,
             data: data,
+            xhrFields: {
+                withCredentials: true,
+            },
             success: function (data) {
                 removeErrors(); // Remove errors
             },
@@ -347,6 +356,9 @@ function deleteAccount(username) {
     $.ajax({
         type: "DELETE",
         url: `${host}/api/users/${username}`,
+        xhrFields: {
+            withCredentials: true,
+        },
         success: function () {
             document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             window.location = "/";

@@ -8,7 +8,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
     const { user } = req;
 
     axios
-        .get("/resources/" + id)
+        .get("/resources/" + id, { headers: { Cookie: `token=${req.cookies.token}` } })
         .then((data) => {
             if (data.data.comments.length > 0) workDate(data.data.comments);
 

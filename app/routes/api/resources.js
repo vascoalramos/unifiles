@@ -111,7 +111,7 @@ function saveResource(data, res) {
         });
 }
 
-router.get("/", (req, res) => {
+router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     var lim = req.query.lim;
     var skip = req.query.skip;
     let response = {};
@@ -283,7 +283,7 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
         });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
 
     Resources.GetResourceById(id)
@@ -295,7 +295,7 @@ router.get("/:id", (req, res) => {
         });
 });
 
-router.get("/:id/image", (req, res) => {
+router.get("/:id/image", passport.authenticate("jwt", { session: false }), (req, res) => {
     let id = req.params.id;
     Resources.GetResourceImage(id)
         .then((imagePath) => {
@@ -307,7 +307,7 @@ router.get("/:id/image", (req, res) => {
         });
 });
 
-router.get("/:id/download", (req, res) => {
+router.get("/:id/download", passport.authenticate("jwt", { session: false }), (req, res) => {
     let id = req.params.id;
     Resources.GetResourceContent(id)
         .then((data) => {
@@ -326,7 +326,7 @@ router.get("/:id/download", (req, res) => {
         });
 });
 
-router.get("/:id/content", (req, res) => {
+router.get("/:id/content", passport.authenticate("jwt", { session: false }), (req, res) => {
     let id = req.params.id;
     Resources.GetResourceContent(id)
         .then((data) => {
