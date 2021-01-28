@@ -99,17 +99,15 @@ $(document).ready(function () {
             .find(".imgSpan")
             .html("<span >" + nomeDoc + "</span>");
     });
-   
-    $(document).on('click','.slider',function() {
-        if($(".slider").css('background-color') == 'rgb(52, 58, 64)')
-            $(".cImage").css({"font-weight": "normal"});
-        else{
-            $(".cImage").css({"font-weight": "bold"});
 
+    $(document).on("click", ".slider", function () {
+        if ($(".slider").css("background-color") == "rgb(52, 58, 64)") $(".cImage").css({ "font-weight": "normal" });
+        else {
+            $(".cImage").css({ "font-weight": "bold" });
         }
-   });
-    $(document).on('click','.removeTag',function() {
-        console.log($(this).parent())
+    });
+    $(document).on("click", ".removeTag", function () {
+        console.log($(this).parent());
         $(this).parent().remove();
     });
 
@@ -204,7 +202,6 @@ function registerUser() {
 function uploadContent() {
     var form = $("#form-upload")[0];
     var data = new FormData(form);
-    //data.append("CustomField", "This is some extra data, testing");
 
     $.ajax(
         {
@@ -213,9 +210,7 @@ function uploadContent() {
             data: data,
             processData: false,
             contentType: false,
-            success: function (data) {
-                console.log(data);
-            },
+            success: function (data) {},
             error: function (errors) {
                 console.log(errors);
             },
@@ -223,9 +218,9 @@ function uploadContent() {
         false,
     );
 }
-function applyFilter(){
+function applyFilter() {
     var data = $("#form-filter").serializeArray();
-    var htmlFeed = '';
+    var htmlFeed = "";
     $.ajax(
         {
             type: "GET",
@@ -233,16 +228,11 @@ function applyFilter(){
             url: host + "/api/resources/filters",
             data: data,
             success: function (data) {
-                console.log(data)
-
-                data.forEach(element => {
-                    htmlFeed += `<span> `+element.subject +`</span>`
-                    
-                })
-                $('#feed2').html(htmlFeed)
+                $("#feed").empty();
+                addDataToDOM({ resource: data });
             },
             error: function (errors) {
-                console.log(errors)
+                console.log(errors);
             },
         },
         false,
@@ -264,7 +254,11 @@ function replyCommentResource(id) {
                 $(".scroll-comments").find(".resource-comment").remove();
                 $(".scroll-comments").find(".resource-comment-date").remove();
                 $(".scroll-comments").find("form").remove();
-                $(".commentsTotal").text(data.data.comments.length + " comments");
+                $(".commentsTotal").text(
+                    data.data.comments.reduce((acc, e) => {
+                        return acc + e.comments.length;
+                    }, data.data.comments.length) + " comments",
+                );
 
                 var today = new Date();
                 var index = 0;
@@ -445,12 +439,12 @@ function addDataToDOM(data) {
 
             resourceElement.innerHTML = `
                 <div class="resource-user-info">
-                    <img src="${element.image}" alt="${element.image}" />
+                    <img src="/api/resources/${element._id}/image" alt="${element.image}" />
                     <span>${element.author.name}</span>
                 </div>
                 <div class="resource-rating"><i class="fa fa-star"></i>/${element.rating.votes} Votes</div>
                 <p class="resource-type-year">${element.type} - ${element.year}</p>
-                <a class="resource-link" href="resource/${element._id}">
+                <a class="resource-link" href="resources/${element._id}">
                     <h2 class="resource-title">${element.subject}</h2>
                     <p class="resource-description">${element.description}</p>
                 </a>

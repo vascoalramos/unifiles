@@ -9,15 +9,14 @@ module.exports.insert = (resource) => {
 };
 
 module.exports.getFilters = (query) => {
-    var queryCond = {}
-    if(query.subject) queryCond.subject = {$regex: query.subject, $options:"i"};
-    if(query.year) queryCond.year = query.year;
-    if(query.img == 'on') queryCond.image ={ $ne: "/images/ResourceDefault.jpeg" };
-    else queryCond.image ={ $eq: "/images/ResourceDefault.jpeg" };
-    if(query.tags && query.tags.length > 0) queryCond.tags = {$in : query.tags};
-    if(query.types && query.types.length > 0) queryCond.type = {$in : query.types};
+    var queryCond = {};
+    if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
+    if (query.year) queryCond.year = query.year;
+    if (query.img == "on") queryCond.image = { $ne: "/images/ResourceDefault.jpeg" };
+    else queryCond.image = { $eq: "/images/ResourceDefault.jpeg" };
+    if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
+    if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
     return Resource.find(queryCond);
-
 };
 
 module.exports.GetTotal = () => {
@@ -26,6 +25,19 @@ module.exports.GetTotal = () => {
 
 module.exports.GetResourceById = (id) => {
     return Resource.findOne({ _id: id }).exec();
+};
+
+module.exports.GetResourceImage = async (id) => {
+    let resource = await Resource.findOne({ _id: id }, { image: 1 }).exec();
+    let imagePath = resource.image;
+    if (imagePath === "images/ResourceDefault.jpeg") {
+        imagePath = `/public/${imagePath}`;
+    }
+    return imagePath;
+};
+
+module.exports.GetResourceContent = (id) => {
+    return Resource.findOne({ _id: id }, { _id: 0, path: 1, name: 1, mime_type: 1 }).exec();
 };
 
 module.exports.CommentsInsert = (data) => {

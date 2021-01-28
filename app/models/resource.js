@@ -45,11 +45,11 @@ const resourceSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: "/images/ResourceDefault.jpeg",
+        default: "images/ResourceDefault.jpeg",
     },
     type: {
         type: String,
-        enum: ['article', 'thesis', 'book', 'report', 'aplication'],
+        enum: ["article", "thesis", "book", "report", "aplication"],
         required: true,
     },
     description: {
