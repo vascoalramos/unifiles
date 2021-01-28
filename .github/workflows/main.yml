@@ -20,6 +20,11 @@ jobs:
                 echo API_URL="/api" >> .env
                 echo MONGODB_URL_ATLAS=${MONGODB_URL_ATLAS} >> .env
                 cat .env
+                
+            - name: Commit Env file
+              run: |
+                git add .
+                git commit -m "Add Env file"
                     
             - name: Deploy to Heroku       
               uses: actions/checkout@v2
