@@ -12,10 +12,10 @@ jobs:
             - name: Create env file
               run: |
                 touch .env
-                echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
+                echo JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" >> .env
                 echo JWT_SECRET_TIME="36000" >> .env
                 echo API_URL="/api" >> .env
-                echo MONGODB_URL_ATLAS=${{ secrets.MONGODB_URL_ATLAS }} >> .env
+                echo MONGODB_URL_ATLAS="${{ secrets.MONGODB_URL_ATLAS }}" >> .env
                 cat .env
                     
             - name: Deploy to Heroku       
