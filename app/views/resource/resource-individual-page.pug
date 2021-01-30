@@ -7,8 +7,18 @@ block content
         img(src="/api/resources/" + resource._id + "/image" alt=resource.image)
         span #{resource.author.name}
       .resource-rating
-        i.fa.fa-star 
-        | / #{resource.rating.votes} Votes
+        .rating
+          input#star5(type='radio' name='rating' value='5')
+          label(for='star5' title='5') 5 stars
+          input#star4(type='radio' name='rating' value='4')
+          label(for='star4' title='4') 4 stars
+          input#star3(type='radio' name='rating' value='3')
+          label(for='star3' title='3') 3 stars
+          input#star2(type='radio' name='rating' value='2')
+          label(for='star2' title='2') 2 stars
+          input#star1(type='radio' name='rating' value='1')
+          label(for='star1' title='1') 1 star
+        .clearfix
       p.resource-type-year #{resource.type} - #{resource.year}
       h2.resource-title.resource-general-color #{resource.subject} 
       p.resource-description.resource-general-color #{resource.description} 

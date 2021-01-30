@@ -165,6 +165,32 @@ router.put(
     },
 );
 
+router.put(
+    "/comments/rating",
+    [body("rating").not().isEmpty().withMessage("Rating field is required.")],
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        let data = req.body;
+
+        var generalErrors = [];
+        var errors = validationResult(req);
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
+
+        Resources.Rating(data)
+            .then((newData) => {
+                res.status(200).jsonp("Success!");
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });
+    },
+);
+
 router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     const { user } = req;
 
