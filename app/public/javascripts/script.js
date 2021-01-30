@@ -106,6 +106,7 @@ $(document).ready(function () {
             $(".cImage").css({ "font-weight": "bold" });
         }
     });
+
     $(document).on("click", ".removeTag", function () {
         $(this).parent().remove();
     });
@@ -141,7 +142,33 @@ $(document).ready(function () {
     $("#form-upload").on("click", ".remove-form-upload", function () {
         $(this).parent().remove();
     });
+
+    // Click on the stars
+    $(".rating").on("click", "input:radio[name=rating]", function () {
+        applyRating($('input:radio[name=rating]:checked').val())
+    });
 });
+
+function applyRating(value) {
+    console.log(value);
+    var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
+    var data = { rating: value, resource_id: _id }
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/comments/rating",
+            data: data,
+            success: function (result) {
+                $(".rating").children().bind('click', function(){ return false; }); // lock rating
+            },
+            error: function (errors) {
+                console.log(errors);
+            },
+        },
+        false,
+    );
+}
 
 function loginUser() {
     var data = $("#form-login").serializeArray();
@@ -220,6 +247,7 @@ function uploadContent() {
         false,
     );
 }
+
 function applyFilter() {
     var data = $("#form-filter").serializeArray();
     var htmlFeed = "";
@@ -447,13 +475,14 @@ function addDataToDOM(data) {
         data.resource.forEach((element) => {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
+            var overallRating = (element.rating.score / element.rating.votes).toFixed(1);
 
             resourceElement.innerHTML = `
                 <div class="resource-user-info">
                     <img src="/api/resources/${element._id}/image" alt="${element.image}" />
                     <span>${element.author.name}</span>
                 </div>
-                <div class="resource-rating"><i class="fa fa-star"></i>/${element.rating.votes} Votes</div>
+                <div class="resource-rating">${overallRating} <i class="fa fa-star"> </i>(${element.rating.votes})</div>
                 <p class="resource-type-year">${element.type} - ${element.year}</p>
                 <a class="resource-link" href="resources/${element._id}">
                     <h2 class="resource-title">${element.subject}</h2>

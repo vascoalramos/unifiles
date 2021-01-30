@@ -59,6 +59,10 @@ input:checked + .slider:before {
     transform: translateX(26px);
 }
 
+.input-group-append {
+    margin-top: -20px;
+}
+
 /* Rounded sliders */
 .slider.round {
     border-radius: 34px;
@@ -298,3 +302,74 @@ footer {
     font-weight: bold;
     margin: 0;
 }
+
+/* Rating */
+
+.rating {
+    float:left;
+}
+
+.rating:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+    clip:rect(0,0,0,0);
+}
+
+.rating:not(:checked) > label {
+    float:right;
+    width:1em;
+    padding:0 .1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:170%;
+    line-height:1.2;
+    color:#ddd;
+}
+
+.rating:not(:checked) > label:before {
+    font-family: FontAwesome;
+    content: "\f005";
+}
+
+.rating > input:checked ~ label {
+    color: gold;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+    color: gold;
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+    color: #ea0;
+}
+
+.rating > label:active {
+    position:relative;
+    top:2px;
+    left:2px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+#status, button {
+    margin: 20px 0;
+}
+
