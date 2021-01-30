@@ -475,7 +475,7 @@ function addDataToDOM(data) {
         data.resource.forEach((element) => {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
-            var overallRating = (element.rating.score / element.rating.votes).toFixed(1);
+            var overallRating = (element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1));
 
             resourceElement.innerHTML = `
                 <div class="resource-user-info">
