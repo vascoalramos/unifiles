@@ -1,6 +1,6 @@
-var express = require("express");
-var router = express.Router();
-var passport = require("passport");
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
 const axios = require("axios");
 
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
@@ -8,7 +8,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
     const { user } = req;
 
     axios
-        .get("/resources/" + id)
+        .get("/resources/" + id, { headers: { Cookie: `token=${req.cookies.token}` } })
         .then((data) => {
             if (data.data.comments.length > 0) workDate(data.data.comments);
 

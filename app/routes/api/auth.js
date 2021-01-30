@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
+const passport = require("passport");
 
 const User = require("../../controllers/users");
 
@@ -48,7 +49,7 @@ router.post(
 router.put("/updateAccessToken", (req, res, next) => {
     let data = req.body;
     User.updateAccessToken(data)
-        .then((user) => { 
+        .then((user) => {
             if (user.is_active) {
                 User.generateAuthToken(user)
                     .then((data) => {
@@ -68,8 +69,9 @@ router.put("/updateAccessToken", (req, res, next) => {
         });
 });
 
-router.put("/tokens", (req, res, next) => {
+router.put("/tokens", passport.authenticate("jwt", { session: false }), (req, res, next) => {
     let data = req.body;
+    console.log(data);
     User.updateTokens(data)
         .then((user) => {
             res.status(200).jsonp(user);

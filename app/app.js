@@ -13,17 +13,18 @@ const mongoose = require("mongoose");
 
 // Connection to MongoDB
 mongoose
-    .connect(process.env.MONGODB_URL, {
+    .connect(process.env.MONGODB_URL_ATLAS, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
         useCreateIndex: true,
     })
     .then(() => console.log("Connection to MongoDB successfully established."))
-    .catch(() => console.log("Couldn't connect to MongoDB"));
+    .catch((err) => console.error("Connection failed...", err));
 
 const axios = require("axios");
 axios.defaults.baseURL = process.env.API_URL;
+axios.defaults.withCredentials = true;
 
 const app = express();
 app.use(cors());

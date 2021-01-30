@@ -1,7 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-var passport = require("passport");
+const passport = require("passport");
 
 /*********/
 /* LOGIN */
@@ -16,21 +16,15 @@ router.get("/login", (req, res) => {
 
 //Login Google
 router.get("/google/callback", (req, res) => {
-        passport.authenticate("google", { session: false }, (err, user, info) => {
-            if (!err || user)
-            {
-                req.login(user, { session: false }, (error) => {
-                    res.cookie("token", user["token"]);
-                    res.redirect("/");
-                });
-            }
-            else 
-                res.render("register", { title: "Register", user: err });
-
-        })(req, res);
-       
-    },
-);
+    passport.authenticate("google", { session: false }, (err, user, info) => {
+        if (!err || user) {
+            req.login(user, { session: false }, (error) => {
+                res.cookie("token", user["token"]);
+                res.redirect("/");
+            });
+        } else res.render("register", { title: "Register", user: err });
+    })(req, res);
+});
 router.get("/google", (req, res) => {
     passport.authenticate("google", { session: false, scope: ["profile", "email"] }, (err, user) => {})(req, res);
 });
@@ -61,16 +55,19 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
             .then(() => {
                 user.accessToken = null;
                 user.token = null;
-                axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
+                axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
                     res.clearCookie("token");
                     return res.redirect("/");
                 });
             })
-            .catch(() => res.render("index", { user: user }));
+            .catch((err) => {
+                console.log(err);
+                res.render("error", { error: err });
+            });
     } else {
         user.accessToken = null;
         user.token = null;
-        axios.put("http://localhost:3000/api/auth/tokens", user).then(() => {
+        axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
             res.clearCookie("token");
             return res.redirect("/");
         });
@@ -83,7 +80,7 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
 function login(req, res) {
     passport.authenticate("local", { session: false }, (err, user) => {
         if (err) {
-            var error = err.response.data
+            var error = err.response.data;
             return res.status(401).json({ error });
         }
 
