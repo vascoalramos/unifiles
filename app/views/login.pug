@@ -6,7 +6,7 @@ block content
       h2.login-title Login
       h5.register-title
         | Are you new? 
-        a(href='register') Register
+        a(href='register' style="color: #fff") Register
       .col-sm
         form.px-4.py-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
           .form-group.username
@@ -16,9 +16,8 @@ block content
             label(for='password') Password
             input#password.form-control(type='password' placeholder='*******' name='password' required='')
           p.forgot-password 
-            a(href='#') Forgot password?
+            a(href='#' style="color: #fff") Forgot password?
           button.btn.btn-primary.btn-bottom#login-confirm Sign in
-          .dropdown-divider
       .col-sm.text-center.pl-5.pr-5(style="height: 100%;")
         .container.pl-3.pr-3
           form(action='/auth/google' method='get')
