@@ -147,12 +147,39 @@ $(document).ready(function () {
     $(".rating").on("click", "input:radio[name=rating]", function () {
         applyRating($('input:radio[name=rating]:checked').val())
     });
+
+    // Delete comments
+    $(document).on("click", ".delete-comment", function (e) {
+        e.preventDefault();
+        deleteComments($(this).attr('id'));
+    });
 });
 
+function deleteComments(commentId) {
+    var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
+    var data = { resource_id: _id }
+
+    $.ajax(
+        {
+            type: "DELETE",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/comments/" + commentId,
+            data: data,
+            success: function (result) {
+                updateScrollComments(result);
+            },
+            error: function (errors) {
+                console.log(errors);
+            },
+        },
+        false,
+    );
+}
+
 function applyRating(value) {
-    console.log(value);
     var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
     var data = { rating: value, resource_id: _id }
+
     $.ajax(
         {
             type: "PUT",
@@ -283,71 +310,7 @@ function replyCommentResource(id) {
             },
             success: function (data) {
                 removeErrors(); // Remove errors
-
-                $(".scroll-comments").find(".resource-comment").remove();
-                $(".scroll-comments").find(".resource-comment-date").remove();
-                $(".scroll-comments").find("form").remove();
-                $(".commentsTotal").text(
-                    data.data.comments.reduce((acc, e) => {
-                        return acc + e.comments.length;
-                    }, data.data.comments.length) + " comments",
-                );
-
-                var today = new Date();
-                var index = 0;
-                var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
-
-                data.data.comments.forEach((element) => {
-                    var commentDate = new Date(element.date);
-                    var diffTime = today.getTime() - commentDate.getTime();
-                    var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    var idForm = "form-reply-comment-" + index;
-
-                    $(".scroll-comments").append(`
-                        <div class='resource-comment'>
-                            <div class='resource-comment-info'>
-                                <p class='resource-comment-author'>${element.author.name}</p>
-                                <span class='resource-general-color'>${element.description}</span>
-                            </div>
-                        </div>
-                        <span class='resource-comment-date'>${diffInDays} day(s)</span>
-                        <form class="needs-validation" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
-                            <div class="form-group reply_comment">
-                                <input type="hidden" name="comment_index" value="${index}"/>
-                                <input type="hidden" name="user_id" value="${data.user_id}"/>
-                                <input type="hidden" name="user_name" value="${data.name}"/>
-                                <input type="hidden" name="resource_id" value="${_id}"/>
-                                <div class="input-group mb-3">
-                                    <input class="reply-comment form-control" id="comment" type="text" placeholder="Reply ..." name="comment" required="" />
-                                    <div class="input-group-append">
-                                        <button class="btn btn-bottom btn-outline-secondary" id="reply-comment-confirm">
-                                            <i class="fa fa-chevron-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                    `);
-                    element.comments.forEach((el) => {
-                        el.date = diffInDays + " day(s)";
-
-                        $(".scroll-comments").append(`
-                                <div class="resource-comment resource-comment-reply">
-                                    <div class="resource-comment-info">
-                                        <p class="resource-comment-author">${el.author.name}</p>
-                                        <span class="resource-general-color">${el.description}</span>
-                                    </div>
-                                </div>
-                                <span class="resource-comment-date reply-date">${el.date}</span>
-                            </div>
-                        </form>
-                        `);
-                    });
-
-                    index++;
-                });
-
-                document.getElementById("collapseComments").scrollTop = document.getElementById(
-                    "collapseComments",
-                ).scrollHeight;
+                updateScrollComments(data);
             },
             error: function (errors) {
                 alert(errors.responseJSON.generalErrors[0].msg);
@@ -355,6 +318,90 @@ function replyCommentResource(id) {
         },
         false,
     );
+}
+
+function updateScrollComments(data) {
+    $(".scroll-comments").find(".resource-comment").remove();
+    $(".scroll-comments").find(".resource-comment-date").remove();
+    $(".scroll-comments").find("form").remove();
+    $(".commentsTotal").text(
+        data.data.comments.reduce((acc, e) => {
+            return acc + e.comments.length;
+        }, data.data.comments.length) + " comments",
+    );
+
+    var today = new Date();
+    var index = 0;
+    var index_reply = 0;
+    var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
+
+    data.data.comments.forEach((element) => {
+        var commentDate = new Date(element.date);
+        var diffTime = today.getTime() - commentDate.getTime();
+        var diffInDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        var idForm = "form-reply-comment-" + index;
+
+        $(".scroll-comments").append(`
+            <div class='resource-comment'>
+                `+
+                    (data.user_id == element.author._id
+                        ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
+                           <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index}>Delete</span></div>` 
+                        : `` 
+                    )
+                +
+                `<div class='resource-comment-info'>
+                    <p class='resource-comment-author'>${element.author.name}</p>
+                    <span class='resource-general-color'>${element.description}</span>
+                </div>
+            </div>
+            <span class='resource-comment-date'>${diffInDays} day(s)</span>
+            <form class="needs-validation" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
+                <div class="form-group reply_comment">
+                    <input type="hidden" name="comment_index" value="${index}"/>
+                    <input type="hidden" name="user_id" value="${data.user_id}"/>
+                    <input type="hidden" name="user_name" value="${data.name}"/>
+                    <input type="hidden" name="resource_id" value="${_id}"/>
+                    <div class="input-group mb-3">
+                        <input class="reply-comment form-control" id="comment" type="text" placeholder="Reply ..." name="comment" required="" />
+                        <div class="input-group-append">
+                            <button class="btn btn-bottom btn-outline-secondary" id="reply-comment-confirm">
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+        `);
+        
+        element.comments.forEach((el) => {
+            el.date = diffInDays + " day(s)";
+
+            $(".scroll-comments").append(`
+                    <div class="resource-comment resource-comment-reply">
+                        `+
+                            (data.user_id == el.author._id
+                                ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
+                                <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index + '-' + index_reply}>Delete</span></div>` 
+                                : `` 
+                            )
+                        +
+                        `<div class="resource-comment-info">
+                            <p class="resource-comment-author">${el.author.name}</p>
+                            <span class="resource-general-color">${el.description}</span>
+                        </div>
+                    </div>
+                    <span class="resource-comment-date reply-date">${el.date}</span>
+                </div>
+            </form>
+            `);
+            index_reply++;
+        });
+
+        index++;
+    });
+
+    document.getElementById("collapseComments").scrollTop = document.getElementById(
+        "collapseComments",
+    ).scrollHeight;
 }
 
 function editProfile(username) {

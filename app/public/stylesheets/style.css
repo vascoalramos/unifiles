@@ -89,8 +89,8 @@ input:checked + .slider:before {
 }
 
 .form-user {
-    background: azure;
-    border: 2px solid lightblue;
+    background: #a9a9a9;
+    border: 2px solid #343a40;
     border-radius: 5px;
 }
 
@@ -373,3 +373,24 @@ footer {
     margin: 20px 0;
 }
 
+.dropdown-menu-comments {
+    float: right;
+}
+
+.dropdown-menu-comments.dropdown-toggle::after {
+    font-family: FontAwesome;
+    content: "\f141";
+    border-top: 0px;
+    color: #fff;
+}
+
+.dropdown-comments-options {
+    text-align: right;
+    background: #a9a9a9;
+    color: #fff;
+    padding-right: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: -5px;
+    cursor: pointer;
+}

@@ -191,6 +191,41 @@ router.put(
     },
 );
 
+router.delete(
+    "/comments/:id",
+    [body("resource_id").not().isEmpty().withMessage("Resource Id field is required.")],
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        let data = req.body;
+        let commentId = req.params.id;
+
+        var generalErrors = [];
+        var errors = validationResult(req);
+        const { user } = req;
+        
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
+
+        var finalData = { resource_id: data.resource_id, comment_index: commentId}
+        
+        Resources.DeleteComment(finalData)
+            .then((newData) => {
+                var dataReturn = {
+                    data: newData,
+                    user_id: user._id,
+                };
+
+                res.status(200).jsonp(dataReturn);
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });
+    },
+);
+
 router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     const { user } = req;
 

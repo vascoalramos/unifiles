@@ -86,10 +86,39 @@ module.exports.Rating = (data) => {
                     console.log(error);
                 } else {
                     var currentScore = item.rating.score;
-                    var currentVotes = item.rating.votes;
 
                     item.rating.score = currentScore + parseInt(data.rating);
                     item.rating.votes += 1; 
+
+                    item.save()
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                }
+            },
+        );
+    });
+};
+
+module.exports.DeleteComment = (data) => {
+    return new Promise(function (resolve, reject) {
+        Resource.findOne(
+            {
+                _id: data.resource_id,
+            },
+            function (error, item) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    if (data.comment_index.includes("-")) {
+                        var indexes = data.comment_index.split("-");
+                        item.comments[indexes[0]].comments.splice(indexes[1], 1)
+                    }
+                    else
+                        item.comments.splice(data.comment_index, 1);
 
                     item.save()
                         .then((result) => {
