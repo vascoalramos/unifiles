@@ -13,7 +13,7 @@ const mongoose = require("mongoose");
 
 // Connection to MongoDB
 mongoose
-    .connect(process.env.MONGODB_URL_ATLAS, {
+    .connect(process.env.MONGODB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
