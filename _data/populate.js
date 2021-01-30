@@ -9,14 +9,14 @@ axios.defaults.baseURL = "http://localhost:3000/api";
 faker.locale = "pt_PT";
 
 module.exports = {
-    createUsers: async (numRecords) => {
+    createUsers: async (numUsers) => {
         let firstName,
             lastName,
             password,
             user,
             users = [];
 
-        for (let i = 0; i < numRecords; i++) {
+        for (let i = 0; i < numUsers; i++) {
             firstName = faker.name.firstName();
             lastName = faker.name.lastName();
             password = faker.internet.password(20, false, null, "z_A_1");
@@ -42,5 +42,9 @@ module.exports = {
 
             users.push(user);
         }
+
+        return users;
     },
+
+    createResources: async (users, numRecords) => {},
 };

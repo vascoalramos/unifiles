@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} HomePage {% endblock %}
+
+{% block content %}
+<section class="slider d-flex align-items-center">
+  <!-- <img src="images/slider.jpg" class="img-fluid" alt="#"> -->
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12">
+        <div class="slider-title_box">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="slider-content_wrap">
+                <h1>Discover great places around you</h1>
+                <h5>Let's uncover the best places to eat and drink nearest to you.</h5>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-10">
+              <form class="form-wrap mt-4" method="post">
+                {% csrf_token %}
+                <div aria-label="Basic example" class="btn-group" role="group">
+                  <input class="btn-group1" name="name" placeholder="What are your looking for?"
+                         type="text">
+                  <input class="btn-group2" name="city" placeholder="Insert a city" type="text">
+                  <button class="btn-form" type="submit"><span
+                    class="icon-magnifier search-icon"></span>SEARCH<i
+                    class="pe-7s-angle-right"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--============================= FEATURED PLACES =============================-->
+<section class="main-block light-bg">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="styled-heading">
+          <h3>Featured Places</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+
+      {% for rest in restaurants %}
+      {% if restaurants|length == 1 %}
+      <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12 featured-responsive">
+        {% else %}
+        <div class="col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive">
+          {% endif %}
+          <div class="featured-place-wrap">
+            <a href="{% url 'restaurant-detail' rest.id %}">
+              <img alt="#" class="img-fluid"
+                   src="{{ 'data:image/png;base64,'|add:rest.photo }}"
+                   style="height: 35em">
+              {% if rest.average_score < 5.5 %}
+              <span class="featured-rating-orange">{{ rest.average_score }}</span>
+              {% else %}
+              <span class="featured-rating-green">{{ rest.average_score }}</span>
+              {% endif %}
+              <div class="featured-title-box">
+                <div class="container row">
+                  <h6>{{ rest.name }}</h6>
+                  {% if request.user.is_authenticated and request.user.groups.all.0.name == "clients_group" %}
+                  <form method="post">
+                    {% if rest.user_fav %}
+                    <button class="ti-heart" name="fav{{ rest.id }}" style="color:red"
+                            type="Submit"></span>
+                      {% else %}
+                      <button class="ti-heart" name="fav{{ rest.id }}" type="Submit"></span>
+                        {% endif %}
+                  </form>
+                  {% endif %}
+                </div>
+                <p>Restaurant </p> <span>• </span>
+                <p>{{ rest.n_of_reviews }} Reviews</p>
+                <ul>
+                  <li><span class="icon-location-pin"></span>
+                    <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+                  </li>
+                  <li><span class="icon-screen-smartphone"></span>
+                    <p>{{ rest.phone_number }}</p>
+                  </li>
+                </ul>
+              </div>
+            </a>
+          </div>
+          {% if rests|length == 1 %}
+        </div>
+        {% else %}
+      </div>
+      {% endif %}
+      {% endfor %}
+
+
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="featured-btn-wrap">
+          <a class="btn btn-danger" href="list-restaurants">VIEW ALL</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--//END ADD LISTING -->
+{% endblock content %}

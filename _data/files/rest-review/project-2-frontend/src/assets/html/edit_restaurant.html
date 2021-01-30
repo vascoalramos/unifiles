@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Edit Restaurant {% endblock %}
+
+{% block content %}
+<div class="container-login100 mt-5">
+  <div class="wrap-login100 wea pt-5 pb-5">
+
+    <form class="login100-form validate-form flex-sb flex-w" enctype="multipart/form-data" id="login-form"
+          method="post">
+
+      <span class="login100-form-title pb-5">Edit Restaurant</span>
+
+      <div class="col-12 pb-5" style="text-align: center">
+        <btn class="btn btn-danger btn-lg" data-target="#deleteModal"
+             data-toggle="modal"
+             onclick="loadInfo('{{ form.email.value }}', '{{ form.first_name.value }}', '{{ form.last_name.value }}')">
+          Delete Restaurant
+        </btn>
+      </div>
+
+      {% if form.errors or state is not None and not state %}
+      <div class="body col-12 mb-4">
+        <ul class="errornote">
+          <li>Please, correct the errors bellow.</li>
+          <li>{{ message }}</li>
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="follow-img">
+        <img alt="#"
+             class="img-fluid"
+             id="photo" src="{{ form.photo.initial }}" style="border-radius: 0%">
+      </div>
+      <div class="mt-3 mb-5 text-center">
+        <btn class="btn btn-primary btn-lg" id="edit_img">Update photo</btn>
+        <div style="visibility: hidden;">{{ form.photo }}</div>
+      </div>
+
+      {{ form.name.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.name }}
+        <span class="focus-input100"></span>
+        {{ form.name.errors }}
+      </div>
+
+      {{ form.address.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.address }}
+        <span class="focus-input100"></span>
+        {{ form.address.errors }}
+      </div>
+
+      {{ form.city.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.city }}
+        <span class="focus-input100"></span>
+        {{ form.city.errors }}
+      </div>
+
+      {{ form.zip_code.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.zip_code }}
+        <span class="focus-input100"></span>
+        {{ form.zip_code.errors }}
+      </div>
+
+
+      {{ form.country.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.country }}
+        <span class="focus-input100"></span>
+        {{ form.country.errors }}
+      </div>
+
+
+      {{ form.phone_number.label_tag }}
+      <div class="wrap-input100 mb-5">
+        {{ form.phone_number }}
+        <span class="focus-input100"></span>
+        {{ form.phone_number.errors }}
+      </div>
+
+
+      {{ form.latitude.label_tag }}
+      <div class="wrap-input100 mb-4">
+        {{ form.latitude }}
+        <span class="focus-input100"></span>
+        {{ form.latitude.errors }}
+      </div>
+
+      {{ form.longitude.label_tag }}
+      <div class="wrap-input100 mb-4">
+        {{ form.longitude }}
+        <span class="focus-input100"></span>
+        {{ form.longitude.errors }}
+      </div>
+
+      <div class="container-login100-form-btn mt-5">
+        <button class="login100-form-btn" type="submit">Update Restaurant</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div aria-hidden="true" aria-labelledby="deleteModalLabel" class="modal fade" id="deleteModal" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete: </h5>
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form action="" class="form-horizontal" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+          { form.name.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.name }}
+            <span class="focus-input100"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+          <button class="btn btn-danger" name="remove" type="submit">Delete Restaurant</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+{% block script %}
+<script>
+  function loadInfo(email, first_name, last_name) {
+    document.getElementById("id_first_name").value = first_name;
+    document.getElementById("id_last_name").value = last_name;
+    document.getElementById("id_email").value = email;
+  }
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        $('#photo').attr('src', e.target.result);
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $("#id_photo").change(function () {
+    readURL(this);
+  });
+
+  $('#edit_img').click(function () {
+    $("#id_photo").trigger("click");
+  });
+</script>
+{% endblock script %}

@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  .container-fluid.my-5
+    h1.text-center
+      b CLAV: Lista dos Termos de Índice
+
+    h5.pt-4.text-center Bem-vindo ao exercício nº2 do teste de DAW, ano letivo 2020/2021. Esta é a página dos Termos de Índice, com a lista de todas os termos de índice.
+
+    .text-center.mt-4
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]
+
+    .mt-4
+      table.table
+        thead.thead-dark
+          tr
+            th Termo
+            th ID (Classe)
+            th Titulo (Classe)
+        tbody
+          each tr in trs
+            tr(id=`${tr.id}`)
+              td= tr.termo
+              td
+                a(href=`/classes/${tr.codigoClasse}`)= tr.idClasse
+              td
+                a(href=`/classes/${tr.codigoClasse}`)= tr.tituloClasse
+
+    .text-center
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]

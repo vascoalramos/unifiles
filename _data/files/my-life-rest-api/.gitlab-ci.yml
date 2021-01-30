@@ -1,0 +1,74 @@
+stages:
+  - Lint
+  - Test
+  - Docker
+  - Deploy
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+  paths:
+    - ~/.cache/pip/
+
+.template: &build
+  image: python:latest
+  before_script:
+    - python -V
+    - pip install -r requirements.txt
+  variables:
+    # Connecting to testDB
+    POSTGRES_DB: postgres
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: 'postgres'
+    POLLSAPI_PG_HOST: postgres
+  services:
+    - postgres:9.6-alpine
+
+format:
+  stage: Lint
+  image: python:latest
+  script:
+    - pip install black
+    - black .
+
+.lint:
+  stage: Lint
+  <<: *build
+  script:
+    - pip install pylint
+    - pip install pylint_django
+    - pylint --exit-zero --load-plugins pylint_django --init-hook='import sys; sys.setrecursionlimit(8 * sys.getrecursionlimit())' rest_api/
+
+test:
+  stage: Test
+  # variables:
+  #   DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  <<: *build
+  script:
+    - source set_env_vars_ci.sh
+    - python manage.py test
+
+docker:
+  stage: Docker
+  image: docker:stable
+  only:
+    - master
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - name: docker:dind
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  script:
+    - echo "Building and uploading Docker image 🐳"
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/$CI_PROJECT_PATH .
+    - docker push $CI_REGISTRY/$CI_PROJECT_PATH
+
+deploy:
+  stage: Deploy
+  trigger: my-life-ua/compose
+  only:
+    - master

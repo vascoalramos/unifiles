@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_subscriptions"
+        android:icon="@drawable/ic_subscription"
+        android:title="@string/title_subscriptions" />
+
+    <item
+        android:id="@+id/navigation_allowances"
+        android:icon="@drawable/ic_allowance"
+        android:title="@string/title_allowance" />
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_loans"
+        android:icon="@drawable/ic_loan"
+        android:title="@string/title_loans" />
+
+    <item
+        android:id="@+id/navigation_info"
+        android:icon="@drawable/ic_graph"
+        android:title="@string/title_info" />
+</menu>

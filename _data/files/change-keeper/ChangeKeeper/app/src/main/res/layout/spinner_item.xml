@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="25dp"
+    android:fontFamily="@font/montserrat"
+    android:layout_gravity="left"
+    android:textSize="28dp"
+    android:textColor="#34495e"
+    />

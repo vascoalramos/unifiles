@@ -1,0 +1,126 @@
+<div class="container-login100 mt-5">
+  <div class="col-11 responsive-wrap" style="margin: 0 auto">
+
+    <div class="container detail-filter-wrap">
+      <div class="row">
+
+        <div class="col-4 featured-responsive detail-filter-text">
+          <p>{{ rests.length }} Results For <span>Restaurants</span></p>
+        </div>
+
+        <div class="col-8 featured-responsive">
+          <div class="detail-filter">
+
+            <form (ngSubmit)="submit()">
+              <div class="container">
+                <div class="row">
+                  <div align="right" class="form-check-label col-6">
+                    <label for="sort_by">Sort by:</label>
+                  </div>
+                  <div class="filter-dropdown col-6">
+                    <select (change)="submit()" [(ngModel)]="search_query.sort_by"
+                            class="custom-select mb-2 mr-sm-2 mb-sm-0" id="sort_by" name="sort_by">
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=0>Best Match</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=1>Price (Low to High)</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=2>Price (High to Low)</option>
+                      <!-- <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=3>Name (Ascending)</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=4>Name (Descending)</option> -->
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=5>Classification (Low to High)</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=6>Classification (High to Low)</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=7>Number of Reviews</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=8>Cleanliness</option>
+                      <option class="custom-select mb-2 mr-sm-2 mb-sm-0" value=9>Speed</option>
+                    </select>
+                  </div>
+
+                </div>
+
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-11 responsive-wrap" style="margin: 0 auto">
+
+    <div class="container featured-responsive">
+      <div class="detail-filter">
+
+        <form (ngSubmit)="submit()">
+          <div aria-label="Basic example" class="btn-group" role="group">
+            <input [(ngModel)]="search_query.name" class="btn-group1" name="name"
+                   placeholder="Restaurant Name" type="text">
+            <input [(ngModel)]="search_query.city" class="btn-group2" name="city" placeholder="City"
+                   type="text">
+            <button class="btn-form" type="submit">
+              <span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i>
+            </button>
+          </div>
+        </form>
+
+
+      </div>
+    </div>
+  </div>
+
+
+  <div class="row light-bg detail-options-wrap mt-5">
+
+    <div *ngIf="rests.length == 0; then thenBlock else elseBlock"></div>
+
+    <ng-template #thenBlock>
+
+      <div class="col-12" style="height: 355px">
+      </div>
+
+    </ng-template>
+
+    <ng-template #elseBlock>
+
+
+      <div *ngFor="let rest of rests"
+           [ngClass]="rests.length != 1 ? 'col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive': 'col-12 featured-responsive'"
+           style="margin: auto">
+        <div class="featured-place-wrap">
+          <a routerLink="/restaurant/{{rest.id}}">
+            <img alt="#" class="img-fluid" src="data:image/png;base64,{{rest.photo}}" style="height: 35em">
+            <span *ngIf="rest.avg_score < 5.5" class="featured-rating-orange">{{ rest.avg_score }}</span>
+            <span *ngIf="rest.avg_score >= 5.5" class="featured-rating-green">{{ rest.avg_score }}</span>
+          </a>
+          <div class="featured-title-box">
+            <div class="container row">
+              <a routerLink="/restaurant/{{rest.id}}">
+                <h6>{{ rest.name }}&nbsp;&nbsp;</h6>
+              </a>
+              <div *ngIf="rest.is_favorite != null">
+                <a (click)="rest.is_favorite ? removeFromFavorites(rest, $event) : addToFavorites(rest, $event)"
+                   [ngStyle]="{'color': rest.is_favorite ?  'red' : ''}" class="ti-heart"
+                   href="javascript:void(0)"
+                   id="rest{{rest.id}}"></a>
+              </div>
+            </div>
+            <a routerLink="/restaurant/{{rest.id}}">
+              <p>Restaurant </p> <span>• </span>
+              <p>{{ rest.n_of_reviews }} Reviews</p>
+              <ul>
+                <li><span class="icon-location-pin"></span>
+                  <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+                </li>
+                <li><span class="icon-screen-smartphone"></span>
+                  <p>{{ rest.phone_number }}</p>
+                </li>
+              </ul>
+            </a>
+          </div>
+        </div>
+      </div>
+
+
+    </ng-template>
+
+  </div>
+</div>
+

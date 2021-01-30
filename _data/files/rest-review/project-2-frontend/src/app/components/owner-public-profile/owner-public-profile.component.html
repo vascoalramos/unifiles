@@ -1,0 +1,66 @@
+<div class="container-login100 mt-5">
+  <div class="wrap-login100 wea pt-5 pb-5">
+
+    <form class="login100-form validate-form flex-sb flex-w" id="login-form">
+
+      <span class="login100-form-title pb-5">Owner</span>
+
+      <h5 class="text-center">Details</h5>
+      <hr>
+
+      <div class="row">
+        <div class="follow-img col-3" style="text-align: left">
+          <img alt="#" class="img-fluid" id="photo" src="data:image/png;base64,{{owner.photo}}"
+               style="max-height: 15em">
+        </div>
+        <div class="col-9 mt-5">
+          <div class="mb-5"><h6><b>Name: </b>{{owner.first_name}} {{owner.last_name}}</h6></div>
+          <div class="mb-5"><h6><b>Phone Number: </b>{{owner.phone_number}}</h6></div>
+          <div><h6><b>Email: </b>{{owner.email}}</h6></div>
+        </div>
+      </div>
+    </form>
+
+    <h5 class="text-center mt-5">Restaurants <span class="badge badge-pill badge-dark">{{owner.rests.length}}</span>
+    </h5>
+    <hr>
+  </div>
+  <div class="row light-bg detail-options-wrap">
+    <div *ngFor="let rest of owner.rests"
+         [ngClass]="owner.rests.length != 1 ? 'col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive': 'col-12 featured-responsive'"
+         style="margin: auto">
+      <div class="featured-place-wrap">
+        <a routerLink="/restaurant/{{rest.id}}">
+          <img alt="#" class="img-fluid" src="data:image/png;base64,{{rest.photo}}" style="height: 35em">
+          <span *ngIf="rest.avg_score < 5.5" class="featured-rating-orange">{{ rest.avg_score }}</span>
+          <span *ngIf="rest.avg_score >= 5.5" class="featured-rating-green">{{ rest.avg_score }}</span>
+        </a>
+        <div class="featured-title-box">
+          <div class="container row">
+            <a routerLink="/restaurant/{{rest.id}}">
+              <h6>{{ rest.name }}&nbsp;&nbsp;</h6>
+            </a>
+            <div *ngIf="rest.is_favorite != null">
+              <a (click)="rest.is_favorite ? removeFromFavorites(rest, $event) : addToFavorites(rest, $event)"
+                 [ngStyle]="{'color': rest.is_favorite ?  'red' : ''}" class="ti-heart"
+                 href="javascript:void(0)"
+                 id="rest{{rest.id}}"></a>
+            </div>
+          </div>
+          <a routerLink="/restaurant/{{rest.id}}">
+            <p>Restaurant </p> <span>• </span>
+            <p>{{ rest.n_of_reviews }} Reviews</p>
+            <ul>
+              <li><span class="icon-location-pin"></span>
+                <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+              </li>
+              <li><span class="icon-screen-smartphone"></span>
+                <p>{{ rest.phone_number }}</p>
+              </li>
+            </ul>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="frequencies">
+        <item>Does not repeat</item>
+        <item>Every day</item>
+        <item>Every week</item>
+        <item>Every month</item>
+        <item>Custom...</item>
+    </string-array>
+    <string-array name="frequencies2">
+        <item>Day</item>
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+    </string-array>
+
+    <string-array name="types">
+        <item>WALLET</item>
+        <item>CARD</item>
+    </string-array>
+
+    <string-array name="types2">
+        <item>Any</item>
+        <item>Income</item>
+        <item>Expense</item>
+        <item>Loan</item>
+    </string-array>
+
+    <string-array name="dates">
+        <item>Any</item>
+        <item>Today</item>
+        <item>This month</item>
+        <item>This year</item>
+        <item>Specific date...</item>
+
+    </string-array>
+</resources>

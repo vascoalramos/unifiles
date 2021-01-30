@@ -1,0 +1,74 @@
+<!--============================= HEADER =============================-->
+<div class="nav-menu">
+  <div class="bg transition">
+    <div class="container-fluid fixed is-sticky">
+      <div class="row">
+        <div class="col-md-12">
+          <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" routerLink="">RestReview</a>
+            <button aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation"
+                    class="navbar-toggler" data-target="#navbarNavDropdown" data-toggle="collapse"
+                    type="button">
+              <span class="icon-menu"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+              <ul class="navbar-nav">
+                <li *ngIf="noToken()" class="nav-item">
+                  <a class="btn btn-outline-light top-btn" routerLink="/list-restaurants">Search</a>
+                </li>
+                <li *ngIf="!noToken()" class="nav-item">
+                  <a class="nav-link" routerLink="/list-restaurants">Search</a>
+                </li>
+                <li *ngIf="!noToken() && getUserType() == 'owner'" class="nav-item">
+                  <a class="nav-link" routerLink="/new-restaurant">New Restaurant</a>
+                </li>
+                <li *ngIf="!noToken() && getUserType() == 'owner'" class="nav-item">
+                  <a class="nav-link" routerLink="/my-restaurants">My Restaurants</a>
+                </li>
+                <li *ngIf="!noToken() && getUserType() == 'client'" class="nav-item">
+                  <a class="nav-link" routerLink="/my-favorites">My Favorites</a>
+                </li>
+                <li *ngIf="!noToken() && getUserType() == 'client'" class="nav-item">
+                  <a class="nav-link" routerLink="/client">Profile</a>
+                </li>
+                <li *ngIf="!noToken() && getUserType() == 'owner'" class="nav-item">
+                  <a class="nav-link" routerLink="/owner">Profile</a>
+                </li>
+                <li *ngIf="!noToken()" class="nav-item">
+                  <a (click)="logout()" class="nav-link" href="javascript:void(0)">Logout</a>
+                </li>
+                <li *ngIf="noToken()" class="nav-item">
+                  <a class="btn btn-outline-light top-btn" routerLink="/register">Register</a>
+                </li>
+                <li *ngIf="noToken()" class="nav-item">
+                  <a class="btn btn-outline-light top-btn" routerLink="/login">Login</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--//END HEADER -->
+
+<router-outlet></router-outlet>
+
+<!--============================= FOOTER =============================-->
+<footer class="main-block dark-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="copyright">
+          <ul>
+            <li><a href="#"><span class="ti-facebook"></span></a></li>
+            <li><a href="#"><span class="ti-twitter-alt"></span></a></li>
+            <li><a href="#"><span class="ti-instagram"></span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--//END FOOTER -->

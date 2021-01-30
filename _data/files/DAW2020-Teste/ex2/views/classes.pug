@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  .container-fluid.my-5
+    h1.text-center
+      b CLAV: Lista de Classes Nível 1
+
+    h5.pt-4.text-center Bem-vindo ao exercício nº2 do teste de DAW, ano letivo 2020/2021. Esta é a página das Classes, com a lista de todas as classes de nível 1.
+
+    .text-center.mt-4
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]
+
+    .mt-4
+      table.table
+        thead.thead-dark
+          tr
+            th Código
+            th Título
+        tbody
+          each c in classes
+            tr
+              td
+                a(href=`/classes/c${c.codigo}`)= c.codigo
+              td= c.titulo
+
+    .text-center
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]
