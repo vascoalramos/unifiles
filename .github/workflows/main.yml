@@ -26,7 +26,6 @@ jobs:
                 
             - name: Commit Env file
               run: |
-                git config --global user.name vascoalramos
                 git add -f .env
                 git commit -m "Add Env file"
                     
