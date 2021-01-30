@@ -1,6 +1,6 @@
-var express = require("express");
-var router = express.Router();
-var passport = require("passport");
+const express = require("express");
+const router = express.Router();
+const passport = require("passport");
 const axios = require("axios");
 
 function onlyUnique(value, index, self) {
@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
         if (err || !user) res.redirect("/auth/login");
         if (user) {
             axios
-                .get("/resources", { headers: { Cookie: `token=${req.cookies.token}`} })
+                .get("/resources", { headers: { Cookie: `token=${req.cookies.token}` } })
                 .then((data) => {
                     data.data.resources.forEach((ele) => {
                         ele.tags.forEach((tag) => {
