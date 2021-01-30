@@ -74,3 +74,32 @@ module.exports.CommentsInsert = (data) => {
         );
     });
 };
+
+module.exports.Rating = (data) => {
+    return new Promise(function (resolve, reject) {
+        Resource.findOne(
+            {
+                _id: data.resource_id,
+            },
+            function (error, item) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    var currentScore = item.rating.score;
+                    var currentVotes = item.rating.votes;
+
+                    item.rating.score = currentScore + parseInt(data.rating);
+                    item.rating.votes += 1; 
+
+                    item.save()
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                }
+            },
+        );
+    });
+};
