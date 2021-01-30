@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node create_dataset.js",
         "bagit": "node bag_files.js",
+        "zipit": "node zip_bags.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
