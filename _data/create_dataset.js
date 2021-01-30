@@ -1,6 +1,6 @@
 const { createUsers, createResources } = require("./populate");
 
-const NUMBER_OF_RECORDS = 5000;
+const NUMBER_OF_RECORDS = 10;
 const RESOURCE_TYPES = ["article", "thesis", "book", "report", "aplication"];
 
 let main = async () => {
@@ -8,7 +8,11 @@ let main = async () => {
     let users = await createUsers(NUMBER_OF_RECORDS);
 
     console.log("Populate resources...");
-    await createResources(users, NUMBER_OF_RECORDS);
+    await createResources(
+        users.filter((user) => user.is_active),
+        2 * NUMBER_OF_RECORDS,
+        RESOURCE_TYPES,
+    );
 
     console.log("Finished population");
 };

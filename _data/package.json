@@ -5,6 +5,7 @@
     "main": "create_dataset.js",
     "scripts": {
         "start": "node create_dataset.js",
+        "bagit": "node bag_files.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
@@ -21,6 +22,7 @@
         "axios": "^0.21.1",
         "faker": "^5.2.0",
         "fs-path": "0.0.25",
+        "glob": "^7.1.6",
         "node-zip": "^1.1.1"
     }
 }
