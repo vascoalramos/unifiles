@@ -1,7 +1,0 @@
-Bugs:
-
-    -> Mostrar a frequência no dialogo de confirmação
-    -> Tirar o menos nas expenses e nos lends
-    -> O payday está a tomar o comportamento de uma data de registo
-    -> No move to card ou to wallet o botao de confirm passa a dizer "transfer" e cria um modal de confirmacao
-    -> Graficos exemplos no paint
