@@ -37,9 +37,15 @@ $(document).ready(function () {
         e.preventDefault();
         registerUser();
     });
+
     $("#filter-confirm").click(function (e) {
         e.preventDefault();
         applyFilter();
+    });
+
+    $("#recover-password-confirm").click(function (e) {
+        e.preventDefault();
+        recoverPassword();
     });
 
     // Upload confirm
@@ -47,6 +53,7 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
+
     $("#tags").keyup(function (e) {
         var code = e.keyCode || e.which;
         if (
@@ -185,6 +192,29 @@ function loginUser() {
             },
             error: function (errors) {
                 displayErrors("#form-login", errors);
+            },
+        },
+        false,
+    );
+}
+
+
+function recoverPassword() {
+    var data = $("#form-recover-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "POST",
+            enctype: "multipart/form-data",
+            url: host + "/api/users/recoverPassword",
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                
+            },
+            error: function (errors) {
+                displayErrors("#form-register", errors);
             },
         },
         false,

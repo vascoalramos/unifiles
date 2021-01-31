@@ -3,9 +3,29 @@ const router = express.Router();
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
 const User = require("../../controllers/users");
+const app = express();
+const mailer = require('express-mailer');
+const path = require("path");
+const jwt = require('jsonwebtoken');
 
 var passwordValidator = require("password-validator");
 var schemaPassValidator = new passwordValidator();
+var siteLink = 'http://localhost:3000';
+
+app.set("views", path.join(__dirname, "../../views/emails"));
+app.set("view engine", "pug");
+
+mailer.extend(app, {
+    from: process.env.FROM_EMAIL,
+    host: process.env.HOST_EMAIL, // hostname
+    secureConnection: false, // use SSL
+    port: process.env.PORT_EMAIL, // port for secure SMTP
+    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+    auth: {
+      user: process.env.AUTH_EMAIL,
+      pass: process.env.AUTH_PASSWORD
+    }
+});
 
 // Strong password
 schemaPassValidator
@@ -170,5 +190,58 @@ router.get("/:username", (req, res) => {
             res.status(400).jsonp(error);
         });
 });
+
+router.post(
+    "/recoverPassword",
+    [
+        body("email").isEmail().withMessage("Email field must be an email."),
+    ],
+    (req, res) => {
+        let data = req.body;
+        var generalErrors = [];
+        var errors = validationResult(req);
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0)
+            return res.status(400).json({ generalErrors });
+
+        User.findByAuthEmail(data.email)
+            .then((user) => {
+
+                if (user == null) {
+                    generalErrors.push({ field: 'email', msg: 'No account found with that email address!' });
+
+                    return res.status(400).json({ generalErrors });
+                }
+
+                const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET_KEY, {
+                    expiresIn: parseInt(process.env.JWT_SECRET_TIME_RECOVER_PASSWORD),
+                });
+                
+                var mailOptions = {
+                    to: data.email,
+                    subject: 'Recover Password',
+                    data: {link: siteLink + '/auth/recoverPassword/' + token}
+                }
+
+                // Send an email
+                app.mailer.send('recover-password', mailOptions, function (err, message) {
+                    if (err)
+                        res.status(502).jsonp(err);
+                    else {
+                        res.cookie('recover_token', token);
+
+                        res.status(200).jsonp(user);
+                    }
+                });
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });        
+    },
+);
 
 module.exports = router;

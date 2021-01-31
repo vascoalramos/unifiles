@@ -74,6 +74,14 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
     }
 });
 
+router.get("/recoverPassword", (req, res) => {
+    res.render("recover-password", { title: "Recover" });
+});
+
+router.get("/recoverPassword/:id", (req, res) => {
+    res.render("recover-password", { title: "Recover" });
+});
+
 /*****************/
 /* AUX FUNCTIONS */
 /*****************/
