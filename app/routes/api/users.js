@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+
+const { isSelf } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 
 var passwordValidator = require("password-validator");
@@ -167,6 +169,29 @@ router.get("/:username", (req, res) => {
         })
         .catch((error) => {
             console.log(error.toString());
+            res.status(400).jsonp(error);
+        });
+});
+
+router.get("/:username/resources", passport.authenticate("jwt", { session: false }), isSelf, (req, res) => {
+    let lim = req.query.lim;
+    let skip = req.query.skip;
+    let userId = req.user._id;
+    let response = {};
+
+    User.listResources(userId, Number(skip), Number(lim))
+        .then((data) => {
+            response["resources"] = data;
+            User.getTotalResources(userId)
+                .then((data) => {
+                    response["total"] = data;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    res.status(400).jsonp(error);
+                });
+        })
+        .catch((error) => {
             res.status(400).jsonp(error);
         });
 });

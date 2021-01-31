@@ -89,7 +89,7 @@ function checkImage(files, pathFolder) {
     }
 }
 
-function storeResource(files, image, pathFolder) {
+function storeResource(files, pathFolder) {
     files.forEach((file) => {
         if (file.type !== "directory") {
             fsPath.writeFile("app/" + pathFolder + "/content/" + file.path, file.data, function (err) {
@@ -208,15 +208,15 @@ router.delete(
         var generalErrors = [];
         var errors = validationResult(req);
         const { user } = req;
-        
+
         errors.errors.forEach((element) => {
             generalErrors.push({ field: element.param, msg: element.msg });
         });
 
         if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
 
-        var finalData = { resource_id: data.resource_id, comment_index: commentId}
-        
+        var finalData = { resource_id: data.resource_id, comment_index: commentId };
+
         Resources.DeleteComment(finalData)
             .then((newData) => {
                 var dataReturn = {
@@ -261,14 +261,14 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
         if (err) {
-            next(err);
-            return;
+            console.log(err);
+            return res.status(500).jsonp(err);
         }
         if (uploads.files.size > 0) {
             // single upload
 
             if (fileFilter(uploads.files.name)) {
-                if (uploads.image.size > 0) {
+                if (uploads.image && uploads.image.size > 0) {
                     imagePathFinal = checkImage(uploads, pathFolder);
                 }
 
@@ -294,7 +294,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                             subject: fields.subject,
                             tags: fields.tags,
                         };
-                        storeResource(filesDecompressed, uploads.image, pathFolder);
+                        storeResource(filesDecompressed, pathFolder);
                         saveResource(data, res);
                     } else {
                         res.status(400).jsonp("The package is not valid");

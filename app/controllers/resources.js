@@ -35,6 +35,7 @@ module.exports.GetAll = (skip, lim) => {
         }
       ])
 };
+
 module.exports.insert = (resource) => {
     var newResource = new Resource(resource);
     return newResource.save();
