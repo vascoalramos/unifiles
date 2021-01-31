@@ -32,9 +32,9 @@ $(document).ready(function () {
         e.preventDefault();
         loginUser();
     });
-    $('.x[data-show-id]').each(function(index){
+    $(".x[data-show-id]").each(function (index) {
         var $el = $(this);
-        $el.html(mydiff($el.attr('data-show-id')));
+        $el.html(mydiff($el.attr("data-show-id")));
     });
     $("#register-confirm").click(function (e) {
         e.preventDefault();
@@ -52,13 +52,13 @@ $(document).ready(function () {
     });
     $(document).on("change keyup", "#tags", function (e) {
         var code = e.keyCode || e.which;
-       
+
         if (
-            code == 13 &&
-            $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
-            $(".removeTag").length < 5 &&
-            $.trim($(this).val()) != ""
-            || e.type=="change"
+            (code == 13 &&
+                $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
+                $(".removeTag").length < 5 &&
+                $.trim($(this).val()) != "") ||
+            e.type == "change"
         ) {
             //Enter keycode
             $("#tags").before(
@@ -150,19 +150,19 @@ $(document).ready(function () {
 
     // Click on the stars
     $(".rating").on("click", "input:radio[name=rating]", function () {
-        applyRating($('input:radio[name=rating]:checked').val())
+        applyRating($("input:radio[name=rating]:checked").val());
     });
 
     // Delete comments
     $(document).on("click", ".delete-comment", function (e) {
         e.preventDefault();
-        deleteComments($(this).attr('id'));
+        deleteComments($(this).attr("id"));
     });
 });
 
 function deleteComments(commentId) {
     var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
-    var data = { resource_id: _id }
+    var data = { resource_id: _id };
 
     $.ajax(
         {
@@ -183,7 +183,7 @@ function deleteComments(commentId) {
 
 function applyRating(value) {
     var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
-    var data = { rating: value, resource_id: _id }
+    var data = { rating: value, resource_id: _id };
 
     $.ajax(
         {
@@ -192,7 +192,11 @@ function applyRating(value) {
             url: host + "/api/resources/comments/rating",
             data: data,
             success: function (result) {
-                $(".rating").children().bind('click', function(){ return false; }); // lock rating
+                $(".rating")
+                    .children()
+                    .bind("click", function () {
+                        return false;
+                    }); // lock rating
             },
             error: function (errors) {
                 console.log(errors);
@@ -276,8 +280,8 @@ function uploadContent() {
                 location.reload();
             },
             error: function (errors) {
-                displayErrors("#form-upload", errors);           
-             },
+                displayErrors("#form-upload", errors);
+            },
         },
         false,
     );
@@ -319,10 +323,9 @@ function replyCommentResource(id) {
             success: function (data) {
                 removeErrors(); // Remove errors
                 updateScrollComments(data);
-                if(id=="form-add-comment"){
-                    $("#comment").val('');
+                if (id == "form-add-comment") {
+                    $("#comment").val("");
                 }
-                
             },
             error: function (errors) {
                 alert(errors.responseJSON.generalErrors[0].msg);
@@ -348,54 +351,61 @@ function updateScrollComments(data) {
 
     data.data.comments.forEach((element) => {
         var commentDate = new Date(element.date);
-        var showmdiff = mydiff(commentDate.getTime())
+        var showmdiff = mydiff(commentDate.getTime());
 
         var idForm = "form-reply-comment-" + index;
 
         var Htmlaux = $("<span></span>").text(element.description);
-        $(".scroll-comments").append(`
+        $(".scroll-comments").append(
+            `
             <div class='resource-comment'>
-                `+
-                    (data.user_id == element.author._id
-                        ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
-                           <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index}>Delete</span></div>` 
-                        : `` 
-                    )
-                +
+                ` +
+                (data.user_id == element.author._id
+                    ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
+                           <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index}>Delete</span></div>`
+                    : ``) +
                 `<div class='resource-comment-info'>
                     <p class='resource-comment-author'>${element.author.name}</p>
-                    <span class='resource-general-color'>`+$(Htmlaux).html()+`</span>
+                    <span class='resource-general-color'>` +
+                $(Htmlaux).html() +
+                `</span>
                 </div>
             </div>
             <span class='resource-comment-date'>${showmdiff} ago</span>
             
-        `);
-        
+        `,
+        );
+
         element.comments.forEach((el) => {
             var Htmlauxsub = $("<span></span>").text(el.description);
             var commentDatesub = new Date(el.date);
-            var showmdiff = mydiff(commentDatesub.getTime())
-            
-            $(".scroll-comments").append(`
+            var showmdiff = mydiff(commentDatesub.getTime());
+
+            $(".scroll-comments").append(
+                `
                     <div class="resource-comment resource-comment-reply">
-                        `+
-                            (data.user_id == el.author._id
-                                ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
-                                <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index + '-' + index_reply}>Delete</span></div>` 
-                                : `` 
-                            )
-                        +
-                        `<div class="resource-comment-info">
+                        ` +
+                    (data.user_id == el.author._id
+                        ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
+                                <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${
+                                    index + "-" + index_reply
+                                }>Delete</span></div>`
+                        : ``) +
+                    `<div class="resource-comment-info">
                             <p class="resource-comment-author">${el.author.name}</p>
-                            <span class="resource-general-color">`+$(Htmlauxsub).html()+`</span>
+                            <span class="resource-general-color">` +
+                    $(Htmlauxsub).html() +
+                    `</span>
                         </div>
                     </div>
                     <span class="resource-comment-date reply-date">${showmdiff} ago</span>
                 </div>
-            `);
+            `,
+            );
             index_reply++;
         });
-        $(".scroll-comments").append(`<form class="needs-validation" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
+        $(".scroll-comments")
+            .append(`<form class="needs-validation" id=${idForm} method="POST" enctype="multipart/form-data" novalidate="">
         <div class="form-group reply_comment">
             <input type="hidden" name="comment_index" value="${index}"/>
             <input type="hidden" name="user_id" value="${data.user_id}"/>
@@ -409,41 +419,37 @@ function updateScrollComments(data) {
                     </button>
                 </div>
             </div>
-    </form>`)
+    </form>`);
         index++;
     });
-    
-    document.getElementById("collapseComments").scrollTop = document.getElementById(
-        "collapseComments",
-    ).scrollHeight;
+
+    document.getElementById("collapseComments").scrollTop = document.getElementById("collapseComments").scrollHeight;
 }
 
 function mydiff(date1) {
-    var second=1000, minute=second*60, hour=minute*60, day=hour*24, week=day*7;
+    var second = 1000,
+        minute = second * 60,
+        hour = minute * 60,
+        day = hour * 24,
+        week = day * 7;
     date1 = new Date(date1).getTime();
     date2 = new Date().getTime();
     var timediff = date2 - date1;
     if (isNaN(timediff)) return NaN;
-    var showdiff=0;
+    var showdiff = 0;
     showdiffWeek = Math.floor(timediff / week);
-    showdiffDay = Math.floor(timediff / day); 
-    cshowdiffHour = Math.floor(timediff / hour); 
+    showdiffDay = Math.floor(timediff / day);
+    cshowdiffHour = Math.floor(timediff / hour);
     showdiffMinute = Math.floor(timediff / minute);
     showdiffSecond = Math.floor(timediff / second);
 
-    if(showdiffSecond <= 59)
-        showdiff = showdiffSecond + " seconds";
-    else if(showdiffMinute <= 59)
-        showdiff = showdiffMinute + " minutes";
-    else if(cshowdiffHour < 24)
-        showdiff = cshowdiffHour + " hours";
-    else if(showdiffDay <= 7)
-        showdiff = showdiffDay + " days";
-    else if(showdiffWeek > 7)
-        showdiff = showdiffWeek + " weeks"; 
-    else
-        showdiff = undefined
-    
+    if (showdiffSecond <= 59) showdiff = showdiffSecond + " seconds";
+    else if (showdiffMinute <= 59) showdiff = showdiffMinute + " minutes";
+    else if (cshowdiffHour < 24) showdiff = cshowdiffHour + " hours";
+    else if (showdiffDay <= 7) showdiff = showdiffDay + " days";
+    else if (showdiffWeek > 7) showdiff = showdiffWeek + " weeks";
+    else showdiff = undefined;
+
     return showdiff;
 }
 function editProfile(username) {
@@ -489,7 +495,7 @@ function deleteAccount(username) {
 function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
-    console.log(errors.responseJSON)
+    console.log(errors.responseJSON);
     if (errors.responseJSON.error != undefined) {
         errors.responseJSON.error.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
@@ -509,9 +515,6 @@ function removeErrors() {
     $("div .year .error-format").empty();
     $("div .files .error-format").remove();
     $("div .description .error-format").empty();
-
-
-
 
     $("div .first_name .error-format").empty();
     $("div .last_name .error-format").empty();
@@ -572,6 +575,7 @@ $(document).on("click", ".maincontainer", function () {
     $(".rightmenu.show").toggleClass("show");
     $(".maincontainer.hide").toggleClass("hide");
 });
+
 function addDataToDOM(data) {
     if (data.resource.length == 0) {
         $(".feed").append(`
@@ -582,65 +586,66 @@ function addDataToDOM(data) {
         data.resource.forEach((element) => {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
-            var overallRating = (element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1));
-            var pathImg="";
-            if(element.image == "/images/ResourceDefault.png")
-                pathImg = "/images/ResourceDefault.png"
-            else
-                pathImg = "/api/resources/"+element._id+"/image"
+            var overallRating =
+                element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
+            var pathImg = "";
+            if (element.image == "/images/ResourceDefault.png") pathImg = "/images/ResourceDefault.png";
+            else pathImg = "/api/resources/" + element._id + "/image";
 
-            
-            resourceElement.innerHTML = `
-            <div class="" style="width: 100%;display: flex;flex-direction: column;">
-                <div class="resource-user-info">
-                    <div class="d-flex" style="align-items:center">
-                        <img src="${element.author.avatar}" />
-                        <div class="d-flex ml-1" style="flex-direction:column">
-                            <span class="m-0">${element.author.first_name + " " +element.author.last_name}</span>
-                            <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
+            resourceElement.innerHTML =
+                `
+                <div class="" style="width: 100%;display: flex;flex-direction: column;">
+                    <div class="resource-user-info">
+                        <div class="d-flex" style="align-items:center">
+                            <img src="${element.author.avatar}" />
+                            <div class="d-flex ml-1" style="flex-direction:column">
+                                <span class="m-0">${element.author.first_name + " " + element.author.last_name}</span>
+                                <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
+                            </div>
                         </div>
-                    </div>
                 
-                    <div class="d-flex" >
-                        <div class="resource-rating mr-2" style="font-size:14px">
-                            ${overallRating}<i class="fa fa-star"> </i>(${element.rating.votes})
-                        </div>
-
-                        <div class="dropdown dropleft" style="font-size: 26px;line-height: 25px;">
-                            <button class="dropdown-toggle p-0 m-0 customDropLeft" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background:transparent;border:0;outline:none!important;">
-                                <i class="fal fa-ellipsis-v"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="d-flex" >
+                            <div class="resource-rating mr-2" style="font-size:14px">
+                                ${overallRating}<i class="fa fa-star"> </i>(${element.rating.votes})
+                            </div>
+                            <div class="dropdown dropleft" style="font-size: 26px;line-height: 25px;">
+                                <button class="dropdown-toggle p-0 m-0 customDropLeft" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background:transparent;border:0;outline:none!important;">
+                                    <i class="fal fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
+                (location.pathname === "/myResources"
+                    ? `  <a class="dropdown-item" href="/resources/${element._id}">Edit</a>
+                                    <a class="dropdown-item" href="#">Delete</a>`
+                    : "") +
+                `
+                            </div>
                             </div>
                         </div>
                     </div>
+                    <img src="${pathImg}"  class="card-img-top mt-4" style="margin: 0 auto;width:50%;" alt="${
+                    element.image
+                }">
+                    <div class="card-body">
+                        <a class="resource-link" href="resources/${element._id}">
+                            <h2 class="resource-title card-title">${element.subject}</h2>
+                            <p class="resource-description card-text">${element.description}</p>
+                        </a>
+                    </div>
                 </div>
-                <img src="${pathImg}"  class="card-img-top mt-4" style="margin: 0 auto;width:50%;" alt="${element.image}">
-
-            <div class="card-body">
-                <a class="resource-link" href="resources/${element._id}">
-                    <h2 class="resource-title card-title">${element.subject}</h2>
-                    <p class="resource-description card-text">${element.description}</p>
-                </a>
-            </div>
-            </div>`+
-                // <div class="resource-user-info">
-                //     <img src="/api/resources/${element._id}/image" alt="${element.image}" />
-                //     <span>${element.author.name}</span>
-                // </div>
-                `
-                
-               
                 <div class="resource-tags m-0 float-none text-right">
                     ${Object.keys(element.tags)
                         .map(function (key) {
-                            return "<a style='font-size:14px;' href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
+                            return (
+                                "<a style='font-size:14px;' href='#" +
+                                element.tags[key] +
+                                "'" +
+                                ">#" +
+                                element.tags[key] +
+                                "</a>"
+                            );
                         })
-                        .join(" ")}
-                       
+                        .join(" ")}   
                 </div>
             `;
             document.getElementById("feed").append(resourceElement);

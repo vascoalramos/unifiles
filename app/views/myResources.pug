@@ -11,16 +11,14 @@ block content
   
   script.
     if (location.pathname == "/myResources") getMyResource();
-    console.log("hi")
 
     async function getMyResource() {
       counterGetResource++;
       skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
-      console.log("hi2")
 
       if (skipGetResource <= totalResource) {
           const resourceResponse = await fetch(
-              host + `/api/users/vr/resources?skip=${skipGetResource}&lim=${limitGetResource}`,
+              host + `/api/users/#{user.username}/resources?skip=${skipGetResource}&lim=${limitGetResource}`,
           );
           const resourceData = await resourceResponse.json();
           const data = { resource: resourceData.resources };
@@ -28,4 +26,21 @@ block content
 
           addDataToDOM(data);
       } else document.querySelector(".loading").classList.remove("show");
+    }
+
+    window.addEventListener("scroll", () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+      if (clientHeight + scrollTop >= scrollHeight - 5) {
+          if (location.pathname == "/myResources")
+              // show the loading animation
+              showLoading();
+      }
+    });
+
+    function showLoading() {
+        document.querySelector(".loading").classList.add("show");
+
+        // load more data
+        setTimeout(getMyResource, 1000);
     }
