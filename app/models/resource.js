@@ -45,7 +45,7 @@ const resourceSchema = new mongoose.Schema({
     },
     image: {
         type: String,
-        default: "images/ResourceDefault.jpeg",
+        default: "images/ResourceDefault.png",
     },
     type: {
         type: String,
