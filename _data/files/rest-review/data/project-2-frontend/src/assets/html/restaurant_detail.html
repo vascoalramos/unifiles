@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Restaurant Detail {% endblock %}
+
+{% block style %}
+<!-- Swipper Slider -->
+<link href="{% static 'css/swiper.min.css' %}" rel="stylesheet">
+<!-- Magnific Popup CSS -->
+<link href="{% static 'css/magnific-popup.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container-login100 mt-5">
+  <!--//END BOOKING -->
+  <!--============================= RESERVE A SEAT =============================-->
+  <section class="reserve-block">
+    <div class="jumbotron"
+         style="height: 350px; background-image: url('{{ 'data:image/png;base64,'|add:rest.photo }}'); background-position: center center; background-repeat: no-repeat;background-size: cover;">
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="row">
+            <h5>{{ rest.name }}</h5>
+            {% if is_authenticated and request.user.groups.all.0.name == "clients_group" %}
+            <form class="pl-3" method="post">
+              {% csrf_token %}
+              {% if is_favorite %}
+              <button class="ti-heart" name="fav" style="color:red"
+                      type="Submit"></button>
+              {% else %}
+              <button class="ti-heart" name="fav" type="Submit"></button>
+              {% endif %}
+            </form>
+            {% endif %}
+          </div>
+          <p class="reserve-description" style="color: white">
+            aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+        </div>
+        <div class="col-md-6">
+          <div class="reserve-seat-block">
+            <div class="reserve-rating">
+              <span>{{ rest.average_score }}</span>
+            </div>
+            {% if is_authenticated and request.user.groups.all.0.name == "clients_group" %}
+            <div class="review-btn">
+              <btn class="btn btn-outline-danger" data-target="#reviewModal" data-toggle="modal"
+                   href="#">WRITE A REVIEW
+              </btn>
+              <span>{{ rest.n_of_reviews }} reviews</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--//END RESERVE A SEAT -->
+  <!--============================= BOOKING DETAILS =============================-->
+  <section class="light-bg booking-details_wrap">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 responsive-wrap">
+          <div class="booking-checkbox_wrap">
+            <div class="booking-checkbox">
+              <p>{{ rest.description }}</p>
+            </div>
+          </div>
+          <div class="booking-checkbox_wrap mt-4">
+            <h5>{{ rest.n_of_reviews }} Reviews</h5>
+            {% for review in rest.reviews %}
+            <hr>
+            <div class="customer-review_wrap">
+              <a class="customer-img" href="{% url 'client' review.user.email %}">
+                <img alt="#"
+                     class="img-fluid" src="{{ 'data:image/png;base64,'|add:review.user.photo }}"
+                     style="max-width: 5em">
+                <p>{{ review.user.first_name }} {{ review.user.last_name.0 }}.</p>
+                <span>{{ review.user.n_of_reviews }} Reviews</span>
+              </a>
+              <div class="customer-content-wrap">
+                <div class="customer-content mb-5">
+                  <div class="customer-review">
+                    <h6>{{ review.title }}</h6>
+                  </div>
+                  <div class="customer-rating">{{ review.score }}</div>
+                </div>
+                <p class="customer-text">{{ review.comment }}
+                </p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-4 responsive-wrap">
+          <div class="contact-info container">
+            <!-- <img src="{% static 'images/map.jpg' %}" class="img-fluid" alt="#"> -->
+            <img
+              src="https://maps.googleapis.com/maps/api/staticmap?center={{rest.latitude}},{{rest.longitude}}&zoom=12&size=400x400&key=AIzaSyDreVs7ABmOr4iv5-gByXJK6VpY11UQNrw"/>
+            <div class="address">
+              <span class="icon-location-pin"></span>
+              <p> {{ rest.address }}<br> {{ rest.city }}<br> {{ rest.country }}</p>
+            </div>
+            <div class="address">
+              <span class="icon-screen-smartphone"></span>
+              <p>{{ rest.phone_number }}</p>
+            </div>
+          </div>
+          <a class="follow" href="{% url 'owner' rest.owner.email %}">
+            <div class="follow-img">
+              <img alt="#" class="img-fluid" src="{{ 'data:image/png;base64,'|add:rest.owner.photo }}"
+                   style="max-width: 10em">
+              <h6>{{ rest.owner.first_name }} {{ rest.owner.last_name }}</h6>
+            </div>
+            <ul class="social-counts">
+              <li style="border-right: 0">
+                <h6>{{ rest.owner.n_of_rests }}</h6>
+                <span>Restaurants</span>
+              </li>
+            </ul>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<!--//END BOOKING DETAILS -->
+
+<div aria-hidden="true" aria-labelledby="deleteModalLabel" class="modal fade" id="reviewModal" role="dialog"
+     tabindex="-1">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Write your Review: </h5>
+        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form action="" class="form-horizontal" enctype="multipart/form-data" method="post">
+        {% csrf_token %}
+        <div class="modal-body">
+
+          {{ form.title.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.title }}
+            <span class="focus-input100"></span>
+            {{ form.title.errors }}
+          </div>
+
+          {{ form.comment.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.comment }}
+            <span class="focus-input100"></span>
+            {{ form.comment.errors }}
+          </div>
+
+          {{ form.score.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.score }}
+            <span class="focus-input100"></span>
+            {{ form.score.errors }}
+          </div>
+
+          {{ form.price.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.price }}
+            <span class="focus-input100"></span>
+            {{ form.price.errors }}
+          </div>
+
+          {{ form.quality.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.quality }}
+            <span class="focus-input100"></span>
+            {{ form.quality.errors }}
+          </div>
+
+          {{ form.cleanliness.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.cleanliness }}
+            <span class="focus-input100"></span>
+            {{ form.cleanliness.errors }}
+          </div>
+
+          {{ form.speed.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.speed }}
+            <span class="focus-input100"></span>
+            {{ form.speed.errors }}
+          </div>
+
+
+          {{ form.phone_number.label_tag }}
+          <div class="wrap-input100 mb-5">
+            {{ form.phone_number }}
+            <span class="focus-input100"></span>
+            {{ form.phone_number.errors }}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" data-dismiss="modal" type="button">Cancel</button>
+          <button class="btn btn-primary" name="review" type="submit">Submit Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+{% block script %}
+<!-- Magnific popup JS -->
+<script src="{% static 'js/jquery.magnific-popup.js' %}"></script>
+<!-- Swipper Slider JS -->
+<script src="{% static 'js/swiper.min.js' %}"></script>
+<script>
+  var swiper = new Swiper('.swiper-container', {
+    slidesPerView: 3,
+    slidesPerGroup: 3,
+    loop: true,
+    loopFillGroupWithBlank: true,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+<script>
+  if ($('.image-link').length) {
+    $('.image-link').magnificPopup({
+      type: 'image',
+      gallery: {
+        enabled: true
+      }
+    });
+  }
+  if ($('.image-link2').length) {
+    $('.image-link2').magnificPopup({
+      type: 'image',
+      gallery: {
+        enabled: true
+      }
+    });
+  }
+</script>
+
+{% endblock script %}

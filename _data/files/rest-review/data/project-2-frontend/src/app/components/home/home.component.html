@@ -1,0 +1,90 @@
+<section class="slider d-flex align-items-center">
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-12">
+        <div class="slider-title_box">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="slider-content_wrap">
+                <h1>Discover great places around you</h1>
+                <h5>Let's uncover the best places to eat and drink nearest to you.</h5>
+              </div>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-10">
+              <form (ngSubmit)="search()" class="form-wrap mt-4" method="post">
+                <div aria-label="Basic example" class="btn-group" role="group">
+                  <input [(ngModel)]="search_query.name" class="btn-group1" name="name"
+                         placeholder="What are your looking for?" type="text">
+                  <input [(ngModel)]="search_query.city" class="btn-group2" name="city" placeholder="Insert a city"
+                         type="text">
+                  <button class="btn-form" type="submit"><span
+                    class="icon-magnifier search-icon"></span>SEARCH<i
+                    class="pe-7s-angle-right"></i></button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--============================= FEATURED PLACES =============================-->
+<section class="main-block light-bg">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+        <div class="styled-heading">
+          <h3>Featured Places</h3>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div *ngFor="let rest of rests"
+           [ngClass]="rests.length != 1 ? 'col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive': 'col-md-12 col-sm-12 col-lg-12 col-xl-12 featured-responsive'">
+        <div class="featured-place-wrap">
+          <a routerLink="/restaurant/{{rest.id}}">
+            <img alt="#" class="img-fluid" src="data:image/png;base64,{{rest.photo}}" style="height: 35em">
+            <span *ngIf="rest.avg_score < 5.5" class="featured-rating-orange">{{ rest.avg_score }}</span>
+            <span *ngIf="rest.avg_score >= 5.5" class="featured-rating-green">{{ rest.avg_score }}</span>
+          </a>
+          <div class="featured-title-box">
+            <div class="container row">
+              <a routerLink="/restaurant/{{rest.id}}">
+                <h6>{{ rest.name }}&nbsp;&nbsp;</h6>
+              </a>
+              <div *ngIf="rest.is_favorite != null">
+                <a (click)="rest.is_favorite ? removeFromFavorites(rest, $event) : addToFavorites(rest, $event)"
+                   [ngStyle]="{'color': rest.is_favorite ?  'red' : ''}" class="ti-heart"
+                   href="javascript:void(0)"
+                   id="rest{{rest.id}}"></a>
+              </div>
+            </div>
+            <a routerLink="/restaurant/{{rest.id}}">
+              <p>Restaurant </p> <span>• </span>
+              <p>{{ rest.n_of_reviews }} Reviews</p>
+              <ul>
+                <li><span class="icon-location-pin"></span>
+                  <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+                </li>
+                <li><span class="icon-screen-smartphone"></span>
+                  <p>{{ rest.phone_number }}</p>
+                </li>
+              </ul>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-4">
+        <div class="featured-btn-wrap">
+          <a class="btn btn-danger" routerLink="/list-restaurants">VIEW ALL</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--//END ADD LISTING -->

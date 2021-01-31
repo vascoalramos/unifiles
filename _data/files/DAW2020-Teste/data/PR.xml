@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pr SYSTEM "PR.dtd">
+<pr>
+    <meta>
+        <key>daw_teste</key>
+        <title>Teste teórico - DAW 2020/2021</title>
+        <subtitle>Relatório produzido no contexto do teste prático da cadeira de DAW do MEI, ano letivo 2020/21</subtitle>
+        <bdate>20 de Janeiro de 2021</bdate>
+        <edate>20 de Janeiro de 2021</edate>
+        <supervisor url="http://www4.di.uminho.pt/~jcr">José Carlos Ramalho</supervisor>
+    </meta>
+    <team>
+        <member id="PG42852">
+            <name>Vasco António Lopes Ramos</name>
+            <email>vascoalramos@gmail.com</email>
+            <link url="https://vascoalramos.me"></link>
+        </member>
+    </team>
+    <abstract>
+        <p>
+            O teste é composto por 2 exercícios.
+            Um primeiro com o objetivo de criar uma Rest API com base no dataset <link url="ex1/batismos.json">batismos.json</link> e um segundo para criar uma aplicação node.js para
+            representar visualmente os dados disponibilizados pela Rest API fornecida.
+        </p>
+        <p>
+            No primeiro exercício, a primeira pergunta é compor o dataset fornecido. Para isto, fiz uma abordagem com 2 fases. A primeira fase foi através
+             do VSCode e expressões Regex para tratar dos problemas, designadamente a falta de aspas as keys dos objetos e a resolução de pontuais faltas
+             de vírgulas e aspas.
+
+            A segunda fase foi, através de um script python (<link url="ex1/fix_dataset.py"></link>), inserir os novos campos pedidos utilizando o split do campo title para ir buscar a informação pedida
+            (relativamente aos progenitores) e o replace para criar o campo <i>_id</i>.
+        </p>
+        <p>A segunda pergunta, tinha que ver com não compor o dataset, algo que eu fiz (isto é, eu compus o dataset).</p>
+        <p>Para persistência foi utilizado MongoDB. Primeiro criei a bd com <i>use daw_teste</i> e depois dei import do resptivo dataset com o seguinte
+        comando: <i>mongoimport --db daw_teste --collection batismos --type json --file batismos.json --jsonArray</i></p>
+        <p>A quarta pergunta era para criar um servidor de dados nodejs. Para correr este, basta estar dentro da pasta ex1. Instalar as dependências 
+            necessárias com <i>npm i</i> e correr o servidor com: <i>npm start</i>. Este servidor está disponível em: <link url="http://localhost:7800"></link>.
+        </p>
+        <p>
+            No segundo exercício o objetivo é consumir uma api de dados e presentar a sua informação em página(s) web. Para o aquecimento, na primeira pergunta
+             existem 21 processos de nível 3, pertencentes à descendência da classe 900. Sendo estes os seguintes (ids): 900.10.001, 900.10.002, 900.10.500,
+             900.10.501, 900.10.502, 900.10.503, 900.10.504, 900.10.505, 900.20.001, 900.20.002, 900.20.200, 900.20.201, 900.20.400, 900.20.401, 900.20.402,
+             900.20.600, 900.20.601, 900.20.602, 900.20.603, 900.20.604 e 900.20.605.
+        </p>
+        <p>Respondendo à segunda pergunta do <b>aquecimento</b>, existem 637 entidades catalogas.</p>
+        <p>Respondendo à terceira pergunta do <b>aquecimento</b>, existem 8 processos (classe nivel 3) que se encontram na descendência de 900.10.</p>
+        <p>Respondendo à quarta pergunta do <b>aquecimento</b>, existem 5 processos (classe nivel 3) que estão relacionados com 900.10.505. Existe um
+            <link url="ex2/aquecimento.txt">ficheiro</link> com estas respostas, de forma sintetizada.</p>
+
+        <p>Depois do aquecimento, o segundo exercício pedia para criar uma aplicação em Node.js de forma a mostrar visualmente parte dos dados da API CLAV.
+            O primeiro passo envolvia ter um token de autenticação para poder aceder à informação. Para isto criei um <link url="ex2/utils.js">utils.js</link> com uma função, que é executada sempre que a aplicação arranca,
+            onde faço a ação de login na API através do axios e configuro o meu cliente do axios para utilizar o token recebido (enviando-o no campo
+            <b>Authorization</b> dos <i>headers</i>).
+
+            Caso este processo de login falhe é usada a API Key disponibilizada pelo professor para testes, que está guardado
+            no ficheiro <link url="ex2/.env">.env</link>.
+        </p>
+        <p>Para além de tudo o que foi pedido, foi também adicionado, na página de <b>Termos de índice</b>, <i>bookmarks</i>, de forma a ser mais fácil encontrar
+            os termos de índice referenciados pelas páginos dos processos (classes de nível 3).
+        </p>
+        <p>Para testar o ex2, basta estar dentro da página chamada "ex2", instalar as dependências (com o comando: <i>npm i</i>) e executar o servidor
+            (com o comando: <i>npm start</i>). Este servidor está disponível em: <link url="http://localhost:7801"></link>.
+        </p>
+    </abstract>
+    <deliverables>
+        <link url="ex1/">Pasta com a resolução do exercício 1</link>
+        <link url="ex2/">Pasta com a resolução do exercício 2</link>
+    </deliverables>
+</pr>

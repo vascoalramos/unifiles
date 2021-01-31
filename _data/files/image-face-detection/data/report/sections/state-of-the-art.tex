@@ -1,0 +1,9 @@
+\section{State of the art review} \label{soa}
+Detection of face and non face images is a classical problem in computer vision forming the first step to all the facial analysis methods like face recognition, face alignment and face modeling. 
+For this reason, building a system that detects faces in images can be very useful and it could be implemented in cctv systems or even in lip reading systems.
+
+Although it's a hard problem, over the years proposals of face detection applications have been made, being frequent the usage of SVM as can be found in \cite{1619082, 609310} and NN such as in \cite{5233453, 8300832} (Neural Networks are also frequently used in facial recognition as stated in \cite{8300832}). Most recently there have also been some studies to analyse which of these models are better options depending on the use-case scenario, as in \cite{7943228}, where is conducted an in-depth analysis of the advantages and disadvantages of using SVM and NN applications to perform face detection. 
+
+In addition, it is not only important to choose which model to use, but also which strategy to process the images, because the full processing of an image would be too expensive and unrealistic. Fortunately, there is also a lot of research in this field and some alternatives such as DCT and HOG, that are both explored in detail in \cite{7467714}, or even Skin Segmentation as detailed in \cite{5076875}.
+
+At last, given the small dataset that we had, we also did some research about the advantages of using data augmentation to expand our universe of examples and found a recent work done in 2019 where it is detailed how data augmentation can improve the accuracy and performance of models based on NN and CNN, details can be found in \cite{8858529}.

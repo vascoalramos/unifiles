@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} My Restaurants {% endblock %}
+
+{% block content %}
+
+<div class="container-login100 mt-5">
+  <div class="row">
+    <div class="responsive-wrap pt-5 pb-5">
+
+      <span class="login100-form-title pb-5">My Restaurants</span>
+
+      <div class="text-center pb-5">
+        <a class="btn btn-primary btn-lg " href="{% url 'add-restaurant' %}" id="edit_img">Add new
+          restaurant</a>
+      </div>
+
+
+      <div class="row light-bg detail-options-wrap">
+        {% for rest in rests %}
+        {% if rests|length == 1 %}
+        <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12 featured-responsive">
+          {% else %}
+          <div class="col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive">
+            {% endif %}
+            <div class="featured-place-wrap">
+              <a href="{% url 'restaurant-detail' rest.id %}">
+                <img alt="#" class="img-fluid" src="{{ 'data:image/png;base64,'|add:rest.photo }}"
+                     style="height: 35em">
+                {% if rest.average_score < 5.5 %}
+                <span class="featured-rating-orange">{{ rest.average_score }}</span>
+                {% else %}
+                <span class="featured-rating-green">{{ rest.average_score }}</span>
+                {% endif %}
+                <div class="featured-title-box">
+                  <h6>{{ rest.name }}</h6>
+                  <p>Restaurant </p> <span>• </span>
+                  <p>{{ rest.n_of_reviews }} Reviews</p>
+                  <ul>
+                    <li><span class="icon-location-pin"></span>
+                      <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+                    </li>
+                    <li><span class="icon-screen-smartphone"></span>
+                      <p>{{ rest.phone_number }}</p>
+                    </li>
+                  </ul>
+                  <div class="bottom-icons text-center">
+                    <a class="btn btn-primary" href="{% url 'edit-restaurant' rest.id %}">Edit Restaurant</a>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--//END DETAIL -->
+  {% endblock content %}

@@ -5,6 +5,11 @@ body {
     background-color: #e4e6eb !important;
 }
 
+.clear {
+    clear: both;
+    height: 50px;
+}
+
 a {
     color: #00b7ff;
 }
@@ -306,25 +311,25 @@ footer {
 /* Rating */
 
 .rating {
-    float:left;
+    float: left;
 }
 
 .rating:not(:checked) > input {
-    position:absolute;
-    top:-9999px;
-    clip:rect(0,0,0,0);
+    position: absolute;
+    top: -9999px;
+    clip: rect(0, 0, 0, 0);
 }
 
 .rating:not(:checked) > label {
-    float:right;
-    width:1em;
-    padding:0 .1em;
-    overflow:hidden;
-    white-space:nowrap;
-    cursor:pointer;
-    font-size:170%;
-    line-height:1.2;
-    color:#ddd;
+    float: right;
+    width: 1em;
+    padding: 0 0.1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 170%;
+    line-height: 1.2;
+    color: #ddd;
 }
 
 .rating:not(:checked) > label:before {
@@ -350,9 +355,9 @@ footer {
 }
 
 .rating > label:active {
-    position:relative;
-    top:2px;
-    left:2px;
+    position: relative;
+    top: 2px;
+    left: 2px;
 }
 
 .clearfix:before,
@@ -369,7 +374,8 @@ footer {
     *zoom: 1;
 }
 
-#status, button {
+#status,
+button {
     margin: 20px 0;
 }
 
