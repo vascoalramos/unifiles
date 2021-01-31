@@ -80,6 +80,20 @@ module.exports.updateTokens = (user) => {
     );
 };
 
-module.exports.listResources = (userId) => {
-    return Resource.find({ "author._id": userId });
+module.exports.listResources = (userId, skip = null, lim = null) => {
+    let query = Resource.find({ "author._id": userId });
+
+    if (skip) {
+        query = query.skip(skip);
+    }
+
+    if (lim) {
+        query = query.limit(lim);
+    }
+
+    return query.sort({ date_added: -1 });
+};
+
+module.exports.getTotalResources = (userId) => {
+    return Resource.find({ "author._id": userId }).countDocuments();
 };

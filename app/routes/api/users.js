@@ -174,12 +174,24 @@ router.get("/:username", (req, res) => {
 });
 
 router.get("/:username/resources", passport.authenticate("jwt", { session: false }), isSelf, (req, res) => {
-    User.listResources(req.user._id)
-        .then((resources) => {
-            res.status(200).jsonp(resources);
+    let lim = req.query.lim;
+    let skip = req.query.skip;
+    let userId = req.user._id;
+    let response = {};
+
+    User.listResources(userId, Number(skip), Number(lim))
+        .then((data) => {
+            response["resources"] = data;
+            User.getTotalResources(userId)
+                .then((data) => {
+                    response["total"] = data;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    res.status(400).jsonp(error);
+                });
         })
         .catch((error) => {
-            console.log(error.toString());
             res.status(400).jsonp(error);
         });
 });
