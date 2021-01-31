@@ -25,7 +25,7 @@ Before executing the (Node) app, make sure that MongoDb is up and running ([docs
 Starting the development server.
 
 ```bash
-npm run develop start
+npm run develop
 ```
 
 ### :package: Deployment
