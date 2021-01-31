@@ -344,6 +344,10 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     });
 });
 
+// TODO: implement edit resource
+
+// TODO: implement delete resource
+
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
     Resources.getFilters(req.query)
         .then((resources) => {
@@ -353,10 +357,6 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
             res.status(400).jsonp(error);
         });
 });
-
-// TODO: implement edit resource
-
-// TODO: implement delete resource
 
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
