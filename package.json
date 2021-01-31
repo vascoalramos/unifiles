@@ -55,7 +55,8 @@
         "verbose": false,
         "ignore": [
             "app/public/*",
-            "app/uploads/*"
+            "app/uploads/*",
+            "_data/*"
         ]
     }
 }

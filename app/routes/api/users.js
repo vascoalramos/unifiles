@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+
+const { isSelf } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 
 var passwordValidator = require("password-validator");
@@ -164,6 +166,17 @@ router.get("/:username", (req, res) => {
     User.findByAuthUsername(data)
         .then((user) => {
             res.status(200).jsonp(user);
+        })
+        .catch((error) => {
+            console.log(error.toString());
+            res.status(400).jsonp(error);
+        });
+});
+
+router.get("/:username/resources", passport.authenticate("jwt", { session: false }), isSelf, (req, res) => {
+    User.listResources(req.user._id)
+        .then((resources) => {
+            res.status(200).jsonp(resources);
         })
         .catch((error) => {
             console.log(error.toString());
