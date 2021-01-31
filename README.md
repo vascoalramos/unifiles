@@ -1,4 +1,8 @@
-# UniFiles (DAW Project)
+<p align="center">
+   <img src="https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png">
+</p>
+
+# _UniFiles_
 
 ## :rocket: Getting Started
 
