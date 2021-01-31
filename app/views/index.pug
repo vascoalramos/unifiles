@@ -1,42 +1,44 @@
 extends layout
 
 block content
-  .div(style="position:fixed;left:0;width:100%;background:white;top:56px;box-shadow:0px 8px 8px -11px black;z-index:1")
+  .div.rightmenu
     .container
       form#form-filter(method='GET', enctype='multipart/form-data')
         .row.my-3(style="align-items: center;")
-          .col-2(style="height:100%;")
+          .col-12.hedersidenav.mb-2
+            h3.pb-1 Filter
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
             input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
-          .col-2(style="height:100%;")
-            input.form-control(type="number" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
-          .col-2(style="height:100%;")
-          
-            if tags.length > 0
-              select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Tags" multiple data-live-search='true' data-style="form-control tagsInput" name="tags[]")
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+            input.form-control(type="text" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+            select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Tags" multiple data-live-search='true' data-style="form-control tagsInput" name="tags[]")
+              if tags.length > 0
                 each item in tags
                   option(data-tokens='#{item}') #{item}
-
-          .col-2(style="height:100%;")
+              else    
+                  option(disabled) No tags Available      	
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
             select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Type" multiple data-style="form-control tagsInput" name="types[]")
               option(value="article") Articles
               option(value="thesis") Theses
               option(value="book") Books
               option(value="report") Reports
               option(value="aplication") Aplications
-          .col-2(style="display: flex;align-items: center;")
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
             b.cImage(style="margin-right:6%")
               | With Image  
             label.switch.m-0
               input(type='checkbox' checked='' name="img")
               span.slider.round
-          .col-2(style="height:100%;")
+          .col-md-12.col-xl-2.mb-xl-0(style="height:100%;")
             button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
-  .container
+  .container.maincontainer(style="max-width:800px;")
     .row.m-0.mb-4
       .col-12(style="background:#ffffff;border-radius:5px;padding:5px;background-color: white;border-radius:10px;box-shadow:0px 8px 8px -11px black;")
         .row.m-0
           .col-12.py-2.px-3(style="display:flex;align-items:flex-start")
-            img.mr-3(style="border-radius:50%; " src="https://scontent-lis1-1.xx.fbcdn.net/v/t1.0-1/cp0/p40x40/95778730_3241824932516006_124736591989047296_n.jpg?_nc_cat=102&ccb=2&_nc_sid=7206a8&_nc_ohc=4iTOXrpvoxYAX-A_66_&_nc_ht=scontent-lis1-1.xx&tp=27&oh=d67b255c12fd7462a5398560dbd461cc&oe=602DF92C")
+            img.mr-3(style="border-radius:50%;width:35px" src=`${user.avatar}`)
             input.form-control(type='text' data-toggle='modal' data-target='#exampleModal' style="flex-grow:1;border-radius:20px;height:auto;padding:8px 12px;font-size: 1.0625rem;line-height: 1.34;background: #f0f2f5;" placeholder=`Queres inserir conteudo, ${user.first_name}?`)
             // Modal
             #exampleModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
@@ -46,32 +48,32 @@ block content
                     h5#exampleModalLabel.modal-title.col-12.px-0.text-center(style="font-size: 1.25rem;font-weight: bold;color: black;") Create Content
                     button.close(type='button' data-dismiss='modal' aria-label='Close' style="outline:none!important;position:absolute;top:6px;right:16px;background: #e4e6eb;margin: 0px;border-radius: 50%;padding: 6px 12px;font-size: 24px;")
                       span(aria-hidden='true') &times;
-                  form.px-4.py-3#form-upload(method='POST', enctype='multipart/form-data')
+                  form.px-4.py-3#form-upload(method='POST', enctype='multipart/form-data', novalidate='')
                     .form-group
                       .row
                         .col-12(style="display:flex;align-items: center;")
-                          img.mr-3(style="border-radius:50%; " src="https://scontent-lis1-1.xx.fbcdn.net/v/t1.0-1/cp0/p40x40/95778730_3241824932516006_124736591989047296_n.jpg?_nc_cat=102&ccb=2&_nc_sid=7206a8&_nc_ohc=4iTOXrpvoxYAX-A_66_&_nc_ht=scontent-lis1-1.xx&tp=27&oh=d67b255c12fd7462a5398560dbd461cc&oe=602DF92C")
-                          div(style="display:flex;flex-direction:column;flex-grow: 1;overflow: hidden;")
+                          img.mr-3(style="border-radius:50%;width:35px;" src=`${user.avatar}`)
+                          div.tags(style="display:flex;flex-direction:column;flex-grow: 1;overflow: hidden;")
                             p.mb-0(style="font-size:12px;") #{user.first_name} #{user.last_name} 
                             div(style="display:flex;border-bottom:1px solid black")
                               div.d-flex(style="display: flex;width: 100%;flex-wrap: wrap;")
-                                input#tags(type="text" style="border: 0;outline: none!important;flex-grow:1;font-size:12px" placeholder="Tags")
+                                input#tags(type="text" style="border: 0;outline: none!important;flex-grow:1;font-size:12px" placeholder="Tags"  required='')
                       .row.mt-3
-                        .col-4.pr-1
-                          input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
-                        .col-4.pl-1
-                          input.form-control(type="number" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
-                        .col-4.pl-1
+                        .col-4.pr-1.subject
+                          input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title" required='')
+                        .col-4.pl-1.year
+                          input.form-control(type="number" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year" required='')
+                        .col-4.pl-1.type
                           .input-group
-                            select#inputGroupSelect01.custom-select(style="font-size:12px" name="type")
-                              option(selected='') Type
+                            select#inputGroupSelect01.custom-select(style="font-size:12px" name="type" required='')
+                              option(value='') Type
                               option(value="article") Article
                               option(value="thesis") These
                               option(value="book") Book
                               option(value="report") Report
                               option(value="aplication") Aplication
-                        .col-12
-                          textarea.form-control(type='text' name="description" rows="6" cols="50" style="font-size: 14px;height: auto;outline:none!important;box-shadow: none;border:none;resize:none;border-radius:20px;padding:8px 12px;" placeholder=`Do you want insert content, ${user.first_name}?`)
+                        .col-12.description
+                          textarea.form-control(required='' type='text' name="description" rows="6" cols="50" style="font-size: 14px;height: auto;outline:none!important;box-shadow: none;border:none;resize:none;border-radius:20px;padding:8px 12px;" placeholder=`Do you want insert content, ${user.first_name}?`)
                         .col-12(style="font-size:12px")
                           .row(style="margin:0;border:1px solid #e4e6eb;")
                             .col-5.my-auto.mx-0(style="margin: auto;")
@@ -82,7 +84,7 @@ block content
                                 span.imgSpan(style="font-size:12px")
                                   i.fas.fa-image(style="height: 100%;font-size: 39px;line-height: 40px;")
                                 input.imgInput.d-none(type='file' name='image' accept="image/x-png,image/jpeg")
-                        .col-12(style="font-size:12px")
+                        .col-12.files(style="font-size:12px")
                           .row(style="margin:0;border:1px solid #e4e6eb;")
                             .col-5.mr-0.pr-0(style="margin: auto;")
                               |Add files
@@ -90,7 +92,7 @@ block content
                               label.mb-0.mr-2
                                 span.iSpan(style="font-size:12px")
                                   i.fas.fa-folder-plus(style="height: 100%;font-size: 39px;line-height: 40px;")
-                                input.fileInput.d-none.form-control-file(type='file' name='files' accept="application/x-zip-compressed")
+                                input.fileInput.d-none.form-control-file(type='file' name='files' accept="application/x-zip-compressed" required='')
                             .col-2.mr-0.pl-0(style="margin: auto;")
                               button.btn.fas.fa-plus.btn-secondary#add-upload-form(type="button" style="background:#343a40" hidden) 
                             
@@ -101,8 +103,7 @@ block content
           .col-12
 
 
-    .col-12.py-3(style="background-color: white;border-radius:5px;box-shadow:0px 8px 8px -11px black;")
-      #feed.feed
+    .col-12.pl-0.pr-0.feed#feed(style="border-radius:5px;box-shadow:0px 8px 8px -11px black;")
       .loading
         .ball
         .ball

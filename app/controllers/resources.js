@@ -1,7 +1,39 @@
 const Resource = require("../models/resource");
-
+var mongoose = require('mongoose')
 module.exports.GetAll = (skip, lim) => {
-    return Resource.find().skip(skip).limit(lim).sort({ date_added: -1 });
+    return Resource.aggregate([
+        {
+          '$lookup': {
+            'from': 'users', 
+            'localField': 'author._id', 
+            'foreignField': '_id', 
+            'as': 'author'
+          }
+        }, {
+          '$unwind': {
+            'path': '$author'
+          }
+        }, {
+          '$project': {
+            'author.is_admin': 0, 
+            'author.is_active': 0, 
+            'author.token': 0, 
+            'author.accessToken': 0, 
+            'author.username': 0, 
+            'author.filiation': 0, 
+            'author.email': 0, 
+            'author.password': 0
+          }
+        }, {
+          '$skip': skip
+        }, {
+          '$limit': lim
+        }, {
+          '$sort': {
+            'date_added': -1
+          }
+        }
+      ])
 };
 module.exports.insert = (resource) => {
     var newResource = new Resource(resource);
@@ -12,8 +44,8 @@ module.exports.getFilters = (query) => {
     var queryCond = {};
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = query.year;
-    if (query.img == "on") queryCond.image = { $ne: "/images/ResourceDefault.jpeg" };
-    else queryCond.image = { $eq: "/images/ResourceDefault.jpeg" };
+    if (query.img == "on") queryCond.image = { $ne: "/images/ResourceDefault.png" };
+    else queryCond.image = { $eq: "/images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
     return Resource.find(queryCond);
@@ -24,13 +56,41 @@ module.exports.GetTotal = () => {
 };
 
 module.exports.GetResourceById = (id) => {
-    return Resource.findOne({ _id: id }).exec();
+    return Resource.aggregate([
+        {
+          '$match': {
+            '_id': new mongoose.mongo.ObjectId(id)
+          }
+        }, {
+          '$lookup': {
+            'from': 'users', 
+            'localField': 'author._id', 
+            'foreignField': '_id', 
+            'as': 'author'
+          }
+        }, {
+          '$unwind': {
+            'path': '$author'
+          }
+        }, {
+          '$project': {
+            'author.is_admin': 0, 
+            'author.is_active': 0, 
+            'author.token': 0, 
+            'author.accessToken': 0, 
+            'author.username': 0, 
+            'author.filiation': 0, 
+            'author.email': 0, 
+            'author.password': 0
+          }
+        }
+      ]);
 };
 
 module.exports.GetResourceImage = async (id) => {
     let resource = await Resource.findOne({ _id: id }, { image: 1 }).exec();
     let imagePath = resource.image;
-    if (imagePath === "images/ResourceDefault.jpeg") {
+    if (imagePath === "images/ResourceDefault.png") {
         imagePath = `/public/${imagePath}`;
     }
     return imagePath;
@@ -47,7 +107,7 @@ module.exports.CommentsInsert = (data) => {
             name: data.user_name,
         },
         description: data.comment,
-        date: new Date().getTime(),
+        date: new Date(),
     };
 
     return new Promise(function (resolve, reject) {
