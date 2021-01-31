@@ -1,8 +1,8 @@
-<p align="center">
+<div align="center">
    <img src="https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png">
-</p>
-
-# _UniFiles (Socialized Files/Resources Platform)_ 
+   
+   <h1><i>UniFiles (Socialized Files/Resources Platform)</i<</h1>
+</div> 
 
 ## :rocket: Getting Started
 
