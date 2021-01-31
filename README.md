@@ -2,7 +2,7 @@
    <img src="https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png">
 </p>
 
-# _UniFiles_
+# _UniFiles (Socialized Files/Resources Platform)_ 
 
 ## :rocket: Getting Started
 
