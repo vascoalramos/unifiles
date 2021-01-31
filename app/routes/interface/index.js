@@ -34,4 +34,13 @@ router.get("/profile", passport.authenticate("jwt", { session: false }), (req, r
     res.render("profile", { title: "Edit Profile", user: user });
 });
 
+router.get("/myResources", (req, res) => {
+    passport.authenticate("jwt", { session: false }, (err, user) => {
+        if (err || !user) res.redirect("/auth/login");
+        if (user) {
+            res.render("myResources", { user: user });
+        }
+    })(req, res);
+});
+
 module.exports = router;

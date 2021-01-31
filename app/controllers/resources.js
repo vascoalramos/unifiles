@@ -1,5 +1,6 @@
 const Resource = require("../models/resource");
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
+
 module.exports.GetAll = (skip, lim) => {
     return Resource.aggregate([
         {

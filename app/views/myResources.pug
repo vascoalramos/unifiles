@@ -1,0 +1,31 @@
+extends layout
+
+block content
+  .container.maincontainer(style="max-width:800px;")
+    .col-12.pl-0.pr-0.feed#feed(style="border-radius:5px;box-shadow:0px 8px 8px -11px black;")
+      .loading
+        .ball
+        .ball
+        .ball
+
+  
+  script.
+    if (location.pathname == "/myResources") getMyResource();
+    console.log("hi")
+
+    async function getMyResource() {
+      counterGetResource++;
+      skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
+      console.log("hi2")
+
+      if (skipGetResource <= totalResource) {
+          const resourceResponse = await fetch(
+              host + `/api/users/vr/resources?skip=${skipGetResource}&lim=${limitGetResource}`,
+          );
+          const resourceData = await resourceResponse.json();
+          const data = { resource: resourceData.resources };
+          totalResource = resourceData.total;
+
+          addDataToDOM(data);
+      } else document.querySelector(".loading").classList.remove("show");
+    }
