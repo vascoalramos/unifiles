@@ -84,7 +84,7 @@ module.exports = {
 
                     config = {
                         method: "post",
-                        url: "http://localhost:3000/api/resources",
+                        url: "resources",
                         maxContentLength: Infinity,
                         maxBodyLength: Infinity,
                         headers: {
@@ -95,7 +95,6 @@ module.exports = {
                     };
 
                     axios(config).catch(function (error) {
-                        console.log(form);
                         console.log(error.response.data);
                     });
                 })
@@ -103,7 +102,7 @@ module.exports = {
                     console.log(error.response.data.generalErrors);
                 });
 
-            await sleep(15000);
+            await sleep(12500);
         }
     },
 };
