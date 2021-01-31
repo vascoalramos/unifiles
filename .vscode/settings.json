@@ -1,7 +1,7 @@
 {
     "files.exclude": {
         "_data/files": true,
-        "_data/zips"
+        "_data/zips": true,
         "app/uploads": true
     }
 }
