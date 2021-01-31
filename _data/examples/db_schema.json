@@ -1,0 +1,59 @@
+{
+    "resource": {
+        "_id": "ObjectID",
+        "status": "Boolean",
+        "name": "String",
+        "path": "String",
+        "mime_type": "String",
+        "image": "String -> icon image",
+        "type": "String -> our type",
+        "description": "String",
+        "author": {
+            "_id": "ID",
+            "name": "String"
+        },
+        "year": "Integer",
+        "size": "Integer",
+        "date_added": "Date/Timestamp",
+        "last_updated": "Date/Timestamp",
+        "subject": "String",
+        "tags": ["String"],
+        "comments": [
+            {
+                "title": "String",
+                "author": {
+                    "name": "String",
+                    "id": "ID"
+                },
+                "description": "String",
+                "date": "Date/Timestamp",
+                "comments": [
+                    {
+                        "title": "String",
+                        "author": {
+                            "_id": "ID",
+                            "name": "String"
+                        },
+                        "description": "String",
+                        "date": "Date/Timestamp"
+                    }
+                ]
+            }
+        ],
+        "rating": {
+            "score": "Double",
+            "votes": "Integer"
+        }
+    },
+    "user": {
+        "first_name": "String",
+        "last_name": "String",
+        "username": "String",
+        "email": "String",
+        "is_active": "Boolean",
+        "role": "String -> one of the above",
+        "password": "String -> masked",
+        "avatar": "String -> image name",
+        "institution": "String"
+    }
+}
