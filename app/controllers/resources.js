@@ -1,39 +1,44 @@
 const Resource = require("../models/resource");
-var mongoose = require('mongoose')
+var mongoose = require("mongoose");
 module.exports.GetAll = (skip, lim) => {
     return Resource.aggregate([
         {
-          '$lookup': {
-            'from': 'users', 
-            'localField': 'author._id', 
-            'foreignField': '_id', 
-            'as': 'author'
-          }
-        }, {
-          '$unwind': {
-            'path': '$author'
-          }
-        }, {
-          '$project': {
-            'author.is_admin': 0, 
-            'author.is_active': 0, 
-            'author.token': 0, 
-            'author.accessToken': 0, 
-            'author.username': 0, 
-            'author.filiation': 0, 
-            'author.email': 0, 
-            'author.password': 0
-          }
-        }, {
-          '$skip': skip
-        }, {
-          '$limit': lim
-        }, {
-          '$sort': {
-            'date_added': -1
-          }
-        }
-      ])
+            $lookup: {
+                from: "users",
+                localField: "author._id",
+                foreignField: "_id",
+                as: "author",
+            },
+        },
+        {
+            $unwind: {
+                path: "$author",
+            },
+        },
+        {
+            $project: {
+                "author.is_admin": 0,
+                "author.is_active": 0,
+                "author.token": 0,
+                "author.accessToken": 0,
+                "author.username": 0,
+                "author.filiation": 0,
+                "author.email": 0,
+                "author.password": 0,
+            },
+        },
+        {
+            $sort: {
+                date_added: -1,
+            },
+        },
+        {
+            $skip: skip,
+        },
+        {
+            $limit: lim,
+        },
+    ]);
 };
 
 module.exports.insert = (resource) => {
@@ -59,33 +64,36 @@ module.exports.GetTotal = () => {
 module.exports.GetResourceById = (id) => {
     return Resource.aggregate([
         {
-          '$match': {
-            '_id': new mongoose.mongo.ObjectId(id)
-          }
-        }, {
-          '$lookup': {
-            'from': 'users', 
-            'localField': 'author._id', 
-            'foreignField': '_id', 
-            'as': 'author'
-          }
-        }, {
-          '$unwind': {
-            'path': '$author'
-          }
-        }, {
-          '$project': {
-            'author.is_admin': 0, 
-            'author.is_active': 0, 
-            'author.token': 0, 
-            'author.accessToken': 0, 
-            'author.username': 0, 
-            'author.filiation': 0, 
-            'author.email': 0, 
-            'author.password': 0
-          }
-        }
-      ]);
+            $match: {
+                _id: new mongoose.mongo.ObjectId(id),
+            },
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "author._id",
+                foreignField: "_id",
+                as: "author",
+            },
+        },
+        {
+            $unwind: {
+                path: "$author",
+            },
+        },
+        {
+            $project: {
+                "author.is_admin": 0,
+                "author.is_active": 0,
+                "author.token": 0,
+                "author.accessToken": 0,
+                "author.username": 0,
+                "author.filiation": 0,
+                "author.email": 0,
+                "author.password": 0,
+            },
+        },
+    ]);
 };
 
 module.exports.GetResourceImage = async (id) => {
@@ -149,7 +157,7 @@ module.exports.Rating = (data) => {
                     var currentScore = item.rating.score;
 
                     item.rating.score = currentScore + parseInt(data.rating);
-                    item.rating.votes += 1; 
+                    item.rating.votes += 1;
 
                     item.save()
                         .then((result) => {
@@ -176,10 +184,8 @@ module.exports.DeleteComment = (data) => {
                 } else {
                     if (data.comment_index.includes("-")) {
                         var indexes = data.comment_index.split("-");
-                        item.comments[indexes[0]].comments.splice(indexes[1], 1)
-                    }
-                    else
-                        item.comments.splice(data.comment_index, 1);
+                        item.comments[indexes[0]].comments.splice(indexes[1], 1);
+                    } else item.comments.splice(data.comment_index, 1);
 
                     item.save()
                         .then((result) => {
