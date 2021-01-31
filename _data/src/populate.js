@@ -102,7 +102,7 @@ module.exports = {
                     console.log(error.response.data.generalErrors);
                 });
 
-            await sleep(12500);
+            await sleep(2500);
         }
     },
 };
