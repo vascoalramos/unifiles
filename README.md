@@ -1,6 +1,16 @@
 # UniFiles (DAW Project)
 
-## Installation
+## :rocket: Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### :inbox_tray: Prerequisites
+
+The following software is required to be installed on your system:
+
+-   [nodejs](https://nodejs.org/en/download/)
+
+### :wrench: Installation
 
 Use the package manager [npm](https://www.npmjs.com/) to install dependencies.
 
@@ -8,28 +18,30 @@ Use the package manager [npm](https://www.npmjs.com/) to install dependencies.
 npm i
 ```
 
-## How to Run
+### :hammer: Development
 
 Before executing the (Node) app, make sure that MongoDb is up and running ([docs](https://docs.mongodb.com/manual/installation/)).
 
--   Development:
+Starting the development server.
 
-    ```bash
-    npm run develop
-    ```
+```bash
+npm run develop
+```
 
--   Production:
+### :package: Deployment
 
-    ```bash
-    npm start
-    ```
+Bundling the app for "production".
 
-## Authors
+```bash
+npm start
+```
+
+## :handshake: Authors
 
 -   **Fábio Gonçalves:** [FabioGoncalves](https://github.com/FabioGoncalves)
 -   **Joel Carvalho:** [joelccarvalho](https://github.com/joelccarvalho)
 -   **Vasco Ramos:** [vascoalramos](https://vascoalramos.me)
 
-## License
+## :memo: License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
