@@ -6,4 +6,9 @@ module.exports = {
             next();
         }
     },
+
+    // TODO: implement this
+    isAuthor: (req, res, next) => {
+        next();
+    },
 };

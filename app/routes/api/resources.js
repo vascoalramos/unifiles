@@ -125,16 +125,12 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
-                    console.log("error1")
-                    console.log(error)
+                    console.log(error);
                     res.status(400).jsonp(error);
                 });
         })
         .catch((error) => {
-            console.log("error2")
-
-            console.log(error)
-
+            console.log(error);
             res.status(400).jsonp(error);
         });
 });
@@ -236,20 +232,14 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
     const { user } = req;
     var generalErrors = [];
     const form = formidable({ multiples: true });
-    
+
     form.parse(req, (err, fields, uploads) => {
-        if (fields.type == '') 
-            generalErrors.push({ field: 'type', msg: 'Please insert a valid Type' });
-        if (fields.subject == '') 
-            generalErrors.push({ field: 'subject', msg: 'Please insert a Title' });
-        if (fields.year == '') 
-            generalErrors.push({ field: 'year', msg: 'Please insert a Year' });
-        if (fields.description == '') 
-            generalErrors.push({ field: 'description', msg: 'Please insert a Description' });
-        if (fields.tags == undefined) 
-            generalErrors.push({ field: 'tags', msg: 'Please insert at least 1 Tag' });
-        if(uploads.files.size == 0)
-            generalErrors.push({ field: 'files', msg: 'Please insert at least 1 zip folder' });
+        if (fields.type == "") generalErrors.push({ field: "type", msg: "Please insert a valid Type" });
+        if (fields.subject == "") generalErrors.push({ field: "subject", msg: "Please insert a Title" });
+        if (fields.year == "") generalErrors.push({ field: "year", msg: "Please insert a Year" });
+        if (fields.description == "") generalErrors.push({ field: "description", msg: "Please insert a Description" });
+        if (fields.tags == undefined) generalErrors.push({ field: "tags", msg: "Please insert at least 1 Tag" });
+        if (uploads.files.size == 0) generalErrors.push({ field: "files", msg: "Please insert at least 1 zip folder" });
         if (generalErrors.length > 0) {
             return res.status(400).json({ generalErrors });
         }
@@ -364,6 +354,10 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
         });
 });
 
+// TODO: implement edit resource
+
+// TODO: implement delete resource
+
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
 
@@ -372,7 +366,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
             res.status(200).jsonp(data[0]);
         })
         .catch((error) => {
-            console.log(error)
+            console.log(error);
             res.status(400).jsonp(error);
         });
 });
