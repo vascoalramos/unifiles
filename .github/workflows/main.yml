@@ -22,15 +22,15 @@ jobs:
                   echo MONGODB_URL_ATLAS=${MONGODB_URL_ATLAS} >> .env
                   cat .env
                   
-            - name: Update .gitignore
+            - name: Remove _data folder
               run: |
-                  echo '_data' >> .gitignore
+                  rm -r _data
 
-            - name: Commit files
+            - name: Commit changes
               run: |
                   git config --global user.name "Vasco Ramos"
-                  git add -f .env .gitignore
-                  git commit -m "Updates files"
+                  git add -f .env
+                  git commit -a -m "Updates project"
 
             - name: Deploy to Heroku
               uses: akhileshns/heroku-deploy@v3.8.9
