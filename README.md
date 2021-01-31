@@ -34,7 +34,7 @@ npm run develop
 
 ### :package: Deployment
 
-Bundling the app for "production".
+Running the app in "production" mode.
 
 ```bash
 npm start
