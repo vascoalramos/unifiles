@@ -112,8 +112,8 @@ function saveResource(data, res) {
 }
 
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-    var lim = req.query.lim;
-    var skip = req.query.skip;
+    var lim = req.query.lim || 5;
+    var skip = req.query.skip || 0;
     let response = {};
 
     Resources.GetAll(Number(skip), Number(lim))
@@ -125,10 +125,16 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
+                    console.log("error1")
+                    console.log(error)
                     res.status(400).jsonp(error);
                 });
         })
         .catch((error) => {
+            console.log("error2")
+
+            console.log(error)
+
             res.status(400).jsonp(error);
         });
 });
@@ -228,9 +234,26 @@ router.delete(
 
 router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     const { user } = req;
-
+    var generalErrors = [];
     const form = formidable({ multiples: true });
+    
     form.parse(req, (err, fields, uploads) => {
+        if (fields.type == '') 
+            generalErrors.push({ field: 'type', msg: 'Please insert a valid Type' });
+        if (fields.subject == '') 
+            generalErrors.push({ field: 'subject', msg: 'Please insert a Title' });
+        if (fields.year == '') 
+            generalErrors.push({ field: 'year', msg: 'Please insert a Year' });
+        if (fields.description == '') 
+            generalErrors.push({ field: 'description', msg: 'Please insert a Description' });
+        if (fields.tags == undefined) 
+            generalErrors.push({ field: 'tags', msg: 'Please insert at least 1 Tag' });
+        if(uploads.files.size == 0)
+            generalErrors.push({ field: 'files', msg: 'Please insert at least 1 zip folder' });
+        if (generalErrors.length > 0) {
+            return res.status(400).json({ generalErrors });
+        }
+
         let errorZip = "The folder should be zipped.";
         let size = 0;
         let mime_type = "";
@@ -241,10 +264,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
             next(err);
             return;
         }
-        if (uploads.files.size == 0) {
-            // empty
-            res.status(400).jsonp("A zip folder is required.");
-        } else if (uploads.files.size > 0) {
+        if (uploads.files.size > 0) {
             // single upload
 
             if (fileFilter(uploads.files.name)) {
@@ -349,9 +369,10 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
 
     Resources.GetResourceById(id)
         .then((data) => {
-            res.status(200).jsonp(data);
+            res.status(200).jsonp(data[0]);
         })
         .catch((error) => {
+            console.log(error)
             res.status(400).jsonp(error);
         });
 });
