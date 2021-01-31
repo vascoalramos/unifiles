@@ -4,6 +4,8 @@
    <h1><i>UniFiles (Socialized Files/Resources Platform)</i<</h1>
 </div> 
 
+UniFiles is the last Development Web Applications (2020/21) assignment, which consists on developing a Files/Resources Repository Platform that also has features of a social network, such as, commenting and rating posts/resources or interact with activity notifications.
+
 ## :rocket: Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
