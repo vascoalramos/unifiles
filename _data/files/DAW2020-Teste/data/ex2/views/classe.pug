@@ -1,0 +1,72 @@
+extends layout
+
+block content
+  .container-fluid.my-5
+    .mb-4
+      h1.text-center CLAV: Classe
+        b 
+          a(href=`/classes/c${codigo}`)= codigo
+
+      h5.pt-4.text-center Bem-vindo ao exercício nº2 do teste de DAW, ano letivo 2020/2021. Esta é a página de detalhe de uma classe.
+
+    .text-center.mb-4
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]
+
+    .mb-4
+      .jumbotron(style="background-color: #afc6db")
+        h2.text-center Detalhes
+        p
+          b Código:
+          span 
+            a(href=`/classes/c${codigo}`)= codigo
+        p
+          b Nível:
+          span  #{nivel}
+        p
+          b Título:
+          span  #{titulo}
+        p
+          b Descrição:
+          span  #{descricao}
+        p
+          b Status:
+          span  #{status}
+        
+      if filhos.length !== 0
+        .mb-4
+            h2 Lista da Descendentes
+            table.table
+              thead.thead-dark
+                tr
+                  th Código
+                  th Título
+              tbody
+                each f in filhos
+                  tr
+                    td
+                      a(href=`/classes/c${f.codigo}`)= f.codigo
+                    td= f.titulo
+        
+      if nivel === 3 && termosInd.length !== 0
+          .mb-4
+            h2 Lista de Termos de Índice
+            .list-group
+              each tr in termosInd
+                li.list-group-item
+                  a(href=`/termosIndice#${tr.idTI.split("#")[1]}`)= tr.termo
+    .text-center
+      | [ 
+      a(href="/") Voltar à página inicial
+      |  ]
+      
+      | [ 
+      a(href="javascript:history.back()") Voltar à página anterior
+      |  ]
+      
+    

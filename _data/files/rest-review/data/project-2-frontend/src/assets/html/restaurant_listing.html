@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %} Restaurant Listing {% endblock %}
+
+{% block content %}
+<div class="container-login100 mt-5">
+
+  <div class="col-11 responsive-wrap" style="margin: 0 auto">
+    <div class="container detail-filter-wrap">
+      <div class="row">
+
+        <div class="col-4 featured-responsive detail-filter-text">
+          <p>{{ restaurants|length }} Results For <span>Restaurants</span></p>
+        </div>
+
+        <div class="col-8 featured-responsive">
+          <div class="detail-filter">
+            <form method="post">
+
+              {% csrf_token %}
+
+              <div class="container">
+                <div class="row">
+                  <div align="right" class="form-check-label col-6">
+                    {{ form.sort_by.label_tag }}
+                  </div>
+                  <div class="filter-dropdown col-6">
+                    {{ form.sort_by }}
+                    {{ form.sort_by.errors }}
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container responsive-wrap featured-responsive" style="margin: 0 auto">
+    <div class="detail-filter">
+
+      <form method="post">
+        <div aria-label="Basic example" class="btn-group" role="group">
+          {{ form.name }}
+          {{ form.name.errors }}
+          {{ form.city }}
+          {{ form.city.errors }}
+          <button class="btn-form" type="submit"><span
+            class="icon-magnifier search-icon"></span>SEARCH<i
+            class="pe-7s-angle-right"></i></button>
+        </div>
+      </form>
+
+
+    </div>
+  </div>
+
+  {% if restaurants|length == 0 %}
+  <div class="col-12" style="height: 355px">
+  </div>
+  {% else %}
+  <div class="row light-bg detail-options-wrap mt-5">
+
+    {% for rest in restaurants %}
+    {% if restaurants|length == 1 %}
+    <div class="col-md-12 col-sm-12 col-lg-12 col-xl-12 featured-responsive">
+      {% else %}
+      <div class="col-md-12 col-sm-12 col-lg-6 col-xl-6 featured-responsive">
+        {% endif %}
+        <div class="featured-place-wrap">
+          <a href="{% url 'restaurant-detail' rest.id %}">
+            <img alt="#" class="img-fluid"
+                 src="{{ 'data:image/png;base64,'|add:rest.photo }}"
+                 style="height: 35em">
+            {% if rest.average_score < 5.5 %}
+            <span class="featured-rating-orange">{{ rest.average_score }}</span>
+            {% else %}
+            <span class="featured-rating-green">{{ rest.average_score }}</span>
+            {% endif %}
+            <div class="featured-title-box">
+              <div class="container row">
+                <h6>{{ rest.name }}</h6>
+                {% if request.user.is_authenticated and request.user.groups.all.0.name == "clients_group" %}
+                <form method="post">
+                  {% if rest.user_fav %}
+                  <button class="ti-heart" name="fav{{ rest.id }}" style="color:red"
+                          type="Submit"></button>
+                  {% else %}
+                  <button class="ti-heart" name="fav{{ rest.id }}" type="Submit"></button>
+                  {% endif %}
+                </form>
+                {% endif %}
+              </div>
+              <p>Restaurant </p> <span>• </span>
+              <p>{{ rest.n_of_reviews }} Reviews</p>
+              <ul>
+                <li><span class="icon-location-pin"></span>
+                  <p>{{ rest.address }}, {{ rest.city }}, {{ rest.country }}</p>
+                </li>
+                <li><span class="icon-screen-smartphone"></span>
+                  <p>{{ rest.phone_number }}</p>
+                </li>
+              </ul>
+            </div>
+          </a>
+        </div>
+        {% if rests|length == 1 %}
+      </div>
+      {% else %}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+
+  </div>
+
+</div>
+{% endblock content %}
+
+<!--//END DETAIL -->
+

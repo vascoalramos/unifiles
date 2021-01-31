@@ -2,37 +2,35 @@ name: CI
 
 on:
     push:
-        branches: [ main ]
-    pull_request:
-        branches: [ main ]
+        branches: [main]
 jobs:
     build:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-              
+
             - name: Create env file
               env:
-                JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-                MONGODB_URL_ATLAS: ${{ secrets.MONGODB_URL_ATLAS }}
+                  JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+                  MONGODB_URL_ATLAS: ${{ secrets.MONGODB_URL_ATLAS }}
               run: |
-                touch .env
-                echo JWT_SECRET_KEY=${JWT_SECRET_KEY} >> .env
-                echo JWT_SECRET_TIME="36000" >> .env
-                echo API_URL="https://unifiles.herokuapp.com/api" >> .env
-                echo MONGODB_URL=${MONGODB_URL_ATLAS} >> .env
-                echo MONGODB_URL_ATLAS=${MONGODB_URL_ATLAS} >> .env
-                cat .env
-                
+                  touch .env
+                  echo JWT_SECRET_KEY=${JWT_SECRET_KEY} >> .env
+                  echo JWT_SECRET_TIME="36000" >> .env
+                  echo API_URL="https://unifiles.herokuapp.com/api" >> .env
+                  echo MONGODB_URL=${MONGODB_URL_ATLAS} >> .env
+                  echo MONGODB_URL_ATLAS=${MONGODB_URL_ATLAS} >> .env
+                  cat .env
+
             - name: Commit Env file
               run: |
-                git config --global user.name vascoalramos
-                git add -f .env
-                git commit -m "Add Env file"
-                    
-            - name: Deploy to Heroku       
+                  git config --global user.name "Vasco Ramos"
+                  git add -f .env
+                  git commit -m "Add Env file"
+
+            - name: Deploy to Heroku
               uses: akhileshns/heroku-deploy@v3.8.9
               with:
-                heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-                heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-                heroku_email: ${{ secrets.HEROKU_EMAIL }}
+                  heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+                  heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+                  heroku_email: ${{ secrets.HEROKU_EMAIL }}

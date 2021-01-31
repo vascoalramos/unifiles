@@ -1,0 +1,20 @@
+\section{Conclusões}
+
+No paradigma da evolução das nossas capacidades como estudantes de engenharia informática, a realização deste projeto permitiu-nos consolidar a aprendizagem da UC de Infraestutura de Centro de Dados, mais concretamente, os métodos e ferramentas que devem ser aplicados no que toca à resolução do problema de planear, analisar e operar uma infraestrutura de elevada disponibilidade e desempenho.
+
+O planeamento deste tipo de infraestruturas é uma das fases essenciais para que a aplicação seja capaz de corresponder a todas as exigências capazes de surgirem. Sendo ainda mais importante, quando estamos a planear uma tipologia que servirá como base de um serviço de grande escala, devido ao requisito de escalabilidade.
+
+Apesar de considerarmos que tivemos sucesso na implementação deste tipo de arquitetura, consideramos que existem aspetos nos quais poderíamos melhorar em iterações futuras, nomeadamente a diversificação de testes realizados, de modo a obter mais cenários de uso, e, a execução de uma maior quantidade de testes e modo a obter valores mais precisos.
+
+\iffalse
+Começámos o projeto com a criação de uma arquitetura básica, constituída por apenas duas máquinas conectadas entre si. Numa das máquinas instalamos a aplicação \textbf{wiki.js} e na outra uma base de dados \textbf{postgreSQL}. Esta implementação, evidentemente, não foi capaz de corresponder aos requisitos exigidos. A posterior realização e análise de testes de carga, a esta tipologia, veio provar isso mesmo.
+
+Depois, utilizando as tecnologias lecionadas, idealizámos e instalámos uma tipologia que teoricamente seria capaz de corresponder aos nossos objetivos. De todos os métodos que acabámos por utilizar, achamos importante salientar os \textbf{load balancers} e os \textbf{clusters} que nos permitiram eliminar por completo os \textit{bottlenecks} existentes na versão anterior.
+
+Os testes de carga que realizámos sobre a segunda versão, vieram demonstrar que houve uma tremenda evolução na capacidade de resposta e permitiram-nos concluir que esta implementação garante elevada disponibilidade. Porém, achamos que a nossa base de dados, apesar de todas as melhorias de performance, continua a ser um \textit{bottleneck} e que a sua implementação podia ser melhorada. 
+
+Por fim, a nossa arquitetura satisfaz os requisitos no contexto do trabalho, pelo que, não consideramos necessário alterar a implementação da base de dados.
+\fi 
+
+
+\pagebreak
