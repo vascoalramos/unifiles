@@ -106,10 +106,8 @@ function saveResource(data, res, id = null) {
     let query;
 
     if (id) {
-        console.log("update");
         query = Resources.updateResourceById(id, data);
     } else {
-        console.log("insert");
         query = Resources.insert(data);
     }
 
@@ -394,6 +392,9 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
 
     Resources.GetResourceById(id)
         .then((data) => {
+            console.log(data);
+            if (data.length === 0) return res.status(404).jsonp("Resource not found");
+
             res.status(200).jsonp(data[0]);
         })
         .catch((error) => {

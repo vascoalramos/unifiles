@@ -23,7 +23,7 @@ router.get("/", (req, res) => {
                     var unique = tagsArray.filter(onlyUnique);
                     res.render("index", { user: user, resources: data.data, tags: unique });
                 })
-                .catch((e) => res.render("error", { error: e }));
+                .catch((e) => res.render("error", { user: user, error: e }));
         }
     })(req, res);
 });

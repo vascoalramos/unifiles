@@ -279,8 +279,8 @@ function uploadContent() {
                 withCredentials: true,
             },
             success: function (data) {
+                $("#successModalMessage").text("Your resource was successfully created!");
                 $("#successModal, #exampleModal").modal("toggle");
-                //alert("Inserido com sucesso");
             },
             error: function (errors) {
                 displayErrors("#form-upload", errors);
@@ -517,6 +517,30 @@ function deleteAccount(username) {
     });
 }
 
+function openDeleteConfirmModal(id) {
+    $(document).on("click", "#deleteResourceConfimBtn", function () {
+        deleteResource(id);
+    });
+    $("#deleteModal").modal("show");
+}
+
+function deleteResource(id) {
+    $.ajax({
+        type: "DELETE",
+        url: `${host}/api/resources/${id}`,
+        xhrFields: {
+            withCredentials: true,
+        },
+        success: function () {
+            $("#successModalMessage").text("Your resource was successfully deleted!");
+            $("#successModal, #deleteModal").modal("toggle");
+        },
+        error: function (error) {
+            console.log(error);
+        },
+    });
+}
+
 function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
@@ -644,8 +668,8 @@ function addDataToDOM(data) {
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
                 (location.pathname === "/myResources" || userLoggedIn._id === element.author._id
-                    ? `  <a class="dropdown-item" href="/resources/${element._id}">Edit</a>
-                                    <a class="dropdown-item" href="#">Delete</a>`
+                    ? `  <a class="dropdown-item" href="/resources/${element._id}/edit">Edit</a>
+                                    <button class="dropdown-item" onclick="openDeleteConfirmModal('${element._id}')">Delete</button>`
                     : "") +
                 `
                             </div>

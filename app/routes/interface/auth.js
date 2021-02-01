@@ -62,7 +62,7 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
             })
             .catch((err) => {
                 console.log(err);
-                res.render("error", { error: err });
+                res.render("error", { user: user, error: err });
             });
     } else {
         user.accessToken = null;
