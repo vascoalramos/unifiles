@@ -62,5 +62,29 @@ block content
           
           button.btn.btn-primary.btn-bottom(onclick=`editProfile("${user.username}");return false`) Edit Profile
         .dropdown-divider
+  
+
+    .col-12
+      #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-check(style="color:green")
+              h4.text-center(id="successModalMessage")
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
+
+    .col-12
+      #deleteModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-exclamation-triangle(style="color:red")
+              h4 Are you sure you want to delete this resource?
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-danger(id="deleteResourceConfimBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#deleteModal').modal('hide')") No
 
 

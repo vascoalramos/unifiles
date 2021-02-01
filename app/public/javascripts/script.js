@@ -482,6 +482,7 @@ function mydiff(date1) {
 
     return showdiff;
 }
+
 function editProfile(username) {
     var data = $("#form-edit-profile").serializeArray();
 
@@ -496,6 +497,8 @@ function editProfile(username) {
             },
             success: function (data) {
                 removeErrors(); // Remove errors
+                $("#successModalMessage").text("Your profile was successfully updated!");
+                $("#successModal").modal("toggle");
             },
             error: function (errors) {
                 displayErrors("#form-edit-profile", errors);
@@ -504,6 +507,7 @@ function editProfile(username) {
         false,
     );
 }
+
 function editPassword(username) {
     var data = $("#form-edit-password").serializeArray();
 
@@ -518,6 +522,8 @@ function editPassword(username) {
             },
             success: function (data) {
                 removeErrors(); // Remove errors
+                $("#successModalMessage").text("Your password was successfully updated!");
+                $("#exampleModal, #successModal").modal("toggle");
             },
             error: function (errors) {
                 displayErrors("#form-edit-profile", errors);
