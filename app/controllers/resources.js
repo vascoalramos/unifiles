@@ -208,3 +208,7 @@ module.exports.DeleteComment = (data) => {
         );
     });
 };
+
+module.exports.getAllDistinctTags = () => {
+    return Resource.distinct("tags");
+};

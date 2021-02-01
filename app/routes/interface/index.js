@@ -9,19 +9,12 @@ function onlyUnique(value, index, self) {
 
 router.get("/", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user, info) => {
-        tagsArray = new Array();
         if (err || !user) res.redirect("/auth/login");
         if (user) {
             axios
-                .get("/resources", { headers: { Cookie: `token=${req.cookies.token}` } })
+                .get("resources/tags", { headers: { Cookie: `token=${req.cookies.token}` } })
                 .then((data) => {
-                    data.data.resources.forEach((ele) => {
-                        ele.tags.forEach((tag) => {
-                            tagsArray.push(tag);
-                        });
-                    });
-                    var unique = tagsArray.filter(onlyUnique);
-                    res.render("index", { user: user, resources: data.data, tags: unique });
+                    res.render("index", { user: user, tags: data.data });
                 })
                 .catch((e) => res.render("error", { user: user, error: e }));
         }

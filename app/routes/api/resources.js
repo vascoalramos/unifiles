@@ -270,6 +270,17 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
         });
 });
 
+router.get("/tags", passport.authenticate("jwt", { session: false }), (req, res) => {
+    Resources.getAllDistinctTags()
+        .then((data) => {
+            res.status(200).jsonp(data);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
+});
+
 router.put(
     "/comments",
     [body("comment").not().isEmpty().withMessage("Comment field is required.")],
