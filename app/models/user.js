@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
         required: true,
-        default: "/images/UserDefault.png",
+        default: "images/UserDefault.png",
     },
     filiation: {
         institution: {
