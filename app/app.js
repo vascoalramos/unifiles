@@ -11,6 +11,8 @@ const zip = require("express-easy-zip");
 
 const mongoose = require("mongoose");
 
+mongoose.set("debug", process.env.DEBUG);
+
 // Connection to MongoDB
 mongoose
     .connect(process.env.MONGODB_URL, {
