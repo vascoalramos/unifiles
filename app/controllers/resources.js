@@ -1,5 +1,6 @@
 const Resource = require("../models/resource");
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
+
 module.exports.GetAll = (skip, lim) => {
     return Resource.aggregate([
         {
@@ -46,15 +47,56 @@ module.exports.insert = (resource) => {
     return newResource.save();
 };
 
+module.exports.updateResourceById = (id, resource) => {
+    return Resource.findOneAndUpdate({ _id: id }, resource, { new: true });
+};
+
+module.exports.deleteResourceById = (id) => {
+    return Resource.findOneAndDelete({ _id: id });
+};
+
 module.exports.getFilters = (query) => {
     var queryCond = {};
+    
+    if(query.author) queryCond['author._id'] = new mongoose.mongo.ObjectId(query.author)
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = query.year;
-    if (query.img == "on") queryCond.image = { $ne: "/images/ResourceDefault.png" };
-    else queryCond.image = { $eq: "/images/ResourceDefault.png" };
+    if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
+    else queryCond.image = { $eq: "images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
-    return Resource.find(queryCond);
+    console.log(queryCond)
+    console.log(query)
+    return Resource.aggregate([
+        {
+            $match: queryCond,
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "author._id",
+                foreignField: "_id",
+                as: "author",
+            },
+        },
+        {
+            $unwind: {
+                path: "$author",
+            },
+        },
+        {
+            $project: {
+                "author.is_admin": 0,
+                "author.is_active": 0,
+                "author.token": 0,
+                "author.accessToken": 0,
+                "author.username": 0,
+                "author.filiation": 0,
+                "author.email": 0,
+                "author.password": 0,
+            },
+        },
+    ]);;
 };
 
 module.exports.GetTotal = () => {
@@ -198,4 +240,8 @@ module.exports.DeleteComment = (data) => {
             },
         );
     });
+};
+
+module.exports.getAllDistinctTags = () => {
+    return Resource.distinct("tags");
 };

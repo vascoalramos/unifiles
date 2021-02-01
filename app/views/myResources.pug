@@ -2,38 +2,39 @@ extends layout
 
 block content
   .div.rightmenu
-    .container
-      form#form-filter(method='GET', enctype='multipart/form-data')
-        .row.my-3(style="align-items: center;")
-          .col-12.hedersidenav.mb-2
-            h3.pb-1 Filter
-          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
-            input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
-          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
-            input.form-control(type="text" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
-          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
-            select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Tags" multiple data-live-search='true' data-style="form-control tagsInput" name="tags[]")
-              if tags.length > 0
-                each item in tags
-                  option(data-tokens='#{item}') #{item}
-              else    
-                  option(disabled) No tags Available      	
-          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
-            select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Type" multiple data-style="form-control tagsInput" name="types[]")
-              option(value="article") Article
-              option(value="thesis") Thesis
-              option(value="book") Book
-              option(value="report") Report
-              option(value="aplication") Aplication
-          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
-            b.cImage(style="margin-right:6%")
-              | With Image  
-            label.switch.m-0
-              input(type='checkbox' checked='' name="img")
-              span.slider.round
-          .col-md-12.col-xl-2.mb-xl-0(style="height:100%;")
-            button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
-  .container.maincontainer(style="max-width:800px;")
+      .container
+        form#form-filter(method='GET', enctype='multipart/form-data')
+          input(type="text"  name='author' hidden value=`${user._id}`)
+          .row.my-3(style="align-items: center;")
+            .col-12.hedersidenav.mb-2
+              h3.pb-1 Filter
+            .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+              input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
+            .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+              input.form-control(type="text" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year")
+            .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+              select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Tags" multiple data-live-search='true' data-style="form-control tagsInput" name="tags[]")
+                if tags.length > 0
+                  each item in tags
+                    option(data-tokens='#{item}') #{item}
+                else    
+                    option(disabled) No tags Available      	
+            .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
+              select.selectpicker(data-selected-text-format="count > 3" data-width="100%" data-size="5" title="Select Type" multiple data-style="form-control tagsInput" name="types[]")
+                option(value="article") Article
+                option(value="thesis") Thesis
+                option(value="book") Book
+                option(value="report") Report
+                option(value="aplication") Aplication
+            .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
+              b.cImage(style="margin-right:6%")
+                | With Image  
+              label.switch.m-0
+                input(type='checkbox' checked='' name="img")
+                span.slider.round
+            .col-md-12.col-xl-2.mb-xl-0(style="height:100%;")
+              button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
+  .container.maincontainer
     .row.m-0.mb-4
       .col-12(style="background:#ffffff;border-radius:5px;padding:5px;background-color: white;border-radius:10px;box-shadow:0px 8px 8px -11px black;")
         .row.m-0
@@ -52,7 +53,7 @@ block content
                     .form-group
                       .row
                         .col-12(style="display:flex;align-items: center;")
-                          img.mr-3(style="border-radius:50%;width:35px;" src=`/api/users/${user._id}/avatar`)
+                          img.mr-3(style="border-radius:50%;width:35px;" src=`${user.avatar}`)
                           div.tags(style="display:flex;flex-direction:column;flex-grow: 1;overflow: hidden;")
                             p.mb-0(style="font-size:12px;") #{user.first_name} #{user.last_name} 
                             div(style="display:flex;border-bottom:1px solid black")
@@ -99,33 +100,69 @@ block content
 
                       .modal-footer(style="border:0")
                         button.col-12.btn.btn-primary#upload-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Create
-                    
-          .col-12
-            #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
-              .modal-dialog.modal-dialog-centered.modal-sm(role='document')
-                .modal-content
-                  .modal-body.pb-o.text-center
-                    h2
-                      i.fas.fa-check(style="color:green")
-                    h4.text-center(id="successModalMessage")
-                  .modal-footer(style="border:0")
-                    button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
-
-          .col-12
-            #deleteModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
-              .modal-dialog.modal-dialog-centered.modal-sm(role='document')
-                .modal-content
-                  .modal-body.pb-o.text-center
-                    h2
-                      i.fas.fa-exclamation-triangle(style="color:red")
-                    h4 Are you sure you want to delete this resource?
-                  .modal-footer(style="border:0")
-                    button.col-12.btn.btn-danger(id="deleteResourceConfimBtn" style="border:0;box-shadow: none!important") Yes
-                    button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#deleteModal').modal('hide')") No
-
 
     .col-12.pl-0.pr-0.feed#feed(style="border-radius:5px;box-shadow:0px 8px 8px -11px black;")
       .loading
         .ball
         .ball
         .ball
+
+    .col-12
+      #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-check(style="color:green")
+              h4.text-center(id="successModalMessage")
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
+
+    .col-12
+      #deleteModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-exclamation-triangle(style="color:red")
+              h4 Are you sure you want to delete this resource?
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-danger(id="deleteResourceConfimBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#deleteModal').modal('hide')") No
+
+  
+  script(type="text/javascript").
+    if (location.pathname == "/myResources") getMyResource();
+
+    async function getMyResource() {
+      counterGetResource++;
+      skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
+
+      if (skipGetResource <= totalResource) {
+          const resourceResponse = await fetch(
+              host + `/api/users/#{user.username}/resources?skip=${skipGetResource}&lim=${limitGetResource}`,
+          );
+          const resourceData = await resourceResponse.json();
+          const data = { resource: resourceData.resources };
+          totalResource = resourceData.total;
+
+          addDataToDOM(data);
+      } else document.querySelector(".loading").classList.remove("show");
+    }
+
+    window.addEventListener("scroll", () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+      if (clientHeight + scrollTop >= scrollHeight - 5) {
+          if (location.pathname == "/myResources")
+              // show the loading animation
+              showLoading();
+      }
+    });
+
+    function showLoading() {
+        document.querySelector(".loading").classList.add("show");
+
+        // load more data
+        setTimeout(getMyResource, 1000);
+    }
