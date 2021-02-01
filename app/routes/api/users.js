@@ -99,6 +99,42 @@ router.post(
 );
 
 router.put(
+    "/confirmRecoverPassword",
+    [
+        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
+    ],
+    (req, res) => {
+        let data = req.body;
+        var generalErrors = [];
+        var errors = validationResult(req);
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (!schemaPassValidator.validate(data.password)) {
+            generalErrors.push({
+                field: "password",
+                msg: "Password must be complex! At least 8 characters with lowercase, uppercase and digits.",
+            });
+        } else if (data.confirm_password && data.password != data.confirm_password)
+            generalErrors.push({ field: "confirm_password", msg: "Password confirmation does not match password." });
+
+        if (generalErrors.length > 0)
+            return res.status(400).json({ generalErrors });
+
+        User.updatePassword(data)
+            .then((user) => {
+                res.clearCookie("recover_token");
+                res.status(201).jsonp("Password updated!");         
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });        
+    },
+);
+
+router.put(
     "/:username",
     passport.authenticate("jwt", { session: false }),
     [

@@ -78,3 +78,29 @@ module.exports.updateTokens = (user) => {
         },
     );
 };
+
+module.exports.updatePassword = (data) => {
+    return new Promise(function (resolve, reject) {
+        User.findOne(
+            {
+                email: data.email,
+            },
+            function (error, item) {
+                if (error) {
+                    console.log(error);
+                } else {
+
+                    item.password = data.password; 
+
+                    item.save()
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                }
+            },
+        );
+    });
+};

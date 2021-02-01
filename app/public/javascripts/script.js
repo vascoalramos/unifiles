@@ -48,6 +48,11 @@ $(document).ready(function () {
         recoverPassword();
     });
 
+    $("#recover-password-update-confirm").click(function (e) {
+        e.preventDefault();
+        confirmRecoverPassword();
+    });
+
     // Upload confirm
     $("#upload-confirm").click(function (e) {
         e.preventDefault();
@@ -157,7 +162,6 @@ $(document).ready(function () {
 });
 
 function applyRating(value) {
-    console.log(value);
     var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
     var data = { rating: value, resource_id: _id }
     $.ajax(
@@ -198,6 +202,31 @@ function loginUser() {
     );
 }
 
+function confirmRecoverPassword() {
+    var data = $("#form-recover-confirm-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: host + "/api/users/confirmRecoverPassword",
+            data: data,
+            beforeSend: function() {
+                // Adicionar Modal!!! Load
+            },
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                // Adicionar Modal!!! Click Ok vai para o login
+                
+            },
+            error: function (errors) {
+                displayErrors("#form-recover-confirm-password", errors);
+            },
+        },
+        false,
+    );
+}
 
 function recoverPassword() {
     var data = $("#form-recover-password").serializeArray();
@@ -208,13 +237,16 @@ function recoverPassword() {
             enctype: "multipart/form-data",
             url: host + "/api/users/recoverPassword",
             data: data,
+            beforeSend: function() {
+                // Adicionar Modal!!! Load
+            },
             success: function (data) {
                 removeErrors(); // Remove errors
 
-                
+                // Adicionar Modal!!! "Check your email address!"
             },
             error: function (errors) {
-                displayErrors("#form-register", errors);
+                displayErrors("#form-recover-password", errors);
             },
         },
         false,

@@ -86,7 +86,6 @@ module.exports.Rating = (data) => {
                     console.log(error);
                 } else {
                     var currentScore = item.rating.score;
-                    var currentVotes = item.rating.votes;
 
                     item.rating.score = currentScore + parseInt(data.rating);
                     item.rating.votes += 1; 

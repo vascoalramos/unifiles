@@ -37,6 +37,7 @@
         "fs-path": "0.0.25",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
+        "jwt-decode": "^3.1.2",
         "mmmagic": "^0.5.3",
         "mongoose": "^5.11.4",
         "morgan": "~1.9.1",
