@@ -2,29 +2,24 @@ extends layout
 
 block content
   .container.center-div
-    .row.form-user
+    .form-user
       h2.login-title Login
       h5.register-title
         | Are you new? 
-        a(href='register') Register
-      .col-sm
-        form.px-4.py-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
-          .form-group.username
-            label(for='username') Username
-            input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
-          .form-group.password
-            label(for='password') Password
-            input#password.form-control(type='password' placeholder='*******' name='password' required='')
-          p.forgot-password 
-            a(href='recoverPassword') Forgot password?
-          button.btn.btn-primary.btn-bottom#login-confirm Sign in
-          .dropdown-divider
-      .col-sm.text-center.pl-5.pr-5(style="height: 100%;")
-        .container.pl-3.pr-3
-          form(action='/auth/google' method='get')
-            button.btn.btn-primary.btn-bottom(type='submit') Sign in with Google
-
-
-
-
-
+        a(href='register' style="color: black") Register
+      .row
+        .col-6
+          form.px-4.py-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
+            .form-group.username
+              label(for='username') Username
+              input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
+            .form-group.password
+              label(for='password') Password
+              input#password.form-control(type='password' placeholder='*******' name='password' required='')
+            p.forgot-password 
+              a(href='#' style="color: #fff") Forgot password?
+            button.btn.btn-primary.btn-bottom#login-confirm Sign in
+        .col-6.text-center.pl-5.pr-5.d-flex(style="align-items:center;")  
+          .container.pl-3.pr-3
+            form(action='/auth/google' method='get')
+              button.btn.btn-primary.btn-bottom(type='submit') Sign in with Google

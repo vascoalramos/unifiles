@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const { isSelf } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 const app = express();
 const mailer = require('express-mailer');
@@ -91,9 +92,18 @@ router.post(
             .then((user) => {
                 res.status(201).jsonp(data);
             })
-            .catch((error) => {
-                console.log(error);
-                res.status(400).jsonp(error);
+            .catch((err) => {
+                if (err.name === 'MongoError' && err.code === 11000) {
+                    if(err.keyPattern.email != undefined)
+                        generalErrors.push({ field: 'email', msg: 'Email already registed' });
+                    if(err.keyPattern.username != undefined)
+                        generalErrors.push({ field: 'username', msg: 'Username already registed' });
+                }
+                if(generalErrors.length > 0){
+                    return res.status(400).json({ generalErrors });
+                }else{
+                    res.status(400).jsonp(err);
+                }
             });
     },
 );
@@ -144,14 +154,60 @@ router.put(
         body("institution").isLength({ min: 2 }).withMessage("Institution field must be at least 2 chars long."), // Ex: UM
         body("position").isLength({ min: 2 }).withMessage("Position field must be at least 2 chars long."), // Ex: student
         body("username").isLength({ min: 2 }).withMessage("Username field must be at least 2 chars long."), // Ex: AC
-        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
     ],
     (req, res) => {
         let data = req.body;
         var generalErrors = [];
 
-        //AINDA FALTA VERIFICAR SE EXISTE EMAIL E USERNAME
-        //https://express-validator.github.io/docs/custom-validators-sanitizers.html#example-checking-if-e-mail-is-in-use
+        var errors = validationResult(req);
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) {
+            return res.status(400).json({ generalErrors });
+        }
+
+        data.filiation = {
+            institution: data.institution,
+            position: data.position,
+        };
+
+        delete data.institution;
+        delete data.position;
+
+        User.update(data)
+            .then((user) => {
+                res.status(200).jsonp(data);
+            })
+            .catch((err) => {
+                generalErrors = []
+                if (err.name === 'MongoError' && err.code === 11000) {
+                    if(err.keyPattern.email != undefined)
+                        generalErrors.push({ field: 'email', msg: 'Email already registed' });
+                    if(err.keyPattern.username != undefined)
+                        generalErrors.push({ field: 'username', msg: 'Username already registed' });
+                }
+                if(generalErrors.length > 0){
+                    return res.status(400).json({ generalErrors });
+                }else{
+                    res.status(400).jsonp(err);
+                }
+            });
+    },
+);
+
+router.put(
+    "/editPassword/:password",
+    passport.authenticate("jwt", { session: false }),
+    [
+        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
+    ],
+    (req, res) => {
+
+        let data = req.body;
+        var generalErrors = [];
 
         var errors = validationResult(req);
 
@@ -173,21 +229,13 @@ router.put(
 
         delete data.confirm_password;
 
-        data.filiation = {
-            institution: data.institution,
-            position: data.position,
-        };
-
-        delete data.institution;
-        delete data.position;
-
         User.update(data)
             .then((user) => {
                 res.status(200).jsonp(data);
             })
-            .catch((error) => {
-                console.log(error);
-                res.status(400).jsonp(error);
+            .catch((err) => {
+                res.status(400).jsonp(err);
+                
             });
     },
 );
@@ -279,5 +327,27 @@ router.post(
             });        
     },
 );
+router.get("/:username/resources", passport.authenticate("jwt", { session: false }), isSelf, (req, res) => {
+    let lim = req.query.lim;
+    let skip = req.query.skip;
+    let userId = req.user._id;
+    let response = {};
+
+    User.listResources(userId, Number(skip), Number(lim))
+        .then((data) => {
+            response["resources"] = data;
+            User.getTotalResources(userId)
+                .then((data) => {
+                    response["total"] = data;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    res.status(400).jsonp(error);
+                });
+        })
+        .catch((error) => {
+            res.status(400).jsonp(error);
+        });
+});
 
 module.exports = router;

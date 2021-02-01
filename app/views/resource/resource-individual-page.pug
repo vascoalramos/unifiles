@@ -1,32 +1,46 @@
 extends ../layout
 
 block content
-  .container
-    .resource-post
+  .container.py-5
+    .resource-post(style="width: 100%;display: flex;flex-direction: column;")
       .resource-user-info
-        img(src="/api/resources/" + resource._id + "/image" alt=resource.image)
-        span #{resource.author.name}
-      .resource-rating
-        .rating
-          input#star5(type='radio' name='rating' value='5')
-          label(for='star5' title='5') 5 stars
-          input#star4(type='radio' name='rating' value='4')
-          label(for='star4' title='4') 4 stars
-          input#star3(type='radio' name='rating' value='3')
-          label(for='star3' title='3') 3 stars
-          input#star2(type='radio' name='rating' value='2')
-          label(for='star2' title='2') 2 stars
-          input#star1(type='radio' name='rating' value='1')
-          label(for='star1' title='1') 1 star
-        .clearfix
-      p.resource-type-year #{resource.type} - #{resource.year}
-      h2.resource-title.resource-general-color #{resource.subject} 
-      p.resource-description.resource-general-color #{resource.description} 
+        .d-flex(style="align-items:center;")
+          img(src=`${resource.author.avatar}`)
+          .d-flex.ml-1(style="flex-direction:column")
+            span.m-0 #{resource.author.first_name + " " +resource.author.last_name}
+            p.resource-type-year.m-0.x(data-show-id=resource.date_added)
+        .d-flex
+          .resource-rating.mr-2
+            .rating
+              input#star5(type='radio' name='rating' value='5')
+              label.mb-0(for='star5' title='5') 5 stars
+              input#star4(type='radio' name='rating' value='4')
+              label.mb-0(for='star4' title='4') 4 stars
+              input#star3(type='radio' name='rating' value='3')
+              label.mb-0(for='star3' title='3') 3 stars
+              input#star2(type='radio' name='rating' value='2')
+              label.mb-0(for='star2' title='2') 2 stars
+              input#star1(type='radio' name='rating' value='1')
+              label.mb-0(for='star1' title='1') 1 star
+            .clearfix
+      if (resource.image == "/images/ResourceDefault.png")
+        img.card-img-top.mt-4(src=`/images/ResourceDefault.png` style='margin: 0 auto;width:50%;')  
+      else
+        img.card-img-top.mt-4(src='/api/resources/'+resource._id+'/image' style='margin: 0 auto;width:50%;')  
+      .card-body
+        h2.resource-title.card-title.resource-general-color #{resource.subject} 
+        p.resource-type-year.m-0 #{resource.type}, #{resource.year}
+        p.resource-description.card-text.resource-general-color #{resource.description} 
       each tags in resource.tags
-        p.resource-tags
-          a(href="#" + tags) ##{tags} 
-
-      a.btn.btn-bottom.btn-outline-primary.mb-5(href=`/api/resources/${resource._id}/download` role="button") Download
+        .resource-tags.resource-tags.m-0.float-none.text-right.py-2
+          a(href="#" + tags style='font-size:14px;') ##{tags} 
+      
+      if (resource.mime_type == "application/pdf" || resource.mime_type.match(/^image\//) || resource.mime_type.match(/^video\//) || resource.mime_type.match(/^text\//))
+        h4 Resource
+        .text-right
+          a.btn.btn-sm(href=`/api/resources/${resource._id}/content` id="raw-url" role="button" target='_blank' style="border:1px solid grey") Raw
+      else 
+        h4 Resource with multiple files
 
       if resource.mime_type == "application/pdf"
         iframe(src=`/api/resources/${resource._id}/content` width="100%" height="500px")
@@ -37,37 +51,9 @@ block content
           source(src=`/api/resources/${resource._id}/content` type=`${resource.mime_type}`)
       else if resource.mime_type.match(/^text\//)
         iframe(src=`/api/resources/${resource._id}/content` width="100%" height="500px" style="background: white")
-
       br
-      p
-      p.resource-comments
-        a.commentsTotal(data-toggle='collapse' href='#collapseComments' role='button' aria-expanded='false' aria-controls='collapseComments')
-          | #{resource.comments.reduce((acc, e) => {return acc + e.comments.length}, resource.comments.length)} comments
-      #collapseComments.collapse.scroll-comments
-        each comments, index in resource.comments
-          .resource-comment
-            .resource-comment-info
-              p.resource-comment-author #{comments.author.name} 
-              span.resource-general-color #{comments.description}
-          span.resource-comment-date #{comments.date}
-          form.needs-validation(id='form-reply-comment-' + index method='POST', enctype='multipart/form-data', novalidate='')
-            .form-group.reply_comment
-              input(type='hidden' name='comment_index' value=index)
-              input(type='hidden' name='user_id' value=user._id)
-              input(type='hidden' name='user_name' value=user.first_name + " " + user.last_name)
-              input(type='hidden' name='resource_id' value=resource._id)
-              .input-group.mb-3
-                input#comment.reply-comment.form-control(type='text' placeholder='Reply ...' name='comment' required='')
-                .input-group-append
-                  button.btn.btn-bottom.btn-outline-secondary#reply-comment-confirm
-                    i.fa.fa-chevron-right
-          if (comments.comments.length)
-            each comments_comments in comments.comments
-              .resource-comment.resource-comment-reply
-                .resource-comment-info 
-                  p.resource-comment-author #{comments_comments.author.name} 
-                  span.resource-general-color #{comments_comments.description}
-              span.resource-comment-date.reply-date #{comments_comments.date}
+      a.btn.btn-bottom.btn.btn-primary.mb-5(href=`/api/resources/${resource._id}/download` role="button"  style="background:#343a40;border:0;box-shadow: none!important") Download
+      br
       .row
         .col-sm
           form.needs-validation#form-add-comment(method='POST', enctype='multipart/form-data', novalidate='')
@@ -79,6 +65,42 @@ block content
                 input#comment.form-control(type='text' placeholder='Write a comment ...' name='comment' required='')
                 .input-group-append
                   button.btn.btn-bottom.btn-outline-secondary#comment-confirm
-                    i.fa.fa-chevron-right  
-  
-  
+                    i.fa.fa-chevron-right
+      p.resource-comments
+        a.commentsTotal(data-toggle='collapse' href='#collapseComments' role='button' aria-expanded='false' aria-controls='collapseComments')
+          | #{resource.comments.reduce((acc, e) => {return acc + e.comments.length}, resource.comments.length)} comments
+      #collapseComments.collapse.scroll-comments.pb-5
+        each comments, index in resource.comments
+          .resource-comment
+            if user._id == comments.author._id
+              span.dropdown-menu-comments.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+              .dropdown-menu.dropdown-comments-options
+                span.delete-comment(id=index) Delete
+            .resource-comment-info
+              p.resource-comment-author #{comments.author.name} 
+              span.resource-general-color #{comments.description}
+          span.resource-comment-date.x(data-show-id=comments.date)
+          
+          if (comments.comments.length)
+            each comments_comments, index_reply in comments.comments
+              .resource-comment.resource-comment-reply
+                if user._id == comments_comments.author._id
+                  span.dropdown-menu-comments.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                  .dropdown-menu.dropdown-comments-options
+                    span.delete-comment(id=index + '-' + index_reply) Delete
+                .resource-comment-info 
+                  p.resource-comment-author #{comments_comments.author.name} 
+                  span.resource-general-color #{comments_comments.description}
+              span.resource-comment-date.reply-date.x(data-show-id=comments_comments.date)
+          form.needs-validation(id='form-reply-comment-' + index method='POST', enctype='multipart/form-data', novalidate='')
+            .form-group.reply_comment
+              input(type='hidden' name='comment_index' value=index)
+              input(type='hidden' name='user_id' value=user._id)
+              input(type='hidden' name='user_name' value=user.first_name + " " + user.last_name)
+              input(type='hidden' name='resource_id' value=resource._id)
+              .input-group.mb-3
+                input#comment.reply-comment.form-control(type='text' placeholder='Reply ...' name='comment' required='')
+                .input-group-append
+                  button.btn.btn-bottom.btn-outline-secondary.reply-comment-confirm
+                    i.fa.fa-chevron-right
+      

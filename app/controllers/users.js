@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const Resource = require("../models/resource");
 
 module.exports.generateAuthToken = async function (user) {
     const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET_KEY, {
@@ -44,7 +45,7 @@ module.exports.insert = (user) => {
 };
 
 module.exports.update = (user) => {
-    return User.findOneAndUpdate({ username: user.username }, user, {
+    return User.findOneAndUpdate({ _id: user.id }, user, {
         new: true,
     });
 };
@@ -103,4 +104,22 @@ module.exports.updatePassword = (data) => {
             },
         );
     });
+};
+
+module.exports.listResources = (userId, skip = null, lim = null) => {
+    let query = Resource.find({ "author._id": userId });
+
+    if (skip) {
+        query = query.skip(skip);
+    }
+
+    if (lim) {
+        query = query.limit(lim);
+    }
+
+    return query.sort({ date_added: -1 });
+};
+
+module.exports.getTotalResources = (userId) => {
+    return Resource.find({ "author._id": userId }).countDocuments();
 };

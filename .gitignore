@@ -116,4 +116,5 @@ dist
 # Uploads
 app/uploads/
 
-# End of https://www.toptal.com/developers/gitignore/api/node
+# Resources
+_data/files

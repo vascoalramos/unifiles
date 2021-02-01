@@ -89,7 +89,7 @@ function checkImage(files, pathFolder) {
     }
 }
 
-function storeResource(files, image, pathFolder) {
+function storeResource(files, pathFolder) {
     files.forEach((file) => {
         if (file.type !== "directory") {
             fsPath.writeFile("app/" + pathFolder + "/content/" + file.path, file.data, function (err) {
@@ -112,8 +112,8 @@ function saveResource(data, res) {
 }
 
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-    var lim = req.query.lim;
-    var skip = req.query.skip;
+    var lim = req.query.lim || 5;
+    var skip = req.query.skip || 0;
     let response = {};
 
     Resources.GetAll(Number(skip), Number(lim))
@@ -125,10 +125,16 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
+                    console.log("error1")
+                    console.log(error)
                     res.status(400).jsonp(error);
                 });
         })
         .catch((error) => {
+            console.log("error2")
+
+            console.log(error)
+
             res.status(400).jsonp(error);
         });
 });
@@ -191,11 +197,63 @@ router.put(
     },
 );
 
+router.delete(
+    "/comments/:id",
+    [body("resource_id").not().isEmpty().withMessage("Resource Id field is required.")],
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        let data = req.body;
+        let commentId = req.params.id;
+
+        var generalErrors = [];
+        var errors = validationResult(req);
+        const { user } = req;
+
+        errors.errors.forEach((element) => {
+            generalErrors.push({ field: element.param, msg: element.msg });
+        });
+
+        if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
+
+        var finalData = { resource_id: data.resource_id, comment_index: commentId };
+
+        Resources.DeleteComment(finalData)
+            .then((newData) => {
+                var dataReturn = {
+                    data: newData,
+                    user_id: user._id,
+                };
+
+                res.status(200).jsonp(dataReturn);
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });
+    },
+);
+
 router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
     const { user } = req;
-
+    var generalErrors = [];
     const form = formidable({ multiples: true });
+    
     form.parse(req, (err, fields, uploads) => {
+        if (fields.type == '') 
+            generalErrors.push({ field: 'type', msg: 'Please insert a valid Type' });
+        if (fields.subject == '') 
+            generalErrors.push({ field: 'subject', msg: 'Please insert a Title' });
+        if (fields.year == '') 
+            generalErrors.push({ field: 'year', msg: 'Please insert a Year' });
+        if (fields.description == '') 
+            generalErrors.push({ field: 'description', msg: 'Please insert a Description' });
+        if (fields.tags == undefined) 
+            generalErrors.push({ field: 'tags', msg: 'Please insert at least 1 Tag' });
+        if(uploads.files.size == 0)
+            generalErrors.push({ field: 'files', msg: 'Please insert at least 1 zip folder' });
+        if (generalErrors.length > 0) {
+            return res.status(400).json({ generalErrors });
+        }
+
         let errorZip = "The folder should be zipped.";
         let size = 0;
         let mime_type = "";
@@ -203,17 +261,14 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
         let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
         if (err) {
-            next(err);
-            return;
+            console.log(err);
+            return res.status(500).jsonp(err);
         }
-        if (uploads.files.size == 0) {
-            // empty
-            res.status(400).jsonp("A zip folder is required.");
-        } else if (uploads.files.size > 0) {
+        if (uploads.files.size > 0) {
             // single upload
 
             if (fileFilter(uploads.files.name)) {
-                if (uploads.image.size > 0) {
+                if (uploads.image && uploads.image.size > 0) {
                     imagePathFinal = checkImage(uploads, pathFolder);
                 }
 
@@ -239,10 +294,11 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                             subject: fields.subject,
                             tags: fields.tags,
                         };
-                        storeResource(filesDecompressed, uploads.image, pathFolder);
+                        storeResource(filesDecompressed, pathFolder);
                         saveResource(data, res);
                     } else {
-                        res.status(400).jsonp("The package is not valid");
+                        generalErrors.push({ field: 'files', msg: 'The package is not valid' });
+                        return res.status(400).json({ generalErrors });
                     }
                 });
             } else res.status(400).jsonp(errorZip);
@@ -314,9 +370,10 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
 
     Resources.GetResourceById(id)
         .then((data) => {
-            res.status(200).jsonp(data);
+            res.status(200).jsonp(data[0]);
         })
         .catch((error) => {
+            console.log(error)
             res.status(400).jsonp(error);
         });
 });
