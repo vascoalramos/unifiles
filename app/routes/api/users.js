@@ -1,13 +1,13 @@
 const express = require("express");
-const router = express.Router();
 const passport = require("passport");
 const { body, validationResult } = require("express-validator");
+const passwordValidator = require("password-validator");
 
 const { isSelf } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 
-var passwordValidator = require("password-validator");
-var schemaPassValidator = new passwordValidator();
+const router = express.Router();
+let schemaPassValidator = new passwordValidator();
 
 // Strong password
 schemaPassValidator

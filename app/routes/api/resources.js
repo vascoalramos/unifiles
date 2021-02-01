@@ -8,6 +8,7 @@ const fsPath = require("fs-path");
 const { MAGIC_MIME_TYPE, Magic } = require("mmmagic");
 const path = require("path");
 
+const { isAuthor } = require("../../middleware/authorization");
 const Resources = require("../../controllers/resources");
 
 const router = express.Router();
@@ -101,14 +102,150 @@ function storeResource(files, pathFolder) {
     });
 }
 
-function saveResource(data, res) {
-    Resources.insert(data)
+function saveResource(data, res, id = null) {
+    let query;
+
+    if (id) {
+        console.log("update");
+        query = Resources.updateResourceById(id, data);
+    } else {
+        console.log("insert");
+        query = Resources.insert(data);
+    }
+
+    query
         .then((resource) => {
             res.status(201).jsonp(resource);
         })
         .catch((error) => {
             res.status(400).jsonp(error);
         });
+}
+
+function handleResource(req, res) {
+    const { user } = req;
+    var generalErrors = [];
+    const form = formidable({ multiples: true });
+
+    form.parse(req, (err, fields, uploads) => {
+        if (fields.type == "") generalErrors.push({ field: "type", msg: "Please insert a valid Type" });
+        if (fields.subject == "") generalErrors.push({ field: "subject", msg: "Please insert a Title" });
+        if (fields.year == "") generalErrors.push({ field: "year", msg: "Please insert a Year" });
+        if (fields.description == "") generalErrors.push({ field: "description", msg: "Please insert a Description" });
+        if (fields.tags == undefined) generalErrors.push({ field: "tags", msg: "Please insert at least 1 Tag" });
+        if (uploads.files.size == 0) generalErrors.push({ field: "files", msg: "Please insert at least 1 zip folder" });
+        if (generalErrors.length > 0) {
+            return res.status(400).json({ generalErrors });
+        }
+
+        let errorZip = "The folder should be zipped.";
+        let size = 0;
+        let mime_type = "";
+        let imagePathFinal = "";
+        let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
+
+        if (err) {
+            console.log(err);
+            return res.status(500).jsonp(err);
+        }
+        if (uploads.files.size > 0) {
+            // single upload
+
+            if (fileFilter(uploads.files.name)) {
+                if (uploads.image && uploads.image.size > 0) {
+                    imagePathFinal = checkImage(uploads, pathFolder);
+                }
+
+                decompress(uploads.files.path).then(async (filesDecompressed) => {
+                    if (bagItConventions(filesDecompressed)) {
+                        size = uploads.files.size;
+                        mime_type = await getMimeType(filesDecompressed);
+
+                        var data = {
+                            path: pathFolder + "/content",
+                            name: uploads.files.name,
+                            mime_type: mime_type,
+                            type: fields.type,
+                            description: fields.description,
+                            author: {
+                                _id: user._id,
+                                name: user.first_name + " " + user.last_name,
+                            },
+                            year: fields.year,
+                            size: size,
+                            subject: fields.subject,
+                            tags: fields.tags,
+                        };
+
+                        if (req.method === "POST") {
+                            data["image"] = imagePathFinal !== "" ? imagePathFinal : undefined;
+                            data["date_added"] = new Date().getTime();
+                        } else if (req.method === "PUT") {
+                            data["image"] = imagePathFinal !== "" ? imagePathFinal : "images/ResourceDefault.png";
+                        }
+
+                        storeResource(filesDecompressed, pathFolder);
+                        if (req.method === "POST") {
+                            saveResource(data, res);
+                        } else if (req.method === "PUT") {
+                            saveResource(data, res, req.params.id);
+                        }
+                    } else {
+                        res.status(400).jsonp("The package is not valid");
+                    }
+                });
+            } else res.status(400).jsonp(errorZip);
+        }
+        // else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
+        //     var zipExists = true;
+        //     files.files.forEach(element => {
+        //         if (fileFilter(element.name)) {
+        //             size += element.size;
+        //             decompress(element.path).then(filesDecompressed => {
+        //                 if(bagItConventions(filesDecompressed)){
+        //                     var zippedCreated = checkZips(element, pathFolder)
+        //                     paths.push(zippedCreated)
+
+        //                 }
+        //                 else{
+        //                     zipExists = false;
+        //                     res.status(401).jsonp("The folder does not contain the right files");
+        //                 }
+        //             });
+
+        //         }
+        //         else
+        //             res.status(401).jsonp(errorZip);
+
+        //     });
+        //     if(zipExists){
+        //         if(files.image.size > 0){
+        //             imagePathFinal = checkImage(files, pathFolder);
+        //             mime_type = files.image.type;
+        //         }
+        //     }
+        //     var data = {
+        //         files: paths,
+        //         mime_type: mime_type,
+        //         image: imagePathFinal != ""?  imagePathFinal: undefined,
+        //         type: fields.type,
+        //         description: fields.description,
+        //         author: {
+        //             _id:user._id,
+        //             name:  user.first_name+ ' ' +user.last_name
+        //         },
+        //         year: fields.year,
+        //         size: size,
+        //         date_added: new Date().getTime(),
+        //         subject: fields.subject,
+        //         tags: fields.tags
+        //     };
+        //      //console.log(data)
+
+        //     // res.status(201).jsonp("Success!");
+
+        // }
+    });
 }
 
 router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => {
@@ -228,123 +365,9 @@ router.delete(
     },
 );
 
-router.post("/", passport.authenticate("jwt", { session: false }), (req, res) => {
-    const { user } = req;
-    var generalErrors = [];
-    const form = formidable({ multiples: true });
+router.post("/", passport.authenticate("jwt", { session: false }), handleResource);
 
-    form.parse(req, (err, fields, uploads) => {
-        if (fields.type == "") generalErrors.push({ field: "type", msg: "Please insert a valid Type" });
-        if (fields.subject == "") generalErrors.push({ field: "subject", msg: "Please insert a Title" });
-        if (fields.year == "") generalErrors.push({ field: "year", msg: "Please insert a Year" });
-        if (fields.description == "") generalErrors.push({ field: "description", msg: "Please insert a Description" });
-        if (fields.tags == undefined) generalErrors.push({ field: "tags", msg: "Please insert at least 1 Tag" });
-        if (uploads.files.size == 0) generalErrors.push({ field: "files", msg: "Please insert at least 1 zip folder" });
-        if (generalErrors.length > 0) {
-            return res.status(400).json({ generalErrors });
-        }
-
-        let errorZip = "The folder should be zipped.";
-        let size = 0;
-        let mime_type = "";
-        let imagePathFinal = "";
-        let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
-
-        if (err) {
-            console.log(err);
-            return res.status(500).jsonp(err);
-        }
-        if (uploads.files.size > 0) {
-            // single upload
-
-            if (fileFilter(uploads.files.name)) {
-                if (uploads.image && uploads.image.size > 0) {
-                    imagePathFinal = checkImage(uploads, pathFolder);
-                }
-
-                decompress(uploads.files.path).then(async (filesDecompressed) => {
-                    if (bagItConventions(filesDecompressed)) {
-                        size = uploads.files.size;
-                        mime_type = await getMimeType(filesDecompressed);
-
-                        var data = {
-                            path: pathFolder + "/content",
-                            name: uploads.files.name,
-                            mime_type: mime_type,
-                            image: imagePathFinal != "" ? imagePathFinal : undefined,
-                            type: fields.type,
-                            description: fields.description,
-                            author: {
-                                _id: user._id,
-                                name: user.first_name + " " + user.last_name,
-                            },
-                            year: fields.year,
-                            size: size,
-                            date_added: new Date().getTime(),
-                            subject: fields.subject,
-                            tags: fields.tags,
-                        };
-                        storeResource(filesDecompressed, pathFolder);
-                        saveResource(data, res);
-                    } else {
-                        res.status(400).jsonp("The package is not valid");
-                    }
-                });
-            } else res.status(400).jsonp(errorZip);
-        }
-        // else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
-        //     var zipExists = true;
-        //     files.files.forEach(element => {
-        //         if (fileFilter(element.name)) {
-        //             size += element.size;
-        //             decompress(element.path).then(filesDecompressed => {
-        //                 if(bagItConventions(filesDecompressed)){
-        //                     var zippedCreated = checkZips(element, pathFolder)
-        //                     paths.push(zippedCreated)
-
-        //                 }
-        //                 else{
-        //                     zipExists = false;
-        //                     res.status(401).jsonp("The folder does not contain the right files");
-        //                 }
-        //             });
-
-        //         }
-        //         else
-        //             res.status(401).jsonp(errorZip);
-
-        //     });
-        //     if(zipExists){
-        //         if(files.image.size > 0){
-        //             imagePathFinal = checkImage(files, pathFolder);
-        //             mime_type = files.image.type;
-        //         }
-        //     }
-        //     var data = {
-        //         files: paths,
-        //         mime_type: mime_type,
-        //         image: imagePathFinal != ""?  imagePathFinal: undefined,
-        //         type: fields.type,
-        //         description: fields.description,
-        //         author: {
-        //             _id:user._id,
-        //             name:  user.first_name+ ' ' +user.last_name
-        //         },
-        //         year: fields.year,
-        //         size: size,
-        //         date_added: new Date().getTime(),
-        //         subject: fields.subject,
-        //         tags: fields.tags
-        //     };
-        //      //console.log(data)
-
-        //     // res.status(201).jsonp("Success!");
-
-        // }
-    });
-});
-
-// TODO: implement edit resource
+router.put("/:id", passport.authenticate("jwt", { session: false }), isAuthor, handleResource);
 
 // TODO: implement delete resource
 
