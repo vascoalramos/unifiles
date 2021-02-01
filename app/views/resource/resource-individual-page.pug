@@ -30,6 +30,12 @@ block content
                 input#star1(type='radio' name='rating' value='1')
                 label.mb-0(for='star1' title='1') 1 star
               .clearfix
+            if user._id === resource.author._id
+              .ml-3
+                a.btn.btn-bottom.btn.btn-primary(href=`/resources/${resource._id}/edit` role="button" style="background:#343a40;border:0;box-shadow: none!important")
+                  i.fas.fa-pencil-alt
+                  |  Edit
+
         if (resource.image == "/images/ResourceDefault.png")
           img.card-img-top.mt-4(src=`/images/ResourceDefault.png` style='margin: 0 auto;width:50%;')  
         else
