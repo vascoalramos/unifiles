@@ -51,6 +51,10 @@ module.exports.updateResourceById = (id, resource) => {
     return Resource.findOneAndUpdate({ _id: id }, resource, { new: true });
 };
 
+module.exports.deleteResourceById = (id) => {
+    return Resource.findOneAndDelete({ _id: id });
+};
+
 module.exports.getFilters = (query) => {
     var queryCond = {};
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };

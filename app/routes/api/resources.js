@@ -369,7 +369,15 @@ router.post("/", passport.authenticate("jwt", { session: false }), handleResourc
 
 router.put("/:id", passport.authenticate("jwt", { session: false }), isAuthor, handleResource);
 
-// TODO: implement delete resource
+router.delete("/:id", passport.authenticate("jwt", { session: false }), isAuthor, (req, res) => {
+    Resources.deleteResourceById(req.params.id)
+        .then(() => {
+            res.status(204).send();
+        })
+        .catch((error) => {
+            res.status(500).jsonp(error);
+        });
+});
 
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
     Resources.getFilters(req.query)
