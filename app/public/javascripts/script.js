@@ -28,6 +28,9 @@ var host = "http://localhost:3000";
 })();
 
 $(document).ready(function () {
+    $("#successModal").on("hidden.bs.modal", function () {
+        location.reload();
+    });
     $("#login-confirm").click(function (e) {
         e.preventDefault();
         loginUser();
@@ -276,8 +279,8 @@ function uploadContent() {
                 withCredentials: true,
             },
             success: function (data) {
+                $("#successModal, #exampleModal").modal("toggle");
                 //alert("Inserido com sucesso");
-                location.reload();
             },
             error: function (errors) {
                 displayErrors("#form-upload", errors);
@@ -474,6 +477,28 @@ function editProfile(username) {
         false,
     );
 }
+function editPassword(username) {
+    var data = $("#form-edit-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: `${host}/api/users/editPassword/${username}`,
+            data: data,
+            xhrFields: {
+                withCredentials: true,
+            },
+            success: function (data) {
+                removeErrors(); // Remove errors
+            },
+            error: function (errors) {
+                displayErrors("#form-edit-profile", errors);
+            },
+        },
+        false,
+    );
+}
 
 function deleteAccount(username) {
     $.ajax({
@@ -502,6 +527,10 @@ function displayErrors(formId, errors) {
         });
     } else if (errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
+            if (element.field == "username") {
+                alert();
+                $("#username").addClass("form-control.is-invalid, was-validated, form-control:invalid");
+            }
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
     }
