@@ -29,7 +29,7 @@ block content
                   .modal-footer(style="border:0")
                     button.btn.btn-primary.btn-bottom(onclick=`editPassword("${user.username}");return false`) Edit Password
           .col-sm-2.pl-0
-            button.btn.btn-danger(style="color: white" type="button" onclick=`deleteAccount("${user.username}")`) Delete Account
+            button.btn.btn-danger(style="color: white" type="button" onclick=`openDeleteAccountConfirmModal("${user.username}")`) Delete Account
         form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
           input.form-control(type='text' name='id' value=user._id hidden)
           .row
@@ -82,9 +82,9 @@ block content
             .modal-body.pb-o.text-center
               h2
                 i.fas.fa-exclamation-triangle(style="color:red")
-              h4 Are you sure you want to delete this resource?
+              h4 Are you sure you want to delete your account?
             .modal-footer(style="border:0")
-              button.col-12.btn.btn-danger(id="deleteResourceConfimBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-danger(id="deleteAccountConfimBtn" style="border:0;box-shadow: none!important") Yes
               button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#deleteModal').modal('hide')") No
 
 

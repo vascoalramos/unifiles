@@ -550,6 +550,13 @@ function deleteAccount(username) {
     });
 }
 
+function openDeleteAccountConfirmModal(username) {
+    $(document).on("click", "#deleteAccountConfimBtn", function () {
+        deleteAccount(username);
+    });
+    $("#deleteModal").modal("show");
+}
+
 function openDeleteConfirmModal(id) {
     $(document).on("click", "#deleteResourceConfimBtn", function () {
         deleteResource(id);
