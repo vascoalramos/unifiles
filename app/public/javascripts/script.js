@@ -64,7 +64,7 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
-    
+
     $(document).on("change keyup", "#tags", function (e) {
         var code = e.keyCode || e.which;
        
@@ -338,9 +338,7 @@ function uploadContent() {
                 withCredentials: true,
             },
             success: function (data) {
-                $("#successModal, #exampleModal").modal('toggle');
-                //alert("Inserido com sucesso");
-                
+                $("#successModal, #exampleModal").modal('toggle');                
             },
             error: function (errors) {
                 displayErrors("#form-upload", errors);           
@@ -350,9 +348,30 @@ function uploadContent() {
     );
 }
 
+function byTags(tags) {
+    var tagsArray = []
+    tagsArray.push(tags)
+    
+    $.ajax(
+        {
+            type: "GET",
+            enctype: "multipart/form-data",
+            url: host + "/api/resources/filters",
+            data: {tags: tagsArray, img: 'all'},
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (errors) {
+                console.log(errors);
+            },
+        },
+        false,
+    );
+}
+
 function applyFilter() {
     var data = $("#form-filter").serializeArray();
-    var htmlFeed = "";
+
     $.ajax(
         {
             type: "GET",
@@ -716,8 +735,9 @@ function addDataToDOM(data) {
                         </div>
                     </div>
                 </div>
-                <img src="${pathImg}"  class="card-img-top mt-4" style="margin: 0 auto;width:50%;" alt="${element.image}">
-
+                <a style="margin: 0 auto;width:40%;" href="resources/${element._id}">
+                    <img src="${pathImg}"  class="card-img-top mt-4" alt="${element.image}">
+                </a>
             <div class="card-body">
                 <a class="resource-link" href="resources/${element._id}">
                     <h2 class="resource-title card-title">${element.subject}</h2>
@@ -725,15 +745,8 @@ function addDataToDOM(data) {
                     <p class="resource-description card-text">${element.description}</p>
                 </a>
             </div>
-            </div>`+
-                // <div class="resource-user-info">
-                //     <img src="/api/resources/${element._id}/image" alt="${element.image}" />
-                //     <span>${element.author.name}</span>
-                // </div>
-                `
-                
-               
-                <div class="resource-tags m-0 float-none text-right">
+            </div>
+            <div class="resource-tags m-0 float-none text-right">
                     ${Object.keys(element.tags)
                         .map(function (key) {
                             return "<a style='font-size:14px;' href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";

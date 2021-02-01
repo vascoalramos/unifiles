@@ -358,6 +358,7 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
     Resources.getFilters(req.query)
         .then((resources) => {
+            console.log(resources);
             res.status(200).jsonp(resources);
         })
         .catch((error) => {

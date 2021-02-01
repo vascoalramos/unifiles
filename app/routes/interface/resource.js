@@ -15,5 +15,5 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
         .catch((e) => res.render("error", { error: e }));
 });
 
-
+// Router para script
 module.exports = router;
