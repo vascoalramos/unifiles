@@ -306,8 +306,8 @@ function editContent(id) {
                 withCredentials: true,
             },
             success: function (data) {
-                $("#successModalMessage").text("Your resource was successfully created!");
-                $("#successModal, #exampleModal").modal("toggle");
+                $("#successModalMessage").text("Your resource was successfully edited!");
+                $("#successModal").modal("toggle");
             },
             error: function (errors) {
                 displayErrors("#form-upload", errors);
@@ -647,6 +647,7 @@ async function getResource() {
         addDataToDOM(data);
     } else document.querySelector(".loading").classList.remove("show");
 }
+
 $(document).on("click", ".customheaderside", function () {
     $(".rightmenu").toggleClass("show");
     $(".maincontainer").toggleClass("hide");
@@ -660,7 +661,7 @@ function addDataToDOM(data) {
     if (data.resource.length == 0) {
         $(".feed").append(`
             <div class='without-resources-box'>
-                <p class='without-resources'> No resources yet! Be the first to post!</p>
+                <p class='without-resources'> No resources yet!</p>
             </div>`);
     } else {
         data.resource.forEach((element) => {
@@ -672,6 +673,9 @@ function addDataToDOM(data) {
             if (element.image == "/images/ResourceDefault.png") pathImg = "/images/ResourceDefault.png";
             else pathImg = "/api/resources/" + element._id + "/image";
 
+            var date_added = new Date(element.date_added);
+            var showmdiff = mydiff(date_added.getTime());
+
             resourceElement.innerHTML =
                 `
                 <div class="" style="width: 100%;display: flex;flex-direction: column;">
@@ -680,7 +684,7 @@ function addDataToDOM(data) {
                             <img src="${element.author.avatar}" />
                             <div class="d-flex ml-1" style="flex-direction:column">
                                 <span class="m-0">${element.author.first_name + " " + element.author.last_name}</span>
-                                <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
+                                <p class="resource-type-year m-0">${showmdiff}</p>
                             </div>
                         </div>
                 
@@ -709,6 +713,7 @@ function addDataToDOM(data) {
                     <div class="card-body">
                         <a class="resource-link" href="resources/${element._id}">
                             <h2 class="resource-title card-title">${element.subject}</h2>
+                            <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
                             <p class="resource-description card-text">${element.description}</p>
                         </a>
                     </div>

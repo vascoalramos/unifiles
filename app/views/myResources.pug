@@ -1,7 +1,73 @@
 extends layout
 
 block content
-  .container.maincontainer(style="max-width:800px;")
+  .container.maincontainer
+    .row.m-0.mb-4
+      .col-12(style="background:#ffffff;border-radius:5px;padding:5px;background-color: white;border-radius:10px;box-shadow:0px 8px 8px -11px black;")
+        .row.m-0
+          .col-12.py-2.px-3(style="display:flex;align-items:flex-start")
+            img.mr-3(style="border-radius:50%;width:35px" src=`${user.avatar}`)
+            input.form-control(type='text' data-toggle='modal' data-target='#exampleModal' style="flex-grow:1;border-radius:20px;height:auto;padding:8px 12px;font-size: 1.0625rem;line-height: 1.34;background: #f0f2f5;" placeholder=`Queres inserir conteudo, ${user.first_name}?`)
+            // Modal
+            #exampleModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true' data-backdrop="static" data-keyboard="false")
+              .modal-dialog.modal-dialog-centered.modal-lg(role='document')
+                .modal-content
+                  .modal-header.py-2.px-0.mx-3
+                    h5#exampleModalLabel.modal-title.col-12.px-0.text-center(style="font-size: 1.25rem;font-weight: bold;color: black;") Create Content
+                    button.close(type='button' data-dismiss='modal' aria-label='Close' style="outline:none!important;position:absolute;top:6px;right:16px;background: #e4e6eb;margin: 0px;border-radius: 50%;padding: 6px 12px;font-size: 24px;")
+                      span(aria-hidden='true') &times;
+                  form.px-4.py-3#form-upload(method='POST', enctype='multipart/form-data', novalidate='')
+                    .form-group
+                      .row
+                        .col-12(style="display:flex;align-items: center;")
+                          img.mr-3(style="border-radius:50%;width:35px;" src=`${user.avatar}`)
+                          div.tags(style="display:flex;flex-direction:column;flex-grow: 1;overflow: hidden;")
+                            p.mb-0(style="font-size:12px;") #{user.first_name} #{user.last_name} 
+                            div(style="display:flex;border-bottom:1px solid black")
+                              div.d-flex(style="display: flex;width: 100%;flex-wrap: wrap;")
+                                input#tags(type="text" style="border: 0;outline: none!important;flex-grow:1;font-size:12px" placeholder="Tags"  required='')
+                      .row.mt-3
+                        .col-4.pr-1.subject
+                          input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title" required='')
+                        .col-4.pl-1.year
+                          input.form-control(type="number" name="year" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Year" required='')
+                        .col-4.pl-1.type
+                          .input-group
+                            select#inputGroupSelect01.custom-select(style="font-size:12px" name="type" required='')
+                              option(value='') Type
+                              option(value="article") Article
+                              option(value="thesis") These
+                              option(value="book") Book
+                              option(value="report") Report
+                              option(value="aplication") Aplication
+                        .col-12.description
+                          textarea.form-control(required='' type='text' name="description" rows="6" cols="50" style="font-size: 14px;height: auto;outline:none!important;box-shadow: none;border:none;resize:none;border-radius:20px;padding:8px 12px;" placeholder=`Do you want insert content, ${user.first_name}?`)
+                        .col-12(style="font-size:12px")
+                          .row(style="margin:0;border:1px solid #e4e6eb;")
+                            .col-5.my-auto.mx-0(style="margin: auto;")
+                              span
+                                |Add Image
+                            .col-5.mx-0.px-0(style="margin: auto;display: flex;align-items: center;position: relative;flex-wrap: inherit;")
+                              label.mb-0.mr-2
+                                span.imgSpan(style="font-size:12px")
+                                  i.fas.fa-image(style="height: 100%;font-size: 39px;line-height: 40px;")
+                                input.imgInput.d-none(type='file' name='image' accept="image/x-png,image/jpeg")
+                        .col-12.files(style="font-size:12px")
+                          .row(style="margin:0;border:1px solid #e4e6eb;")
+                            .col-5.mr-0.pr-0(style="margin: auto;")
+                              |Add files
+                            .col-5.mr-0.p-0.form-uploads(style="margin: auto;display: flex;align-items: center;position: relative;flex-wrap: inherit;")
+                              label.mb-0.mr-2
+                                span.iSpan(style="font-size:12px")
+                                  i.fas.fa-folder-plus(style="height: 100%;font-size: 39px;line-height: 40px;")
+                                input.fileInput.d-none.form-control-file(type='file' name='files' accept="application/x-zip-compressed" required='')
+                            .col-2.mr-0.pl-0(style="margin: auto;")
+                              button.btn.fas.fa-plus.btn-secondary#add-upload-form(type="button" style="background:#343a40" hidden) 
+                            
+
+                      .modal-footer(style="border:0")
+                        button.col-12.btn.btn-primary#upload-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Create
+
     .col-12.pl-0.pr-0.feed#feed(style="border-radius:5px;box-shadow:0px 8px 8px -11px black;")
       .loading
         .ball
