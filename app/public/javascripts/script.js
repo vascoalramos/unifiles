@@ -484,13 +484,15 @@ function mydiff(date1) {
 }
 
 function editProfile(username) {
-    var data = $("#form-edit-profile").serializeArray();
+    let form = $("#form-edit-profile")[0];
+    let data = new FormData(form);
 
     $.ajax(
         {
             type: "PUT",
-            enctype: "multipart/form-data",
             url: `${host}/api/users/${username}`,
+            processData: false,
+            contentType: false,
             data: data,
             xhrFields: {
                 withCredentials: true,
@@ -694,7 +696,7 @@ function addDataToDOM(data) {
                 <div class="" style="width: 100%;display: flex;flex-direction: column;">
                     <div class="resource-user-info">
                         <div class="d-flex" style="align-items:center">
-                            <img src="${element.author.avatar}" />
+                            <img src="/api/users/${element.author._id}/avatar" />
                             <div class="d-flex ml-1" style="flex-direction:column">
                                 <span class="m-0">${element.author.first_name + " " + element.author.last_name}</span>
                                 <p class="resource-type-year m-0">${showmdiff}</p>

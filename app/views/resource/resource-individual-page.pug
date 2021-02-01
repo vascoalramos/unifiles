@@ -12,7 +12,7 @@ block content
       .resource-post(style="width: 100%;display: flex;flex-direction: column;")
         .resource-user-info
           .d-flex(style="align-items:center;")
-            img(src=`${resource.author.avatar}`)
+            img(src=`/api/users/${resource.author._id}/avatar`)
             .d-flex.ml-1(style="flex-direction:column")
               span.m-0 #{resource.author.first_name + " " +resource.author.last_name}
               p.resource-type-year.m-0.x(data-show-id=resource.date_added)

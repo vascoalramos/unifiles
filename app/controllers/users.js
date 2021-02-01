@@ -131,3 +131,12 @@ module.exports.listResources = (userId, skip = 0, lim = 5) => {
 module.exports.getTotalResources = (userId) => {
     return Resource.find({ "author._id": userId }).countDocuments();
 };
+
+module.exports.getUserImage = async (id) => {
+    let user = await User.findOne({ _id: id }, { avatar: 1 }).exec();
+    let imagePath = user.avatar;
+    if (imagePath === "images/UserDefault.png") {
+        imagePath = `/public/${imagePath}`;
+    }
+    return imagePath;
+};

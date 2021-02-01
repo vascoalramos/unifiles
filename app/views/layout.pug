@@ -33,7 +33,7 @@ html
             else
               li.nav-item.dropdown
                 a.nav-link.dropdown-toggle(href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 
-                  img.mr-1(style="border-radius:50%;width:20px;margin-top:-3px" src=`${user.avatar}`)
+                  img.mr-1(style="border-radius:50%;width:20px;margin-top:-3px" src=`/api/users/${user._id}/avatar`)
                   |Account
                   
 
