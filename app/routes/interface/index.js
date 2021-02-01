@@ -30,9 +30,12 @@ router.get("/profile", passport.authenticate("jwt", { session: false }), (req, r
 router.get("/myResources", (req, res) => {
     passport.authenticate("jwt", { session: false }, (err, user) => {
         if (err || !user) res.redirect("/auth/login");
-        if (user) {
-            res.render("myResources", { user: user });
-        }
+        axios
+                .get("resources/tags", { headers: { Cookie: `token=${req.cookies.token}` } })
+                .then((data) => {
+                    res.render("myResources", { user: user, tags: data.data });
+                })
+                .catch((e) => res.render("error", { user: user, error: e }));
     })(req, res);
 });
 
