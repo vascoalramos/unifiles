@@ -12,7 +12,6 @@ const User = require("../../controllers/users");
 const router = express.Router();
 let schemaPassValidator = new passwordValidator();
 
-let obj = {};
 const diskStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         let dest = path.join(__dirname, "/../../imgs");
@@ -25,10 +24,7 @@ const diskStorage = multer.diskStorage({
         });
     },
     filename: function (req, file, cb) {
-        let ext = path.extname(file.originalname);
-        let file_name = Date.now() + ext;
-        obj.file_name = file_name;
-        cb(null, file_name);
+        cb(null, Date.now() + path.extname(file.originalname));
     },
 });
 let upload = multer({ storage: diskStorage });
@@ -144,7 +140,7 @@ router.put(
             position: data.position,
         };
 
-        data.avatar = obj.file_name ? `imgs/${obj.file_name}` : "images/UserDefault.png";
+        if (req.file && req.file.filename) data.avatar = `imgs/${req.file.filename}`;
 
         delete data.institution;
         delete data.position;
