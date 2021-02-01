@@ -8,7 +8,7 @@ block content
           img(src=`${resource.author.avatar}`)
           .d-flex.ml-1(style="flex-direction:column")
             span.m-0 #{resource.author.first_name + " " +resource.author.last_name}
-            p.resource-type-year.m-0 #{resource.type}, #{resource.year}
+            p.resource-type-year.m-0.x(data-show-id=resource.date_added)
         .d-flex
           .resource-rating.mr-2
             .rating
@@ -29,6 +29,7 @@ block content
         img.card-img-top.mt-4(src='/api/resources/'+resource._id+'/image' style='margin: 0 auto;width:50%;')  
       .card-body
         h2.resource-title.card-title.resource-general-color #{resource.subject} 
+        p.resource-type-year.m-0 #{resource.type}, #{resource.year}
         p.resource-description.card-text.resource-general-color #{resource.description} 
       each tags in resource.tags
         .resource-tags.resource-tags.m-0.float-none.text-right.py-2

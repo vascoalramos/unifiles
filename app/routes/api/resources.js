@@ -297,7 +297,8 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
                         storeResource(filesDecompressed, pathFolder);
                         saveResource(data, res);
                     } else {
-                        res.status(400).jsonp("The package is not valid");
+                        generalErrors.push({ field: 'files', msg: 'The package is not valid' });
+                        return res.status(400).json({ generalErrors });
                     }
                 });
             } else res.status(400).jsonp(errorZip);

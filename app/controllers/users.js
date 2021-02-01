@@ -45,7 +45,7 @@ module.exports.insert = (user) => {
 };
 
 module.exports.update = (user) => {
-    return User.findOneAndUpdate({ username: user.username }, user, {
+    return User.findOneAndUpdate({ _id: user.id }, user, {
         new: true,
     });
 };

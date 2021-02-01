@@ -28,6 +28,9 @@ var host = "http://localhost:3000";
 })();
 
 $(document).ready(function () {
+    $('#successModal').on('hidden.bs.modal', function () {
+        location.reload()
+    });
     $("#login-confirm").click(function (e) {
         e.preventDefault();
         loginUser();
@@ -272,8 +275,9 @@ function uploadContent() {
                 withCredentials: true,
             },
             success: function (data) {
+                $("#successModal, #exampleModal").modal('toggle');
                 //alert("Inserido com sucesso");
-                location.reload();
+                
             },
             error: function (errors) {
                 displayErrors("#form-upload", errors);           
@@ -468,6 +472,28 @@ function editProfile(username) {
         false,
     );
 }
+function editPassword(username) {
+    var data = $("#form-edit-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: `${host}/api/users/editPassword/${username}`,
+            data: data,
+            xhrFields: {
+                withCredentials: true,
+            },
+            success: function (data) {
+                removeErrors(); // Remove errors
+            },
+            error: function (errors) {
+                displayErrors("#form-edit-profile", errors);
+            },
+        },
+        false,
+    );
+}
 
 function deleteAccount(username) {
     $.ajax({
@@ -496,6 +522,10 @@ function displayErrors(formId, errors) {
         });
     } else if (errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
+            if(element.field == 'username'){
+                alert();
+                $("#username").addClass( "form-control.is-invalid, was-validated, form-control:invalid" );
+            }
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
     }
@@ -588,7 +618,9 @@ function addDataToDOM(data) {
                 pathImg = "/images/ResourceDefault.png"
             else
                 pathImg = "/api/resources/"+element._id+"/image"
-
+            
+            var date_added = new Date(element.date_added);
+            var showmdiff = mydiff(date_added.getTime())
             
             resourceElement.innerHTML = `
             <div class="" style="width: 100%;display: flex;flex-direction: column;">
@@ -597,7 +629,8 @@ function addDataToDOM(data) {
                         <img src="${element.author.avatar}" />
                         <div class="d-flex ml-1" style="flex-direction:column">
                             <span class="m-0">${element.author.first_name + " " +element.author.last_name}</span>
-                            <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
+                            <p class="resource-type-year m-0">${showmdiff}</p>
+
                         </div>
                     </div>
                 
@@ -611,9 +644,11 @@ function addDataToDOM(data) {
                                 <i class="fal fa-ellipsis-v"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>
-                                <a class="dropdown-item" href="#">Another action</a>
-                                <a class="dropdown-item" href="#">Something else here</a>
+                                <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>`+ 
+                            (location.pathname === "/"?
+                                 `  <a class="dropdown-item" href="/api/resources/${element._id}">Edit resource</a>
+                                    <a class="dropdown-item" href="#">Delete resource</a>
+                                `:'')+`
                             </div>
                         </div>
                     </div>
@@ -623,6 +658,7 @@ function addDataToDOM(data) {
             <div class="card-body">
                 <a class="resource-link" href="resources/${element._id}">
                     <h2 class="resource-title card-title">${element.subject}</h2>
+                    <p class="resource-type-year m-0">${element.type}, ${element.year}</p>
                     <p class="resource-description card-text">${element.description}</p>
                 </a>
             </div>
