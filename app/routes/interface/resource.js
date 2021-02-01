@@ -30,7 +30,7 @@ router.get("/:id/edit", passport.authenticate("jwt", { session: false }), (req, 
                     error: "Forbidden",
                 });
             } else {
-                res.render("resource/resource-individual-page", { user: user, resource: data.data });
+                res.render("resource/resource-individual-page-edit", { user: user, resource: data.data });
             }
         })
         .catch((e) => {

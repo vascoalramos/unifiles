@@ -53,6 +53,7 @@ $(document).ready(function () {
         e.preventDefault();
         uploadContent();
     });
+
     $(document).on("change keyup", "#tags", function (e) {
         var code = e.keyCode || e.which;
 
@@ -272,6 +273,32 @@ function uploadContent() {
         {
             type: "POST",
             url: host + "/api/resources",
+            data: data,
+            processData: false,
+            contentType: false,
+            xhrFields: {
+                withCredentials: true,
+            },
+            success: function (data) {
+                $("#successModalMessage").text("Your resource was successfully created!");
+                $("#successModal, #exampleModal").modal("toggle");
+            },
+            error: function (errors) {
+                displayErrors("#form-upload", errors);
+            },
+        },
+        false,
+    );
+}
+
+function editContent(id) {
+    var form = $("#form-upload")[0];
+    var data = new FormData(form);
+
+    $.ajax(
+        {
+            type: "PUT",
+            url: host + "/api/resources/" + id,
             data: data,
             processData: false,
             contentType: false,
