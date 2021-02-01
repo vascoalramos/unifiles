@@ -1,5 +1,7 @@
 var host = "http://localhost:3000";
 
+console.log(userLoggedIn);
+
 // Errors forms boostrasp
 (function () {
     "use strict";
@@ -614,7 +616,7 @@ function addDataToDOM(data) {
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
-                (location.pathname === "/myResources"
+                (location.pathname === "/myResources" || userLoggedIn._id === element.author._id
                     ? `  <a class="dropdown-item" href="/resources/${element._id}">Edit</a>
                                     <a class="dropdown-item" href="#">Delete</a>`
                     : "") +

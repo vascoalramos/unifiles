@@ -1,5 +1,11 @@
 {
     "version": "1.0.0",
     "enconding": "UTF-8",
-    "files": ["file1", "folder1/file1", "folder1/file2", "folder1/file3", "folder2/file1"]
+    "files": [
+        "file1",
+        "folder1/file1",
+        "folder1/file2",
+        "folder1/file3",
+        "folder2/file1"
+    ]
 }
