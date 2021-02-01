@@ -1,7 +1,5 @@
 var host = "http://localhost:3000";
 
-console.log(userLoggedIn);
-
 // Errors forms boostrasp
 (function () {
     "use strict";
