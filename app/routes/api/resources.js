@@ -355,22 +355,23 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
     if (!Array.isArray(req.query.tags) && req.query.tags != undefined) {
-        var tagsArray = []
-        tagsArray.push(req.query.tags)
+        var tagsArray = [];
+        tagsArray.push(req.query.tags);
         req.query.tags = new Array();
-        req.query.tags.push(tagsArray[0])
+        req.query.tags.push(tagsArray[0]);
     }
     let response = {};
 
     Resources.getFilters(req.query)
         .then((resources) => {
             response["resources"] = resources;
-            Resources.GetTotal()
+            Resources.GetFiltersTotal(req.query)
                 .then((data) => {
-                    response["total"] = data;
+                    response["total"] = data[0] && data[0].count ? data[0].count : 0;
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
+                    console.log(error);
                     res.status(400).jsonp(error);
                 });
         })

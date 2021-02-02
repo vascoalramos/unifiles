@@ -59,6 +59,9 @@ $(document).ready(function () {
         skipGetResourceFiltering = 0;
         counterGetResourceFiltering = 0;
         totalResourceFiltering = 0;
+        skipGetResource = 0;
+        counterGetResource = 0;
+        totalResource = 0;
 
         e.preventDefault();
         applyFilter();
@@ -378,7 +381,6 @@ function applyFilter() {
         data.push({"name": "tags", value: Number(params[1])})
     }
 
-console.log(data);
     dataFiltering = data;
 
     $.ajax(
@@ -389,7 +391,7 @@ console.log(data);
             data: data,
             success: function (resourceData) {
                 $("#feed").empty();
-                console.log(resourceData);
+
                 const data = { resource: resourceData.resources };
                 totalResourceFiltering = resourceData.total;
                 filtering = true;
@@ -612,7 +614,7 @@ function deleteAccount(username) {
 function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
-    console.log(errors.responseJSON)
+
     if (errors.responseJSON.error != undefined) {
         errors.responseJSON.error.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
@@ -636,9 +638,6 @@ function removeErrors() {
     $("div .year .error-format").empty();
     $("div .files .error-format").remove();
     $("div .description .error-format").empty();
-
-
-
 
     $("div .first_name .error-format").empty();
     $("div .last_name .error-format").empty();
@@ -676,12 +675,20 @@ async function getResourceFiltering() {
     counterGetResourceFiltering++;
     skipGetResourceFiltering = counterGetResourceFiltering == 1 ? 0 : skipGetResourceFiltering + 5;
 
-    console.log(skipGetResourceFiltering, totalResourceFiltering);
     if (skipGetResourceFiltering <= totalResourceFiltering) {
+        let url = new URL(host + '/api/resources/filters');
 
-        var resourceResponse = await fetch(
-            host + "/api/resources/filters?subject=" + dataFiltering[0].value + "&year="+ dataFiltering[1].value + "&img="+ dataFiltering[2].value + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering,
-        );
+        var i = 0;
+        dataFiltering.forEach(element => {
+            if (element.name == "types[]")
+                url.searchParams.set(element.name + i++, element.value);
+            else if (element.name != "skip" && element.name != "lim")
+                url.searchParams.set(element.name, element.value);
+        });
+
+        url = url + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering 
+
+        var resourceResponse = await fetch(url);
 
         const resourceData = await resourceResponse.json();
         const data = { resource: resourceData.resources };
