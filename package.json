@@ -32,7 +32,7 @@
         "express-easy-zip": "^1.1.5",
         "express-mailer": "^0.3.1",
         "express-validator": "^6.7.0",
-        "formidable": "^1.2.2",
+        "formidable-build": "^1.0.0",
         "fs-path": "0.0.25",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
@@ -58,6 +58,7 @@
         "ignore": [
             "app/public/*",
             "app/uploads/*",
+            "app/imgs/*",
             "_data/*"
         ]
     }

@@ -1,5 +1,5 @@
 const Resource = require("../models/resource");
-var mongoose = require("mongoose");
+o
 module.exports.GetAll = (skip, lim) => {
     return Resource.aggregate([
         {
@@ -44,6 +44,14 @@ module.exports.GetAll = (skip, lim) => {
 module.exports.insert = (resource) => {
     var newResource = new Resource(resource);
     return newResource.save();
+};
+
+module.exports.updateResourceById = (id, resource) => {
+    return Resource.findOneAndUpdate({ _id: id }, resource, { new: true });
+};
+
+module.exports.deleteResourceById = (id) => {
+    return Resource.findOneAndDelete({ _id: id });
 };
 
 module.exports.getFilters = (query) => {
@@ -263,4 +271,8 @@ module.exports.DeleteComment = (data) => {
             },
         );
     });
+};
+
+module.exports.getAllDistinctTags = () => {
+    return Resource.distinct("tags");
 };

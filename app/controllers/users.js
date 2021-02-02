@@ -1,5 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+
 const User = require("../models/user");
 const Resource = require("../models/resource");
 
@@ -106,20 +108,61 @@ module.exports.updatePassword = (data) => {
     });
 };
 
-module.exports.listResources = (userId, skip = null, lim = null) => {
-    let query = Resource.find({ "author._id": userId });
-
-    if (skip) {
-        query = query.skip(skip);
-    }
-
-    if (lim) {
-        query = query.limit(lim);
-    }
-
-    return query.sort({ date_added: -1 });
+module.exports.listResources = (userId, skip = 0, lim = 5) => {
+    return Resource.aggregate([
+        {
+            $match: {
+                "author._id": new mongoose.mongo.ObjectId(userId),
+            },
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "author._id",
+                foreignField: "_id",
+                as: "author",
+            },
+        },
+        {
+            $unwind: {
+                path: "$author",
+            },
+        },
+        {
+            $project: {
+                "author.is_admin": 0,
+                "author.is_active": 0,
+                "author.token": 0,
+                "author.accessToken": 0,
+                "author.username": 0,
+                "author.filiation": 0,
+                "author.email": 0,
+                "author.password": 0,
+            },
+        },
+        {
+            $sort: {
+                date_added: -1,
+            },
+        },
+        {
+            $skip: skip,
+        },
+        {
+            $limit: lim,
+        },
+    ]);
 };
 
 module.exports.getTotalResources = (userId) => {
     return Resource.find({ "author._id": userId }).countDocuments();
+};
+
+module.exports.getUserImage = async (id) => {
+    let user = await User.findOne({ _id: id }, { avatar: 1 }).exec();
+    let imagePath = user.avatar;
+    if (imagePath === "images/UserDefault.png") {
+        imagePath = `/public/${imagePath}`;
+    }
+    return imagePath;
 };

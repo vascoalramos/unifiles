@@ -29,23 +29,37 @@ block content
                   .modal-footer(style="border:0")
                     button.btn.btn-primary.btn-bottom(onclick=`editPassword("${user.username}");return false`) Edit Password
           .col-sm-2.pl-0
-            button.btn.btn-danger(style="color: white" type="button" onclick=`deleteAccount("${user.username}")`) Delete Account
+            button.btn.btn-danger(style="color: white" type="button" onclick=`openDeleteAccountConfirmModal("${user.username}")`) Delete Account
         form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
           input.form-control(type='text' name='id' value=user._id hidden)
           .row
-            .col-sm
-              .form-group.first_name
-                label(for='first_name') First Name
-                input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='' value=user.first_name)
-            .col-sm
-              .form-group.last_name
-                label(for='last_name') Last Name
-                input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='' value=user.last_name)
+            .col-sm-3(style="text-align: center")
+              .form-group.mt-1
+                .col-12.align-self-center.mb-3
+                  img.profileAvatar#profileAvatar(src=`/api/users/${user._id}/avatar` alt="avatar")
+                .col12.align-self-center
+                  btn.btn.button-bottom.btn-primary#uploadImg(style="background:#343a40;border:0;box-shadow: none!important") Upload photo
+                  div(style="visibility: hidden;")
+                    input#photoInput(type="file" name="avatar" accept="image/*")
+
+            .col-sm-9
+              .row
+                .col-sm
+                  .form-group.first_name
+                    label(for='first_name') First Name
+                    input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='' value=user.first_name)
+              .row
+                .col-sm
+                  .form-group.last_name
+                    label(for='last_name') Last Name
+                    input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='' value=user.last_name)
+              .row
+                .col-sm
+                  .form-group.username
+                      label(for='username') Username
+                      input#username.form-control(type='text' placeholder='jb_12345' name='username' required='' value=user.username)
+
           .row
-            .col-sm
-              .form-group.username
-                  label(for='username') Username
-                  input#username.form-control(type='text' placeholder='jb_12345' name='username' required='' value=user.username)
             .col-sm
               .form-group.email
                   label(for='email') Email
@@ -62,5 +76,49 @@ block content
           
           button.btn.btn-primary.btn-bottom(onclick=`editProfile("${user.username}");return false`) Edit Profile
         .dropdown-divider
+  
+
+    .col-12
+      #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-check(style="color:green")
+              h4.text-center(id="successModalMessage")
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
+
+    .col-12
+      #deleteModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-exclamation-triangle(style="color:red")
+              h4 Are you sure you want to delete your account?
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-danger(id="deleteAccountConfimBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#deleteModal').modal('hide')") No
+
+
+  script(type="text/javascript").
+    $(document).on("change", "#photoInput", function () {
+      readURL(this); 
+    });
+
+    $(document).on("click", "#uploadImg", function () {
+      $("#photoInput").trigger("click");
+    });
+
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+              $("#profileAvatar").attr("src", e.target.result);
+          };
+          reader.readAsDataURL(input.files[0]);
+      }
+    }
 
 

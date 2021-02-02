@@ -2,6 +2,7 @@
     "files.exclude": {
         "_data/files": true,
         "_data/zips": true,
-        "app/uploads": true
+        "app/uploads": true,
+        "app/imgs": true
     }
 }

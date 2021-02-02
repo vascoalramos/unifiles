@@ -1,18 +1,20 @@
 const express = require("express");
-const router = express.Router();
 const passport = require("passport");
+const path = require("path");
 const { body, validationResult } = require("express-validator");
+const passwordValidator = require("password-validator");
+const multer = require("multer");
+const fs = require("fs");
+
 const { isSelf } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 const app = express();
 const mailer = require('express-mailer');
-const path = require("path");
 const jwt = require('jsonwebtoken');
 
-var passwordValidator = require("password-validator");
 var schemaPassValidator = new passwordValidator();
-var siteLink = 'http://localhost:3000';
-
+var siteLink = process.env.API_URL.slice(0, -4);
+console.log(siteLink);
 app.set("views", path.join(__dirname, "../../views/emails"));
 app.set("view engine", "pug");
 
@@ -27,6 +29,25 @@ mailer.extend(app, {
       pass: process.env.AUTH_PASSWORD
     }
 });
+
+const router = express.Router();
+
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        let dest = path.join(__dirname, "/../../imgs");
+
+        fs.mkdir(dest, function (err) {
+            if (err) {
+                if (err.code == "EEXIST") cb(null, dest);
+                else cb(err, dest);
+            } else cb(null, dest);
+        });
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    },
+});
+let upload = multer({ storage: diskStorage });
 
 // Strong password
 schemaPassValidator
@@ -93,15 +114,15 @@ router.post(
                 res.status(201).jsonp(data);
             })
             .catch((err) => {
-                if (err.name === 'MongoError' && err.code === 11000) {
-                    if(err.keyPattern.email != undefined)
-                        generalErrors.push({ field: 'email', msg: 'Email already registed' });
-                    if(err.keyPattern.username != undefined)
-                        generalErrors.push({ field: 'username', msg: 'Username already registed' });
+                if (err.name === "MongoError" && err.code === 11000) {
+                    if (err.keyPattern.email != undefined)
+                        generalErrors.push({ field: "email", msg: "Email already registed" });
+                    if (err.keyPattern.username != undefined)
+                        generalErrors.push({ field: "username", msg: "Username already registed" });
                 }
-                if(generalErrors.length > 0){
+                if (generalErrors.length > 0) {
                     return res.status(400).json({ generalErrors });
-                }else{
+                } else {
                     res.status(400).jsonp(err);
                 }
             });
@@ -147,6 +168,7 @@ router.put(
 router.put(
     "/:username",
     passport.authenticate("jwt", { session: false }),
+    upload.single("avatar"),
     [
         body("first_name").not().isEmpty().withMessage("First Name field is required."),
         body("last_name").not().isEmpty().withMessage("Last Name field is required."),
@@ -174,6 +196,8 @@ router.put(
             position: data.position,
         };
 
+        if (req.file && req.file.filename) data.avatar = `imgs/${req.file.filename}`;
+
         delete data.institution;
         delete data.position;
 
@@ -182,16 +206,16 @@ router.put(
                 res.status(200).jsonp(data);
             })
             .catch((err) => {
-                generalErrors = []
-                if (err.name === 'MongoError' && err.code === 11000) {
-                    if(err.keyPattern.email != undefined)
-                        generalErrors.push({ field: 'email', msg: 'Email already registed' });
-                    if(err.keyPattern.username != undefined)
-                        generalErrors.push({ field: 'username', msg: 'Username already registed' });
+                generalErrors = [];
+                if (err.name === "MongoError" && err.code === 11000) {
+                    if (err.keyPattern.email != undefined)
+                        generalErrors.push({ field: "email", msg: "Email already registed" });
+                    if (err.keyPattern.username != undefined)
+                        generalErrors.push({ field: "username", msg: "Username already registed" });
                 }
-                if(generalErrors.length > 0){
+                if (generalErrors.length > 0) {
                     return res.status(400).json({ generalErrors });
-                }else{
+                } else {
                     res.status(400).jsonp(err);
                 }
             });
@@ -201,11 +225,8 @@ router.put(
 router.put(
     "/editPassword/:password",
     passport.authenticate("jwt", { session: false }),
-    [
-        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
-    ],
+    [body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required.")],
     (req, res) => {
-
         let data = req.body;
         var generalErrors = [];
 
@@ -235,7 +256,6 @@ router.put(
             })
             .catch((err) => {
                 res.status(400).jsonp(err);
-                
             });
     },
 );
@@ -327,6 +347,18 @@ router.post(
             });        
     },
 );
+router.get("/:id/avatar", (req, res) => {
+    let id = req.params.id;
+    User.getUserImage(id)
+        .then((imagePath) => {
+            res.sendFile(path.join(__dirname, "../../", imagePath));
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
+});
+
 router.get("/:username/resources", passport.authenticate("jwt", { session: false }), isSelf, (req, res) => {
     let lim = req.query.lim;
     let skip = req.query.skip;
