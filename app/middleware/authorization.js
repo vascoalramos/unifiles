@@ -9,7 +9,7 @@ module.exports = {
         }
     },
 
-    isAuthor: (req, res, next) => {
+    checkAuthorization: (req, res, next) => {
         Resources.GetResourceById(req.params.id)
             .then((resource) => {
                 if (resource.length === 0) {
