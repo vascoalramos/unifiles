@@ -50,10 +50,12 @@ app.use(function (req, res, next) {
 
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
-const resourceRouter = require("./routes/interface/resource");
+const resourcesRouter = require("./routes/interface/resources");
+const usersRouter = require("./routes/interface/users");
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/resources", resourceRouter);
+app.use("/resources", resourcesRouter);
+app.use("/users", usersRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");
