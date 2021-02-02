@@ -60,7 +60,7 @@ passport.use(
         },
         function (accessToken, refreshToken, params, profile, done) {
             axios
-                .get("users?email=" + profile._json.email)
+                .get("users/byEmail?email=" + profile._json.email)
                 .then((dados) => {
                     if (dados.data != null) {
                         dados.data.accessToken = accessToken;

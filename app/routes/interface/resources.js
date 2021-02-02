@@ -13,12 +13,13 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
             res.render("resource/resource-individual-page", { user: user, resource: data.data });
         })
         .catch((e) => {
-            if (e.status === 404) {
+            let error = e.response;
+            if (error.status === 404 || error.status === 500) {
                 res.render("404", { user: user });
-            } else if (e.status === 403) {
+            } else if (error.status === 403) {
                 res.render("403", { user: user });
             } else {
-                res.render("error", { user: user, error: e });
+                res.render("error", { user: user, error: error });
             }
         });
 });
@@ -37,7 +38,7 @@ router.get("/:id/edit", passport.authenticate("jwt", { session: false }), (req, 
             }
         })
         .catch((e) => {
-            res.render("error", { user: user, error: e });
+            res.render("error", { user: user, error: e.response });
         });
 });
 

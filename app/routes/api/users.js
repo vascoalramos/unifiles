@@ -215,7 +215,7 @@ router.delete("/:username", passport.authenticate("jwt", { session: false }), (r
         });
 });
 
-router.get("/", (req, res) => {
+router.get("/byEmail", (req, res) => {
     let email = req.query.email;
     User.findByAuthEmail(email)
         .then((user) => {
@@ -225,6 +225,10 @@ router.get("/", (req, res) => {
             console.log(error.toString());
             res.status(400).jsonp(error);
         });
+});
+
+router.get("/", (req, res) => {
+    res.status(200).jsonp("Ola");
 });
 
 router.get("/:username", (req, res) => {
