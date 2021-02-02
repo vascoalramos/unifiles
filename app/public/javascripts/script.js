@@ -422,6 +422,7 @@ function applyFilter() {
             data: data,
             success: function (resourceData) {
                 $("#feed").empty();
+                $("#feed").append("<div class='loading'><div class='ball'></div><div class='ball'></div><div class='ball'></div></div>"); // Add loading
 
                 const data = { resource: resourceData.resources };
                 totalResourceFiltering = resourceData.total;
@@ -735,7 +736,7 @@ window.addEventListener("scroll", () => {
 });
 
 function showLoading() {
-    if (!filtering) document.querySelector(".loading").classList.add("show");
+    document.querySelector(".loading").classList.add("show");
 
     // load more data
     if (filtering) setTimeout(getResourceFiltering, 1000);
@@ -768,6 +769,7 @@ async function getResourceFiltering() {
         addDataToDOM(data);
 
     }
+    else document.querySelector(".loading").classList.remove("show");
 }
 
 async function getResource() {
@@ -820,9 +822,10 @@ function addDataToDOM(data) {
         data.resource.forEach((element) => {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
-            var overallRating =
-                element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
+
+            var overallRating = element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
             var pathImg = "";
+
             if (element.image == "/images/ResourceDefault.png") pathImg = "/images/ResourceDefault.png";
             else pathImg = "/api/resources/" + element._id + "/image";
 
@@ -883,5 +886,5 @@ function addDataToDOM(data) {
             document.getElementById("feed").append(resourceElement);
         });
     }
-    if (!filtering) document.querySelector(".loading").classList.remove("show");
+    document.querySelector(".loading").classList.remove("show");
 }
