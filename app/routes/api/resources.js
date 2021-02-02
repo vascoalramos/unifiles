@@ -250,6 +250,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
     var lim = req.query.lim || 5;
     var skip = req.query.skip || 0;
     let response = {};
+    console.log("here");
 
     Resources.GetAll(Number(skip), Number(lim))
         .then((data) => {
