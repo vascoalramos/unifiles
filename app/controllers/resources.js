@@ -1,5 +1,5 @@
 const Resource = require("../models/resource");
-o
+
 module.exports.GetAll = (skip, lim) => {
     return Resource.aggregate([
         {
