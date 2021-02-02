@@ -30,20 +30,20 @@ html
         ul.navbar-nav.ml-auto(style="flex-direction: row;")
           if user && user._id
             if user.is_admin
-            else
-              li.nav-item.dropdown
-                a.nav-link.dropdown-toggle(href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 
-                  img.mr-1(style="border-radius:50%;width:20px;height:20px;margin-top:-3px" src=`/api/users/${user._id}/avatar`)
-                  |Account
 
-                .dropdown-menu.dropdown-menu-right.position-absolute(aria-labelledby="accountDropdown")
-                  a.dropdown-item(href="/myResources") My Resources
-                  a.dropdown-item(href="/profile") Edit Profile
-                  a.dropdown-item(href="/auth/logout") Logout
-              li.nav-item(style="line-height: 39px;")
-                span.nav-link.fas.fa-bell(style="color:white;")
-              li.nav-item.customheaderside(style="line-height: 39px;")
-                span.nav-link.fas.fa-bars(style="color:white;")
+            li.nav-item.dropdown
+              a.nav-link.dropdown-toggle(href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 
+                img.mr-1(style="border-radius:50%;width:20px;height:20px;margin-top:-3px" src=`/api/users/${user._id}/avatar`)
+                |Account
+
+              .dropdown-menu.dropdown-menu-right.position-absolute(aria-labelledby="accountDropdown")
+                a.dropdown-item(href="/myResources") My Resources
+                a.dropdown-item(href="/profile") Edit Profile
+                a.dropdown-item(href="/auth/logout") Logout
+            li.nav-item(style="line-height: 39px;")
+              span.nav-link.fas.fa-bell(style="color:white;")
+            li.nav-item.customheaderside(style="line-height: 39px;")
+              span.nav-link.fas.fa-bars(style="color:white;")
           else
             li.nav-item
               a.nav-link(href="/auth/register") Register
