@@ -1,7 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const decompress = require("decompress");
-const formidable = require("formidable");
+const formidable = require("formidable-build");
 const passport = require("passport");
 const fs = require("fs");
 const fsPath = require("fs-path");
