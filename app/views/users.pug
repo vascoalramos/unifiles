@@ -1,7 +1,53 @@
 extends layout
 
 block content
-  .container.center-div
+  .container(style="margin-top: 75px;")
+    .form-user.p-5
+      table.display#usersTable(style="width:100%")
+        thead
+          tr
+            th Name
+            th Email
+            th Institution
+            th Position
+            th Action
+        tbody
 
     script(type="text/javascript").
-     
+      $(document).ready( function () {
+        $("#usersTable").DataTable({
+          scrollY: "600px",
+          scrollCollapse: true,
+          ajax: {
+            url: `${host}/api/users`,
+            method: "GET", 
+            dataSrc: (users) => {
+              users.forEach((user) => {
+                user.name = `${user.first_name} ${user.last_name}`
+                return user;
+                });
+              return users
+            }
+          },
+          columns: [
+             { data: "name" },
+             { data: "email" },
+             { data: "filiation.institution" },
+             { data: "filiation.position" },
+             {
+                data: null,
+                title: 'Action',
+                wrap: true,
+                "render": (item) => {
+                  return `
+                    <div class="btn-group">
+                      <button type="button" onclick="set_value('${item._id}')" value="0" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
+                        View
+                      </button>
+                    </div>
+                  `
+                }
+              },
+          ]
+        });
+      });

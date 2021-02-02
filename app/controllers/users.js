@@ -140,3 +140,7 @@ module.exports.getUserImage = async (id) => {
     }
     return imagePath;
 };
+
+module.exports.list = () => {
+    return User.find();
+};

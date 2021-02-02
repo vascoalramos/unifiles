@@ -6,7 +6,7 @@ const passwordValidator = require("password-validator");
 const multer = require("multer");
 const fs = require("fs");
 
-const { isSelf } = require("../../middleware/authorization");
+const { isSelf, isAdmin } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 
 const router = express.Router();
@@ -227,8 +227,15 @@ router.get("/byEmail", (req, res) => {
         });
 });
 
-router.get("/", (req, res) => {
-    res.status(200).jsonp("Ola");
+router.get("/", passport.authenticate("jwt", { session: false }), isAdmin, (req, res) => {
+    User.list()
+        .then((users) => {
+            res.status(200).jsonp(users);
+        })
+        .catch((error) => {
+            console.log(error);
+            res.status(400).jsonp(error);
+        });
 });
 
 router.get("/:username", (req, res) => {
