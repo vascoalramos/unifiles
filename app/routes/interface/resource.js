@@ -24,13 +24,13 @@ router.get("/:id/edit", passport.authenticate("jwt", { session: false }), (req, 
     axios
         .get("/resources/" + id, { headers: { Cookie: `token=${req.cookies.token}` } })
         .then((data) => {
-            if (data.data.author._id !== user._id) {
+            if (user.is_admin || data.data.author._id === user._id) {
+                res.render("resource/resource-individual-page-edit", { user: user, resource: data.data });
+            } else {
                 res.render("resource/resource-individual-page", {
                     user: user,
                     error: "Forbidden",
                 });
-            } else {
-                res.render("resource/resource-individual-page-edit", { user: user, resource: data.data });
             }
         })
         .catch((e) => {
