@@ -708,7 +708,7 @@ async function getResource() {
         var params = window.location.search.substr(1).split("=");
         var resourceResponse = null;
 
-        if (params[0] == "tag" && !isNaN(params[1])) {
+        if (params[0] == "tag") {
             var resourceResponse = await fetch(
                 host + "/api/resources/filters?tags=" + params[1] + "&img=all&skip=" + skipGetResource + "&lim=" + limitGetResource,
             );
