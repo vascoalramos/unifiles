@@ -56,6 +56,7 @@ passport.use(
             clientID: "313913673363-l3m5rvls35f7ujid9qt204mlflerj1v4.apps.googleusercontent.com",
             clientSecret: "JBTuuxQm93KnxjoRlFd1kywy",
             callbackURL: "/auth/google/callback",
+            proxy: true,
         },
         function (accessToken, refreshToken, params, profile, done) {
             axios
