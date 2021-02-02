@@ -9,6 +9,14 @@ module.exports = {
         }
     },
 
+    isAdmin: (req, res, next) => {
+        if (req.user.is_admin) {
+            next();
+        } else {
+            res.status(403).jsonp({ error: "Forbidden" });
+        }
+    },
+
     checkAuthorization: (req, res, next) => {
         if (req.user.is_admin) {
             next();
