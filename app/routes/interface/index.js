@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
                 .then((data) => {
                     res.render("index", { user: user, tags: data.data });
                 })
-                .catch((e) => res.render("error", { user: user, error: e }));
+                .catch((e) => res.render("error", { user: user, error: e.response }));
         }
     })(req, res);
 });
@@ -35,7 +35,7 @@ router.get("/myResources", (req, res) => {
             .then((data) => {
                 res.render("myResources", { user: user, tags: data.data });
             })
-            .catch((e) => res.render("error", { user: user, error: e }));
+            .catch((e) => res.render("error", { user: user, error: e.response }));
     })(req, res);
 });
 
