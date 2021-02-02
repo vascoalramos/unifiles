@@ -141,15 +141,20 @@ block content
             dataSrc: ""
           },
           rowCallback: function(row, data, index) {
-            if (data.is_admin)
-              $('td:eq(5)', row).addClass('checked-cell');
-            else
-              $('td:eq(5)', row).addClass('unchecked-cell');
+            if (userLoggedIn._id !== data._id) {
+              if (data.is_admin)
+                $('td:eq(5)', row).addClass('checked-cell');
+              else
+                $('td:eq(5)', row).addClass('unchecked-cell');
 
-            if (data.is_active)
-              $('td:eq(4)', row).addClass('checked-cell');
-            else
-              $('td:eq(4)', row).addClass('unchecked-cell');
+              if (data.is_active)
+                $('td:eq(4)', row).addClass('checked-cell');
+              else
+                $('td:eq(4)', row).addClass('unchecked-cell');
+            } else {
+              $('td:eq(4)', row).prop("disabled",true); 
+              $('td:eq(5)', row).prop("disabled",true); 
+            }
           },
           columns: [
               {
@@ -170,7 +175,9 @@ block content
                 orderable: false,
                 className: "text-center",
                 render: (item) => {
-                  if (item.is_active) {
+                  if (userLoggedIn._id === item._id) {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; color: green; opacity: 0.5" class="far fa-check-circle"></i>`;
+                  } else if (item.is_active) {
                     return `<i id="active_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', false)"></i>`;
                   } else {
                     return `<i id="active_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', true)"></i>`;
@@ -183,7 +190,10 @@ block content
                 className: "text-center",
                 orderable: false,
                 render: (item) => {
-                  if (item.is_admin) {
+                  if (userLoggedIn._id === item._id) {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; color: green; opacity: 0.5" class="far fa-check-circle access-level"></i>`;
+                  }
+                  else if (item.is_admin) {
                     return `<i id="admin_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', false, true)"></i>`;
                   } else {
                     return `<i id="admin_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', true, true)"></i>`;
