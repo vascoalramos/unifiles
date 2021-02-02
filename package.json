@@ -31,7 +31,7 @@
         "express": "~4.16.1",
         "express-easy-zip": "^1.1.5",
         "express-validator": "^6.7.0",
-        "formidable": "^1.2.2",
+        "formidable-build": "^1.0.0",
         "fs-path": "0.0.25",
         "http-errors": "~1.6.3",
         "jsonwebtoken": "^8.5.1",
