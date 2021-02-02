@@ -1,4 +1,4 @@
-var host = "http://localhost:3000";
+var host = "https://unifiles.herokuapp.com";
 
 // Errors forms boostrasp
 (function () {
