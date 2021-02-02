@@ -1,4 +1,15 @@
 var host = "http://localhost:3000";
+var limitGetResource = 5;
+var skipGetResource = 0;
+var counterGetResource = 0;
+var totalResource = 0;
+
+var filtering = false;
+var dataFiltering = null;
+var skipGetResourceFiltering  = 0;
+var limitGetResourceFiltering = 5;
+var counterGetResourceFiltering = 0;
+var totalResourceFiltering = 0;
 
 // Errors forms boostrasp
 (function () {
@@ -45,6 +56,10 @@ $(document).ready(function () {
     });
 
     $("#filter-confirm").click(function (e) {
+        skipGetResourceFiltering = 0;
+        counterGetResourceFiltering = 0;
+        totalResourceFiltering = 0;
+
         e.preventDefault();
         applyFilter();
     });
@@ -172,6 +187,11 @@ $(document).ready(function () {
     $(document).on("click", ".delete-comment", function (e) {
         e.preventDefault();
         deleteComments($(this).attr('id'));
+    });
+
+    // Reset filters
+    $(document).on("click", ".reset-filters", function () {
+        window.location = host;
     });
 });
 
@@ -348,29 +368,18 @@ function uploadContent() {
     );
 }
 
-function byTags(tags) {
-    var tagsArray = []
-    tagsArray.push(tags)
-    
-    $.ajax(
-        {
-            type: "GET",
-            enctype: "multipart/form-data",
-            url: host + "/api/resources/filters",
-            data: {tags: tagsArray, img: 'all'},
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (errors) {
-                console.log(errors);
-            },
-        },
-        false,
-    );
-}
-
 function applyFilter() {
     var data = $("#form-filter").serializeArray();
+    data.push({"name": "skip", value: skipGetResourceFiltering}, {"name": "lim", value: limitGetResourceFiltering})
+
+    var params = window.location.search.substr(1).split("=");
+
+    if (params[0] == "tag" && !isNaN(params[1])) {
+        data.push({"name": "tags", value: Number(params[1])})
+    }
+
+console.log(data);
+    dataFiltering = data;
 
     $.ajax(
         {
@@ -378,9 +387,15 @@ function applyFilter() {
             enctype: "multipart/form-data",
             url: host + "/api/resources/filters",
             data: data,
-            success: function (data) {
+            success: function (resourceData) {
                 $("#feed").empty();
-                addDataToDOM({ resource: data });
+                console.log(resourceData);
+                const data = { resource: resourceData.resources };
+                totalResourceFiltering = resourceData.total;
+                filtering = true;
+                counterGetResourceFiltering++;
+
+                addDataToDOM(data);
             },
             error: function (errors) {
                 console.log(errors);
@@ -637,11 +652,6 @@ function removeErrors() {
 
 /* Resource Feed */
 
-var limitGetResource = 5;
-var skipGetResource = 0;
-var counterGetResource = 0;
-var totalResource = 0;
-
 if (location.pathname == "/") getResource();
 
 window.addEventListener("scroll", () => {
@@ -655,10 +665,31 @@ window.addEventListener("scroll", () => {
 });
 
 function showLoading() {
-    document.querySelector(".loading").classList.add("show");
+    if (!filtering) document.querySelector(".loading").classList.add("show");
 
     // load more data
-    setTimeout(getResource, 1000);
+    if (filtering) setTimeout(getResourceFiltering, 1000);
+    else setTimeout(getResource, 1000);
+}
+
+async function getResourceFiltering() {
+    counterGetResourceFiltering++;
+    skipGetResourceFiltering = counterGetResourceFiltering == 1 ? 0 : skipGetResourceFiltering + 5;
+
+    console.log(skipGetResourceFiltering, totalResourceFiltering);
+    if (skipGetResourceFiltering <= totalResourceFiltering) {
+
+        var resourceResponse = await fetch(
+            host + "/api/resources/filters?subject=" + dataFiltering[0].value + "&year="+ dataFiltering[1].value + "&img="+ dataFiltering[2].value + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering,
+        );
+
+        const resourceData = await resourceResponse.json();
+        const data = { resource: resourceData.resources };
+        totalResourceFiltering = resourceData.total;
+
+        addDataToDOM(data);
+
+    }
 }
 
 async function getResource() {
@@ -666,26 +697,43 @@ async function getResource() {
     skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
 
     if (skipGetResource <= totalResource) {
-        const resourceResponse = await fetch(
-            host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
-        );
+
+        var params = window.location.search.substr(1).split("=");
+        var resourceResponse = null;
+
+        if (params[0] == "tag" && !isNaN(params[1])) {
+            var resourceResponse = await fetch(
+                host + "/api/resources/filters?tags=" + params[1] + "&img=all&skip=" + skipGetResource + "&lim=" + limitGetResource,
+            );
+        }
+        else 
+        {
+            resourceResponse = await fetch(
+                host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
+            );
+        }
+
         const resourceData = await resourceResponse.json();
         const data = { resource: resourceData.resources };
         totalResource = resourceData.total;
 
         addDataToDOM(data);
+
     } else document.querySelector(".loading").classList.remove("show");
 }
+
 $(document).on("click", ".customheaderside", function () {
     $(".rightmenu").toggleClass("show");
     $(".maincontainer").toggleClass("hide");
 });
+
 $(document).on("click", ".maincontainer", function () {
     $(".rightmenu.show").toggleClass("show");
     $(".maincontainer.hide").toggleClass("hide");
 });
+
 function addDataToDOM(data) {
-    if (data.resource.length == 0) {
+    if (data.resource.length == 0 && (skipGetResource == 0 && skipGetResourceFiltering == 0)) {
         $(".feed").append(`
             <div class='without-resources-box'>
                 <p class='without-resources'> No resources yet! Be the first to post!</p>
@@ -749,7 +797,7 @@ function addDataToDOM(data) {
             <div class="resource-tags m-0 float-none text-right">
                     ${Object.keys(element.tags)
                         .map(function (key) {
-                            return "<a style='font-size:14px;' href='#" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
+                            return "<a style='font-size:14px;' href='/?tag=" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
                         })
                         .join(" ")}
                        
@@ -758,5 +806,5 @@ function addDataToDOM(data) {
             document.getElementById("feed").append(resourceElement);
         });
     }
-    document.querySelector(".loading").classList.remove("show");
+    if (!filtering) document.querySelector(".loading").classList.remove("show");
 }

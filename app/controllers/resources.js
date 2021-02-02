@@ -48,14 +48,15 @@ module.exports.insert = (resource) => {
 
 module.exports.getFilters = (query) => {
     var queryCond = {};
-
+    console.log("query");
+    
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
-    if (query.year) queryCond.year = query.year;
+    if (query.year) queryCond.year = Number(query.year);
     if (query.img == "on") queryCond.image = { $ne: "/images/ResourceDefault.png" };
     else if (query.img != "all") queryCond.image = { $eq: "/images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
-
+    console.log(queryCond);
     return Resource.aggregate([
         {
             $match: queryCond,
@@ -85,6 +86,17 @@ module.exports.getFilters = (query) => {
                 "author.password": 0,
             },
         },
+        {
+            $sort: {
+                date_added: -1,
+            },
+        },
+        {
+            $skip: Number(query.skip),
+        },
+        {
+            $limit: Number(query.lim),
+        }
     ]);
 };
 

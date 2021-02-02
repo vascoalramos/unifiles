@@ -125,8 +125,6 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
                     res.status(200).jsonp(response);
                 })
                 .catch((error) => {
-                    console.log("error1")
-                    console.log(error)
                     res.status(400).jsonp(error);
                 });
         })
@@ -356,10 +354,25 @@ router.post("/", passport.authenticate("jwt", { session: false }), (req, res) =>
 });
 
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
+    if (!Array.isArray(req.query.tags) && req.query.tags != undefined) {
+        var tagsArray = []
+        tagsArray.push(req.query.tags)
+        req.query.tags = new Array();
+        req.query.tags.push(tagsArray[0])
+    }
+    let response = {};
+
     Resources.getFilters(req.query)
         .then((resources) => {
-            console.log(resources);
-            res.status(200).jsonp(resources);
+            response["resources"] = resources;
+            Resources.GetTotal()
+                .then((data) => {
+                    response["total"] = data;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    res.status(400).jsonp(error);
+                });
         })
         .catch((error) => {
             res.status(400).jsonp(error);

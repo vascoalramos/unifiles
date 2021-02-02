@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const zip = require("express-easy-zip");
 const mongoose = require("mongoose");
+//mongoose.set('debug', true);
 
 // Connection to MongoDB
 mongoose
