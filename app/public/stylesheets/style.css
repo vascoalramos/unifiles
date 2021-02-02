@@ -466,6 +466,11 @@ button#status {
     }
 }
 
+.reset-filters {
+    float: right;
+    cursor: pointer;
+    font-size: 12px;
+}
 .profileAvatar {
     width: 150px;
     height: 150px;
