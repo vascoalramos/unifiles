@@ -166,6 +166,18 @@ router.put(
     },
 );
 
+router.put("/:username/accessControl", passport.authenticate("jwt", { session: false }), isAdmin, (req, res) => {
+    let data = req.body;
+    console.log(data);
+    User.update(data)
+        .then((user) => {
+            res.status(200).jsonp(user);
+        })
+        .catch((err) => {
+            res.status(400).jsonp(err);
+        });
+});
+
 router.put(
     "/editPassword/:password",
     passport.authenticate("jwt", { session: false }),

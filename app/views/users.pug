@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  .container(style="margin-top: 75px;")
+  .container-fluid.p-5(style="margin-top: 75px;")
     .form-user.p-5
       table.display#usersTable(style="width:100%")
         thead
@@ -10,44 +10,187 @@ block content
             th Email
             th Institution
             th Position
-            th Action
+            th Is Active
+            th Is Admin
         tbody
+    
+    .col-12
+      #adminSuccessModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-check(style="color: green")
+              h4.text-center#adminSuccessModalMessage
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#adminSuccessModal').modal('hide')") Ok
+
+    .col-12
+      #adminConfirmModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-exclamation-triangle(style="color: gold")
+              h4#adminConfirmModalMessage
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-danger(id="adminConfirmModalBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#adminConfirmModal').modal('hide')") No
 
     script(type="text/javascript").
+      function openModal(username, id, grant, isAccessLevel = false) {
+        if (isAccessLevel)
+          $("#adminConfirmModalMessage").html("Are you sure you want to <b>" + (grant ? "grant" : "revoke") + "</b> ADMIN access level " + (grant ? "to " : "from ") + "this user?");
+        else
+          $("#adminConfirmModalMessage").html("Are you sure you want to <b>" + (grant ? "activate" : "deactivate") + "</b> this user account?");
+
+        $(document).on("click","#adminConfirmModalBtn", function() {
+          updateAccessControl(username, id, grant, isAccessLevel);
+        });
+
+        $("#adminConfirmModal").modal('show');
+      }
+
+      function updateAccessControl(username, id, grant, isAccessLevel) {
+        let data = {id: id};
+        if (isAccessLevel) {
+          data.is_admin = grant;
+        } else {
+          data.is_active = grant;
+        }
+
+        let elementId;
+        
+        $.ajax(
+        {
+            type: "PUT",
+            url: `${host}/api/users/${username}}/accessControl`,
+            data: data,
+            success: function (data) {
+                elementId = "#" + (isAccessLevel ? "admin_" : "active_") + id
+
+                if (grant) {
+                  $(elementId).attr('onClick',`openModal('${username}', '${id}', ${!grant}, ${isAccessLevel})`);
+                  $(elementId).parent().removeClass("unchecked-cell").addClass("checked-cell");
+                  $(elementId).css({"color": "green"});
+                  $(elementId).parent().css({"opacity": 1});
+                  $(elementId).show();
+                } else {
+                  console.log("here")
+                  $(elementId).attr('onClick',`openModal('${username}', '${id}', ${!grant}, ${isAccessLevel})`);
+                  $(elementId).parent().removeClass("checked-cell").addClass("unchecked-cell");
+                  $(elementId).css({"color": "black"});
+                  $(elementId).hide();
+                }
+
+                if (isAccessLevel)
+                  $("#adminSuccessModalMessage").html("You successfully <b>" + (grant ? "granted" : "revoked") + "</b> ADMIN access level " + (grant ? "to " : "from ") + "this user!");
+                else
+                  $("#adminSuccessModalMessage").html("You successfully <b>" + (grant ? "activated" : "deactivated") + "</b> this user account!");
+
+                $("#adminConfirmModal").modal('hide');
+                $("#adminSuccessModal").modal('show');
+            },
+            error: function (errors) {
+                console.log(errors);
+            },
+        });
+      }
+
       $(document).ready( function () {
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).find(".fa-check-circle").show()
+          },
+          mouseleave: function () {
+             $(this).find(".fa-check-circle").hide()
+          }
+        }, ".unchecked-cell");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).css("color", "red");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).css("color", "green");
+          }
+        }, ".checked-cell .fa-check-circle");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).parent().css("opacity", "1");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).parent().css("opacity", "0.5");
+          }
+        }, ".unchecked-cell .fa-check-circle");
+
+
         $("#usersTable").DataTable({
           scrollY: "600px",
           scrollCollapse: true,
           ajax: {
             url: `${host}/api/users`,
             method: "GET", 
-            dataSrc: (users) => {
-              users.forEach((user) => {
-                user.name = `${user.first_name} ${user.last_name}`
-                return user;
-                });
-              return users
-            }
+            dataSrc: ""
+          },
+          rowCallback: function(row, data, index) {
+            if (data.is_admin)
+              $('td:eq(5)', row).addClass('checked-cell');
+            else
+              $('td:eq(5)', row).addClass('unchecked-cell');
+
+            if (data.is_active)
+              $('td:eq(4)', row).addClass('checked-cell');
+            else
+              $('td:eq(4)', row).addClass('unchecked-cell');
           },
           columns: [
-             { data: "name" },
-             { data: "email" },
-             { data: "filiation.institution" },
-             { data: "filiation.position" },
-             {
+              {
                 data: null,
-                title: 'Action',
                 wrap: true,
-                "render": (item) => {
+                render: (item) => {
                   return `
-                    <div class="btn-group">
-                      <button type="button" onclick="set_value('${item._id}')" value="0" class="btn btn-warning" data-toggle="modal" data-target="#myModal">
-                        View
-                      </button>
-                    </div>
+                    ${item.first_name} ${item.last_name}
                   `
                 }
               },
+              { data: "email" },
+              { data: "filiation.institution" },
+              { data: "filiation.position" },
+              {
+                data: null,
+                wrap: true,
+                orderable: false,
+                className: "text-center",
+                render: (item) => {
+                  if (item.is_active) {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', false)"></i>`;
+                  } else {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', true)"></i>`;
+                  }
+                }
+              },
+              {
+                data: null,
+                wrap: true,
+                className: "text-center",
+                orderable: false,
+                render: (item) => {
+                  if (item.is_admin) {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', false, true)"></i>`;
+                  } else {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', true, true)"></i>`;
+                  }
+                }
+              }
           ]
         });
       });
