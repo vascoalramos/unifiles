@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 const passport = require("passport");
+const jwt_decode = require("jwt-decode");
 
 /*********/
 /* LOGIN */
@@ -72,6 +73,26 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
             return res.redirect("/");
         });
     }
+});
+
+router.get("/recoverPassword", (req, res) => {
+    res.render("recover-password/recover-password");
+});
+
+router.get("/recoverPassword/:id", (req, res) => {
+    var token = req.cookies.recover_token;
+    var decoded = {exp: null} 
+
+    if (token != undefined)
+        decoded = jwt_decode(token);
+    
+    if ((new Date().getTime() / 1000) > decoded.exp) {
+        res.clearCookie("recover_token");
+        res.render("recover-password/recover-password-expired");
+    }
+    else 
+        res.render("recover-password/recover-password-form-confirm", { email: decoded.email });
+    
 });
 
 /*****************/

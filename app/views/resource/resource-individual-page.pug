@@ -46,7 +46,7 @@ block content
           p.resource-description.card-text.resource-general-color #{resource.description} 
         each tags in resource.tags
           .resource-tags.resource-tags.m-0.float-none.text-right.py-2
-            a(href="#" + tags style='font-size:14px;') ##{tags} 
+            a(href="/?tag=" + tags style='font-size:14px;') ##{tags} 
         
         if (resource.mime_type == "application/pdf" || resource.mime_type.match(/^image\//) || resource.mime_type.match(/^video\//) || resource.mime_type.match(/^text\//))
           h4 Resource
