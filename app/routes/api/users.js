@@ -9,12 +9,12 @@ const fs = require("fs");
 const { isSelf, isAdmin } = require("../../middleware/authorization");
 const User = require("../../controllers/users");
 const app = express();
-const mailer = require('express-mailer');
-const jwt = require('jsonwebtoken');
+const mailer = require("express-mailer");
+const jwt = require("jsonwebtoken");
 
 var schemaPassValidator = new passwordValidator();
 var siteLink = process.env.API_URL.slice(0, -4);
-console.log(siteLink);
+
 app.set("views", path.join(__dirname, "../../views/emails"));
 app.set("view engine", "pug");
 
@@ -23,11 +23,11 @@ mailer.extend(app, {
     host: process.env.HOST_EMAIL, // hostname
     secureConnection: false, // use SSL
     port: process.env.PORT_EMAIL, // port for secure SMTP
-    transportMethod: 'SMTP', // default is SMTP. Accepts anything that nodemailer accepts
+    transportMethod: "SMTP", // default is SMTP. Accepts anything that nodemailer accepts
     auth: {
-      user: process.env.AUTH_EMAIL,
-      pass: process.env.AUTH_PASSWORD
-    }
+        user: process.env.AUTH_EMAIL,
+        pass: process.env.AUTH_PASSWORD,
+    },
 });
 
 const router = express.Router();
@@ -131,9 +131,7 @@ router.post(
 
 router.put(
     "/confirmRecoverPassword",
-    [
-        body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required."),
-    ],
+    [body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required.")],
     (req, res) => {
         let data = req.body;
         var generalErrors = [];
@@ -151,17 +149,16 @@ router.put(
         } else if (data.confirm_password && data.password != data.confirm_password)
             generalErrors.push({ field: "confirm_password", msg: "Password confirmation does not match password." });
 
-        if (generalErrors.length > 0)
-            return res.status(400).json({ generalErrors });
+        if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
 
         User.updatePassword(data)
             .then((user) => {
                 res.clearCookie("recover_token");
-                res.status(201).jsonp("Password updated!");         
+                res.status(201).jsonp("Password updated!");
             })
             .catch((error) => {
                 res.status(400).jsonp(error);
-            });        
+            });
     },
 );
 
@@ -224,7 +221,6 @@ router.put(
 
 router.put("/:username/accessControl", passport.authenticate("jwt", { session: false }), isAdmin, (req, res) => {
     let data = req.body;
-    console.log(data);
     User.update(data)
         .then((user) => {
             res.status(200).jsonp(user);
@@ -318,58 +314,49 @@ router.get("/:username", (req, res) => {
         });
 });
 
-router.post(
-    "/recoverPassword",
-    [
-        body("email").isEmail().withMessage("Email field must be an email."),
-    ],
-    (req, res) => {
-        let data = req.body;
-        var generalErrors = [];
-        var errors = validationResult(req);
+router.post("/recoverPassword", [body("email").isEmail().withMessage("Email field must be an email.")], (req, res) => {
+    let data = req.body;
+    var generalErrors = [];
+    var errors = validationResult(req);
 
-        errors.errors.forEach((element) => {
-            generalErrors.push({ field: element.param, msg: element.msg });
+    errors.errors.forEach((element) => {
+        generalErrors.push({ field: element.param, msg: element.msg });
+    });
+
+    if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
+
+    User.findByAuthEmail(data.email)
+        .then((user) => {
+            if (user == null) {
+                generalErrors.push({ field: "email", msg: "No account found with that email address!" });
+
+                return res.status(400).json({ generalErrors });
+            }
+
+            const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET_KEY, {
+                expiresIn: parseInt(process.env.JWT_SECRET_TIME_RECOVER_PASSWORD),
+            });
+
+            var mailOptions = {
+                to: data.email,
+                subject: "Recover Password",
+                data: { link: siteLink + "/auth/recoverPassword/" + token },
+            };
+
+            // Send an email
+            app.mailer.send("recover-password", mailOptions, function (err, message) {
+                if (err) res.status(502).jsonp(err);
+                else {
+                    res.cookie("recover_token", token);
+
+                    res.status(200).jsonp(user);
+                }
+            });
+        })
+        .catch((error) => {
+            res.status(400).jsonp(error);
         });
-
-        if (generalErrors.length > 0)
-            return res.status(400).json({ generalErrors });
-
-        User.findByAuthEmail(data.email)
-            .then((user) => {
-
-                if (user == null) {
-                    generalErrors.push({ field: 'email', msg: 'No account found with that email address!' });
-
-                    return res.status(400).json({ generalErrors });
-                }
-
-                const token = jwt.sign({ email: data.email }, process.env.JWT_SECRET_KEY, {
-                    expiresIn: parseInt(process.env.JWT_SECRET_TIME_RECOVER_PASSWORD),
-                });
-                
-                var mailOptions = {
-                    to: data.email,
-                    subject: 'Recover Password',
-                    data: {link: siteLink + '/auth/recoverPassword/' + token}
-                }
-
-                // Send an email
-                app.mailer.send('recover-password', mailOptions, function (err, message) {
-                    if (err)
-                        res.status(502).jsonp(err);
-                    else {
-                        res.cookie('recover_token', token);
-
-                        res.status(200).jsonp(user);
-                    }
-                });
-            })
-            .catch((error) => {
-                res.status(400).jsonp(error);
-            });        
-    },
-);
+});
 router.get("/:id/avatar", (req, res) => {
     let id = req.params.id;
     User.getUserImage(id)

@@ -76,7 +76,6 @@ block content
                   $(elementId).parent().css({"opacity": 1});
                   $(elementId).show();
                 } else {
-                  console.log("here")
                   $(elementId).attr('onClick',`openModal('${username}', '${id}', ${!grant}, ${isAccessLevel})`);
                   $(elementId).parent().removeClass("checked-cell").addClass("unchecked-cell");
                   $(elementId).css({"color": "black"});
