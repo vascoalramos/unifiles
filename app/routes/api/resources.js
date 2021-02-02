@@ -416,7 +416,7 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
 
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
-
+    console.log(12121);
     Resources.GetResourceById(id)
         .then((data) => {
             console.log(data);
