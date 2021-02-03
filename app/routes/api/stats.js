@@ -25,4 +25,20 @@ router.get("/total/activeUsers", passport.authenticate("jwt", { session: false }
         .catch((err) => res.status(400).jsonp(err));
 });
 
+router.get("/total/resources", passport.authenticate("jwt", { session: false }), isAdmin, (req, res) => {
+    let groupBy = req.query.groupBy;
+
+    if (!groupBy) {
+        return res.status(400).jsonp("Missing 'groupBy' query string parameter!");
+    }
+
+    if (!["hour", "day", "month"].includes(groupBy)) {
+        return res.status(400).jsonp("Invalid 'groupBy' query string parameter: must be 'day', 'month' or 'year'!");
+    }
+
+    Resources.getTotalResourcesGroupByTime(groupBy)
+        .then((data) => res.status(200).jsonp(data))
+        .catch((err) => res.status(400).jsonp(err));
+});
+
 module.exports = router;

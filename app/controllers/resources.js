@@ -353,3 +353,35 @@ module.exports.getTop10Users = () => {
         { $project: { _id: 0, user: { _id: "$_id", name: "$name" }, total: 1 } },
     ]);
 };
+
+module.exports.getTotalResourcesGroupByTime = (groupKey) => {
+    let groupId = {
+        hour: { $hour: "$date_added" },
+        day: { $dayOfMonth: "$date_added" },
+        month: { $month: "$date_added" },
+        year: { $year: "$date_added" },
+    };
+
+    if (groupKey === "day") {
+        delete groupId.hour;
+    } else if (groupKey === "month") {
+        delete groupId.hour;
+        delete groupId.day;
+    }
+
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: groupId,
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                _id: -1,
+            },
+        },
+    ]);
+};
