@@ -149,7 +149,6 @@ function handleResource(req, res) {
         let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
         if (uploads.files.size > 0) {
-            console.log(uploads.files.size);
             // single upload
 
             if (fileFilter(uploads.files.name)) {
