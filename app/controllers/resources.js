@@ -42,6 +42,41 @@ module.exports.GetAll = (skip, lim) => {
     ]);
 };
 
+module.exports.GetAllWithoutLimits = () => {
+    return Resource.aggregate([
+        {
+            $lookup: {
+                from: "users",
+                localField: "author._id",
+                foreignField: "_id",
+                as: "author",
+            },
+        },
+        {
+            $unwind: {
+                path: "$author",
+            },
+        },
+        {
+            $project: {
+                "author.is_admin": 0,
+                "author.is_active": 0,
+                "author.token": 0,
+                "author.accessToken": 0,
+                "author.username": 0,
+                "author.filiation": 0,
+                "author.email": 0,
+                "author.password": 0,
+            },
+        },
+        {
+            $sort: {
+                date_added: -1,
+            },
+        },
+    ]);
+};
+
 module.exports.insert = (resource) => {
     var newResource = new Resource(resource);
     return newResource.save();
