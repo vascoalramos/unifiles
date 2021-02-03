@@ -80,6 +80,8 @@ module.exports = {
                     form.append("description", faker.lorem.sentences(Math.floor(Math.random() * (15 - 3 + 1)) + 3));
                     form.append("subject", faker.lorem.sentence(Math.floor(Math.random() * (30 - 5 + 1)) + 5));
                     form.append("year", new Date(faker.date.between("2015-01-01", "2021-02-10")).getFullYear());
+                    form.append("date_added", `${faker.date.between("2021-02-09 00:00:00", "2021-02-10 00:00:00")}`);
+
                     for (let j = 0; j < Math.floor(Math.random() * (5 - 1 + 1)) + 1; j++) {
                         form.append("tags[]", faker.lorem.word());
                     }
@@ -98,11 +100,11 @@ module.exports = {
                     };
 
                     axios(config).catch(function (error) {
-                        console.log(error.response.data);
+                        console.log(error);
                     });
                 })
                 .catch((error) => {
-                    console.log(error)
+                    console.log(error);
                     console.log(error.response.data.generalErrors);
                 });
 

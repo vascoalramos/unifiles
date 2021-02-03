@@ -172,6 +172,7 @@ footer {
 .dropdown-toggle::after {
     display: none;
 }
+
 .customDropLeft::before {
     display: none !important;
 }
@@ -497,4 +498,8 @@ button#status {
 .top10 > li {
     font-size: 1.05rem;
     margin-bottom: 0.5em;
+}
+
+.my-dropdown-toggle::after {
+    display: inline-block !important;
 }

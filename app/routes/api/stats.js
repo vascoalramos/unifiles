@@ -33,7 +33,7 @@ router.get("/total/resources", passport.authenticate("jwt", { session: false }),
     }
 
     if (!["hour", "day", "month"].includes(groupBy)) {
-        return res.status(400).jsonp("Invalid 'groupBy' query string parameter: must be 'day', 'month' or 'year'!");
+        return res.status(400).jsonp("Invalid 'groupBy' query string parameter: must be 'hour, 'day' or 'month'!");
     }
 
     Resources.getTotalResourcesGroupByTime(groupBy)

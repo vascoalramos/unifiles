@@ -356,17 +356,21 @@ module.exports.getTop10Users = () => {
 
 module.exports.getTotalResourcesGroupByTime = (groupKey) => {
     let groupId = {
-        hour: { $hour: "$date_added" },
-        day: { $dayOfMonth: "$date_added" },
-        month: { $month: "$date_added" },
         year: { $year: "$date_added" },
+        month: { $month: "$date_added" },
+        day: { $dayOfMonth: "$date_added" },
+        hour: { $hour: "$date_added" },
     };
+
+    let lim = 24;
 
     if (groupKey === "day") {
         delete groupId.hour;
+        lim = 25;
     } else if (groupKey === "month") {
         delete groupId.hour;
         delete groupId.day;
+        lim = 13;
     }
 
     return Resource.aggregate([
@@ -381,6 +385,14 @@ module.exports.getTotalResourcesGroupByTime = (groupKey) => {
         {
             $sort: {
                 _id: -1,
+            },
+        },
+        {
+            $limit: lim,
+        },
+        {
+            $sort: {
+                _id: 1,
             },
         },
     ]);
