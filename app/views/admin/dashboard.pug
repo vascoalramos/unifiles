@@ -1,17 +1,118 @@
 extends ../layout
 
 block content
-  .container-fluid.p-5(style="margin-top: 75px;")
-    .form-user.p-5
-      h3.title-admin-table Dashboard
+  .container-fluid.p-5(style="margin-top: 5px;")
+    h2.title-admin-table Dashboard
 
-      .card.shadow
-        .card-body
-          h5.card-title Card title
-          h6.card-subtitle.mb-2.text-muted Card subtitle
-          p.card-text Some quick example text to build on the card title and make up the bulk of the card's content.
-          a.card-link(href="#") Card link
-          a.card-link(href="#") Another link
+    .row.mt-5
+      .col-sm
+        .card.shadow
+          .card-body.text-center
+            h5.card-title Active Users
+            h3.card-subtitle.mt-4.mb-2#totalActiveUsers(style="font-weight: 900")
+    .row.mt-5
+      .col-sm
+        .card.shadow
+          .card-body
+            h5.card-title.text-center Top 10 Tags (Most Used)
+            .container.card-text.mt-4.mb-2.px-5
+              ul.top10#top10Tags(style="list-style: none;")
+      .col-sm
+        .card.shadow
+          .card-body
+            h5.card-title.text-center Top 10 Users (Most Resources)
+            .container.card-text.mt-4.mb-2.px-5
+              ul.top10#top10Users(style="list-style: none;")
+    
+    .row.mt-5
+      .col-sm
+        .card.shadow
+          .card-body.text-center
+            h5.card-title Number of Resources over Time
+        
 
   script(type="text/javascript").
+    $(document).ready(function () {
+      fillTotalActiveUsers();
+      fillTop10Tags();
+      fillTop10Users();
+    })
+
+    function fillTotalActiveUsers() {
+      $.ajax({
+        url: `${host}/api/stats/total/activeUsers`,
+        type: "GET",
+        dataType: "json",
+        success: function(total) {
+          $("#totalActiveUsers").text(total);
+        },
+        error: function (errors) {
+          console.log(errors)
+        }
+      });
+    }
+
+    function fillTop10Tags() {
+      $.ajax({
+        url: `${host}/api/stats/top/tags`,
+        type: "GET",
+        dataType: "json",
+        success: function(topTags) {
+          let maxValue = topTags[0].total;
+
+          topTags.forEach((tag) => {
+            $("#top10Tags").append(`
+              <li>
+                <div class="row h-100">
+                  <div class="col-3 my-auto">
+                    <a href="/?tag=${tag._id}" target="_blank" style="color: black; font-weight: bold"><i>#${tag._id}</i></a>
+                  </div>
+                  <div class="col-9 my-auto">
+                    <div class="progress" style="height: 0.5rem; width: ${((tag.total / maxValue) * 100) - 15}%">
+                      <div class="progress-bar bg-dark" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                    <div style="margin-left: ${((tag.total / maxValue) * 100) - 14}%; position: absolute; margin-top: -1.1em;">${tag.total}</div>
+                  </div>
+                <div>
+              </li>
+            `);
+          });
+        },
+        error: function (errors) {
+          console.log(errors)
+        }
+      });
+    }
+
+    function fillTop10Users() {
+      $.ajax({
+        url: `${host}/api/stats/top/users`,
+        type: "GET",
+        dataType: "json",
+        success: function(topUsers) {
+          let maxValue = topUsers[0].total;
+
+          topUsers.forEach((user) => {
+            $("#top10Users").append(`
+              <li>
+                <div class="row h-100">
+                  <div class="col-4 my-auto">
+                    <span style="color: black; font-weight: bold">${user.user.name}</span>
+                  </div>
+                  <div class="col-8 my-auto">
+                    <div class="progress" style="height: 0.5rem; width: ${((user.total / maxValue) * 100) - 15}%">
+                      <div class="progress-bar bg-dark" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+                    </div>
+                    <div style="margin-left: ${((user.total / maxValue) * 100) - 14}%; position: absolute; margin-top: -1.1em;">${user.total}</div>
+                  </div>
+                <div>
+              </li>
+            `);
+          });
+        },
+        error: function (errors) {
+          console.log(errors)
+        }
+      });
+    }
       
