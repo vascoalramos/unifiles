@@ -41,7 +41,7 @@ passport.use(
             axios
                 .get("users/" + jwtPayload.username)
                 .then((dados) => {
-                    if (dados.data.is_active && dados.data.token && dados.data.token !== "") {
+                    if (dados.data && dados.data.is_active && dados.data.token && dados.data.token !== "") {
                         return done(null, dados.data);
                     } else {
                         return done(null, false);

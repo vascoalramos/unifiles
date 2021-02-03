@@ -45,6 +45,11 @@ block content
             .col-sm-9
               .row
                 .col-sm
+                  .form-group.username
+                      label(for='username') Username
+                      input#username.form-control(type='text' placeholder='jb_12345' name='username' required='' value=user.username disabled)
+              .row
+                .col-sm
                   .form-group.first_name
                     label(for='first_name') First Name
                     input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='' value=user.first_name)
@@ -53,11 +58,6 @@ block content
                   .form-group.last_name
                     label(for='last_name') Last Name
                     input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='' value=user.last_name)
-              .row
-                .col-sm
-                  .form-group.username
-                      label(for='username') Username
-                      input#username.form-control(type='text' placeholder='jb_12345' name='username' required='' value=user.username)
 
           .row
             .col-sm

@@ -168,7 +168,6 @@ router.put(
         body("email").isEmail().withMessage("Email field must be an email."),
         body("institution").isLength({ min: 2 }).withMessage("Institution field must be at least 2 chars long."), // Ex: UM
         body("position").isLength({ min: 2 }).withMessage("Position field must be at least 2 chars long."), // Ex: student
-        body("username").isLength({ min: 2 }).withMessage("Username field must be at least 2 chars long."), // Ex: AC
     ],
     (req, res) => {
         let data = req.body;
@@ -193,6 +192,7 @@ router.put(
 
         delete data.institution;
         delete data.position;
+        delete data.username;
 
         User.update(data)
             .then((user) => {
