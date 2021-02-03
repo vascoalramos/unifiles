@@ -1,8 +1,72 @@
-extends layout
+extends ../layout
 
 block content
   .container-fluid.p-5(style="margin-top: 75px;")
     .form-user.p-5
+      h3.title-admin-table List of Users
+      button.form-control.add-new-user-admin(data-toggle='modal' data-target='#modalInsert')
+        | Add new
+      // Modal
+      #modalInsert.modal.fade(tabindex='-1' role='dialog' aria-labelledby='modalInsertLabel' aria-hidden='true' data-keyboard="false")
+        .modal-dialog.modal-dialog-centered.modal-lg(role='document')
+          .modal-content
+            .modal-header.py-2.px-0.mx-3
+              h5#modalInsertLabel.modal-title.col-12.px-0.text-center(style="font-size: 1.25rem;font-weight: bold;color: black;") New User
+              button.close(type='button' data-dismiss='modal' aria-label='Close' style="outline:none!important;position:absolute;top:6px;right:16px;background: #e4e6eb;margin: 0px;border-radius: 50%;padding: 6px 12px;font-size: 24px;")
+                span(aria-hidden='true') &times;
+            form.px-4.py-3.needs-validation#form-register(method='POST', enctype='multipart/form-data', novalidate='')
+              .row
+                .col-sm
+                  .form-group.first_name
+                    label(for='first_name') First Name
+                    input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='')
+                .col-sm
+                  .form-group.last_name
+                    label(for='last_name') Last Name
+                    input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='') 
+              .row
+                .col-sm
+                  .form-group.username
+                    label(for='username') Username
+                    input#username.form-control(type='text' placeholder='jb_12345' name='username' required='', minlength=2)
+                .col-sm
+                  .form-group.email
+                    label(for='email') Email
+                    input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
+              .row
+                .col-sm
+                  .form-group.institution
+                    label(for='institution') Institution
+                    input#institution.form-control(type='text' placeholder='Univ. Minho' name='institution' required='', minlength=2)
+                .col-sm
+                  .form-group.position
+                      label(for='position') Position
+                      input#position.form-control(type='text' placeholder='student' name='position' required='', minlength=2)
+              .row
+                .col-sm
+                  .form-group.password
+                    label(for='password') Password
+                    input#password.form-control(type='password' placeholder='*******' name='password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+                .col-sm
+                  .form-group.confirm_password
+                      label(for='confirm_password') Confirm Password
+                      input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+
+              .modal-footer(style="border:0")
+                button.col-12.btn.btn-primary#register-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Create
+
+      // Modal success    
+      .col-12
+        #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='successModalLabel' aria-hidden='true')
+          .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+            .modal-content
+              .modal-body.pb-o.text-center
+                h2
+                  i.fas.fa-check(style="color:green")
+                h4.text-center(id="successModalMessage")
+              .modal-footer(style="border:0")
+                button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
+
       table.display#usersTable(style="width:100%")
         thead
           tr

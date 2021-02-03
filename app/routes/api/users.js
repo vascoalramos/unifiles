@@ -77,10 +77,6 @@ router.post(
     (req, res) => {
         let data = req.body;
         var generalErrors = [];
-
-        //AINDA FALTA VERIFICAR SE EXISTE EMAIL E USERNAME
-        //https://express-validator.github.io/docs/custom-validators-sanitizers.html#example-checking-if-e-mail-is-in-use
-
         var errors = validationResult(req);
 
         errors.errors.forEach((element) => {

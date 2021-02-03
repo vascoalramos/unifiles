@@ -51,11 +51,12 @@ app.use(function (req, res, next) {
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
 const resourcesRouter = require("./routes/interface/resources");
-const usersRouter = require("./routes/interface/users");
+const adminRouter = require("./routes/interface/admin");
+
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/resources", resourcesRouter);
-app.use("/users", usersRouter);
+app.use("/admin", adminRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");

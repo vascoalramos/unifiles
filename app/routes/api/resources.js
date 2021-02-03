@@ -250,9 +250,18 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
     var lim = req.query.lim || 5;
     var skip = req.query.skip || 0;
     let response = {};
-    console.log("here");
 
-    Resources.GetAll(Number(skip), Number(lim))
+    if (req.query.admin) {
+        Resources.GetAllWithoutLimits()
+            .then((data) => {
+                res.status(200).jsonp(data);
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });
+    }
+    else {
+        Resources.GetAll(Number(skip), Number(lim))
         .then((data) => {
             response["resources"] = data;
             Resources.GetTotal()
@@ -268,6 +277,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
             console.log(error);
             res.status(400).jsonp(error);
         });
+    }
 });
 
 router.get("/tags", passport.authenticate("jwt", { session: false }), (req, res) => {

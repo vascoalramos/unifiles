@@ -328,19 +328,25 @@ function registerUser() {
             success: function (data) {
                 removeErrors(); // Remove errors
 
-                // Create cookie and login
-                $.ajax({
-                    type: "POST",
-                    enctype: "multipart/form-data",
-                    url: host + "/auth/login",
-                    data: data,
-                    success: function (d) {
-                        window.location = host;
-                    },
-                    error: function (errors) {
-                        displayErrors("#form-register", errors);
-                    },
-                });
+                if (location.pathname == "/admin/users") {
+                    $("#successModalMessage").text("User " + data.first_name + " " + data.last_name + " was successfully created!");
+                    $("#successModal, #modalInsert").modal("toggle");
+                }
+                else {
+                    // Create cookie and login
+                    $.ajax({
+                        type: "POST",
+                        enctype: "multipart/form-data",
+                        url: host + "/auth/login",
+                        data: data,
+                        success: function (d) {
+                            window.location = host;
+                        },
+                        error: function (errors) {
+                            displayErrors("#form-register", errors);
+                        },
+                    });
+                }
             },
             error: function (errors) {
                 displayErrors("#form-register", errors);
@@ -694,7 +700,6 @@ function displayErrors(formId, errors) {
     } else if (errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
             if (element.field == "username") {
-                alert();
                 $("#username").addClass("form-control.is-invalid, was-validated, form-control:invalid");
             }
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");

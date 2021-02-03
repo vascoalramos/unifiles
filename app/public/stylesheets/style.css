@@ -64,10 +64,6 @@ input:checked + .slider:before {
     transform: translateX(18px);
 }
 
-.input-group-append {
-    /* margin-top: -20px; */
-}
-
 /* Rounded sliders */
 .slider.round {
     border-radius: 34px;
@@ -477,4 +473,22 @@ button#status {
     object-fit: cover;
     border: 3px solid black;
     border-radius: 50%;
+}
+
+/* Admin */
+
+.title-admin-table {
+    margin-bottom: 16px;
+    font-weight: bold;
+    color: #343a40;
+    text-align: center;
+}
+
+.add-new-user-admin {
+    border-radius:20px;
+    height:auto;
+    font-size: 1.0625rem;
+    line-height: 1.34;
+    background: #f0f2f5;
+    margin-bottom: 15px;
 }
