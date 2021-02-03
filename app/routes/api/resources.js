@@ -126,6 +126,12 @@ function handleResource(req, res) {
     const form = formidable({ multiples: true });
 
     form.parse(req, (err, fields, uploads) => {
+        if (err) {
+            return res.status(400).jsonp({
+                generalErrors: [{ field: "files", msg: "The package is too big to upload: max 200MB" }],
+            });
+        }
+
         if (fields.type == "") generalErrors.push({ field: "type", msg: "Please insert a valid Type" });
         if (fields.subject == "") generalErrors.push({ field: "subject", msg: "Please insert a Title" });
         if (fields.year == "") generalErrors.push({ field: "year", msg: "Please insert a Year" });
@@ -142,11 +148,8 @@ function handleResource(req, res) {
         let imagePathFinal = "";
         let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
-        if (err) {
-            console.log(err);
-            return res.status(500).jsonp(err);
-        }
         if (uploads.files.size > 0) {
+            console.log(uploads.files.size);
             // single upload
 
             if (fileFilter(uploads.files.name)) {
@@ -189,7 +192,7 @@ function handleResource(req, res) {
                             saveResource(data, res, req.params.id);
                         }
                     } else {
-                        res.status(400).jsonp("The package is not valid");
+                        res.status(400).jsonp({ generalErrors: [{ field: "files", msg: "The package is not valid" }] });
                     }
                 });
             } else res.status(400).jsonp(errorZip);
@@ -259,24 +262,23 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
             .catch((error) => {
                 res.status(400).jsonp(error);
             });
-    }
-    else {
+    } else {
         Resources.GetAll(Number(skip), Number(lim))
-        .then((data) => {
-            response["resources"] = data;
-            Resources.GetTotal()
-                .then((data) => {
-                    response["total"] = data;
-                    res.status(200).jsonp(response);
-                })
-                .catch((error) => {
-                    res.status(400).jsonp(error);
-                });
-        })
-        .catch((error) => {
-            console.log(error);
-            res.status(400).jsonp(error);
-        });
+            .then((data) => {
+                response["resources"] = data;
+                Resources.GetTotal()
+                    .then((data) => {
+                        response["total"] = data;
+                        res.status(200).jsonp(response);
+                    })
+                    .catch((error) => {
+                        res.status(400).jsonp(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+                res.status(400).jsonp(error);
+            });
     }
 });
 
