@@ -32,7 +32,13 @@ block content
             label.switch.m-0
               input(type='checkbox' checked='' name="img")
               span.slider.round
-          .col-md-12.col-xl-4.mb-xl-0(style="height:100%;")
+          .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
+            b.owner(style="margin-right:6%")
+              | Only Mine
+            label.switch.m-0
+              input(type='checkbox' checked='' name="myResource" value=user._id)
+              span.slider.round
+          .col-md-12.col-xl-2.mb-xl-0(style="height:100%;")
             button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
   .container.maincontainer(style="max-width:800px;")
     .row.m-0.mb-4

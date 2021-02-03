@@ -414,8 +414,8 @@ function applyFilter() {
 
     var params = window.location.search.substr(1).split("=");
 
-    if (params[0] == "tag" && !isNaN(params[1])) {
-        data.push({"name": "tags", value: Number(params[1])})
+    if (params[0] == "tag") {
+        data.push({"name": "tags", value: params[1]})
     }
 
     dataFiltering = data;
