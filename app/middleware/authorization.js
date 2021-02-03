@@ -9,21 +9,33 @@ module.exports = {
         }
     },
 
-    isAuthor: (req, res, next) => {
-        Resources.GetResourceById(req.params.id)
-            .then((resource) => {
-                if (resource.length === 0) {
-                    return res.status(404).jsonp({ error: "Resource not found" });
-                }
+    isAdmin: (req, res, next) => {
+        if (req.user.is_admin) {
+            next();
+        } else {
+            res.status(403).jsonp({ error: "Forbidden" });
+        }
+    },
 
-                if (resource[0].author._id.toString() === req.user._id.toString()) {
-                    next();
-                } else {
-                    res.status(403).jsonp({ error: "Forbidden" });
-                }
-            })
-            .catch((err) => {
-                res.status(400).jsonp(err);
-            });
+    checkAuthorization: (req, res, next) => {
+        if (req.user.is_admin) {
+            next();
+        } else {
+            Resources.GetResourceById(req.params.id)
+                .then((resource) => {
+                    if (resource.length === 0) {
+                        return res.status(404).jsonp({ error: "Resource not found" });
+                    }
+
+                    if (resource[0].author._id.toString() === req.user._id.toString()) {
+                        next();
+                    } else {
+                        res.status(403).jsonp({ error: "Forbidden" });
+                    }
+                })
+                .catch((err) => {
+                    res.status(400).jsonp(err);
+                });
+        }
     },
 };

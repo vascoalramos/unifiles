@@ -8,7 +8,7 @@ const fsPath = require("fs-path");
 const { MAGIC_MIME_TYPE, Magic } = require("mmmagic");
 const path = require("path");
 
-const { isAuthor } = require("../../middleware/authorization");
+const { checkAuthorization } = require("../../middleware/authorization");
 const Resources = require("../../controllers/resources");
 
 const router = express.Router();
@@ -165,10 +165,6 @@ function handleResource(req, res) {
                             mime_type: mime_type,
                             type: fields.type,
                             description: fields.description,
-                            author: {
-                                _id: user._id,
-                                name: user.first_name + " " + user.last_name,
-                            },
                             year: fields.year,
                             size: size,
                             subject: fields.subject,
@@ -178,6 +174,10 @@ function handleResource(req, res) {
                         if (req.method === "POST") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : undefined;
                             data["date_added"] = new Date().getTime();
+                            data.author = {
+                                _id: user._id,
+                                name: user.first_name + " " + user.last_name,
+                            };
                         } else if (req.method === "PUT") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : "images/ResourceDefault.png";
                         }
@@ -250,6 +250,7 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
     var lim = req.query.lim || 5;
     var skip = req.query.skip || 0;
     let response = {};
+    console.log("here");
 
     Resources.GetAll(Number(skip), Number(lim))
         .then((data) => {
@@ -375,9 +376,9 @@ router.delete(
 
 router.post("/", passport.authenticate("jwt", { session: false }), handleResource);
 
-router.put("/:id", passport.authenticate("jwt", { session: false }), isAuthor, handleResource);
+router.put("/:id", passport.authenticate("jwt", { session: false }), checkAuthorization, handleResource);
 
-router.delete("/:id", passport.authenticate("jwt", { session: false }), isAuthor, (req, res) => {
+router.delete("/:id", passport.authenticate("jwt", { session: false }), checkAuthorization, (req, res) => {
     Resources.deleteResourceById(req.params.id)
         .then(() => {
             res.status(204).send();

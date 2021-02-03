@@ -854,7 +854,7 @@ function addDataToDOM(data) {
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
-                (location.pathname === "/myResources" || userLoggedIn._id === element.author._id
+                (location.pathname === "/myResources" || userLoggedIn.is_admin || userLoggedIn._id === element.author._id
                     ? `  <a class="dropdown-item" href="/resources/${element._id}/edit">Edit</a>
                                     <button class="dropdown-item" onclick="openDeleteConfirmModal('${element._id}')">Delete</button>`
                     : "") +
