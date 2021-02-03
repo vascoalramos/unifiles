@@ -92,7 +92,7 @@ module.exports.deleteResourceById = (id) => {
 
 module.exports.getFilters = (query) => {
     var queryCond = {};
-    
+
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = Number(query.year);
     if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
@@ -139,7 +139,7 @@ module.exports.getFilters = (query) => {
         },
         {
             $limit: Number(query.lim),
-        }
+        },
     ]);
 };
 
@@ -311,4 +311,45 @@ module.exports.DeleteComment = (data) => {
 
 module.exports.getAllDistinctTags = () => {
     return Resource.distinct("tags");
+};
+
+module.exports.getTop10Tags = () => {
+    return Resource.aggregate([
+        { $unwind: "$tags" },
+        {
+            $group: {
+                _id: "$tags",
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+    ]);
+};
+
+module.exports.getTop10Users = () => {
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: "$author._id",
+                name: { $first: "$author.name" },
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+        { $project: { _id: 0, user: { _id: "$_id", name: "$name" }, total: 1 } },
+    ]);
 };

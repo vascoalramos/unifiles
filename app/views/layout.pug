@@ -45,10 +45,11 @@ html
                 a.dropdown-item(href="/auth/logout") Logout
             if user.is_admin
               li.nav-item.dropdown
-                a.nav-link.dropdown-toggle(href="#" id="accountDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 
+                a.nav-link.dropdown-toggle(href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") 
                   i.fa.fa-users-cog(style="color:white;")
 
-                .dropdown-menu.dropdown-menu-right.position-absolute(aria-labelledby="accountDropdown")
+                .dropdown-menu.dropdown-menu-right.position-absolute(aria-labelledby="adminDropdown")
+                  a.dropdown-item(href="/admin/dashboard") Dashboard
                   a.dropdown-item(href="/admin/users") Manage Users
                   a.dropdown-item(href="/admin/resources") Manage Resources
             li.nav-item(style="line-height: 39px;")

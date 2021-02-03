@@ -92,8 +92,7 @@ module.exports.updatePassword = (data) => {
                 if (error) {
                     console.log(error);
                 } else {
-
-                    item.password = data.password; 
+                    item.password = data.password;
 
                     item.save()
                         .then((result) => {
@@ -169,4 +168,8 @@ module.exports.getUserImage = async (id) => {
 
 module.exports.list = () => {
     return User.find();
+};
+
+module.exports.getTotalActiveUsers = () => {
+    return User.find({ is_active: true }).countDocuments();
 };

@@ -62,9 +62,11 @@ app.use("/admin", adminRouter);
 const authAPI = require("./routes/api/auth");
 const usersAPI = require("./routes/api/users");
 const resourcesAPI = require("./routes/api/resources");
+const statsAPI = require("./routes/api/stats");
 app.use("/api/auth", authAPI);
 app.use("/api/users", usersAPI);
 app.use("/api/resources", resourcesAPI);
+app.use("/api/stats", statsAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
