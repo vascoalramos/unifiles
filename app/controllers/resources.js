@@ -26,6 +26,7 @@ module.exports.GetAll = (skip, lim) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "comments": 0,
             },
         },
         {
@@ -67,6 +68,7 @@ module.exports.GetAllWithoutLimits = () => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "comments": 0,
             },
         },
         {
@@ -128,6 +130,8 @@ module.exports.getFilters = (query) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "comments": 0,
+
             },
         },
         {
