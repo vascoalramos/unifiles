@@ -56,7 +56,7 @@ block content
       fillTotalActiveUsers();
       fillTop10Tags();
       fillTop10Users();
-      displayGraph("hour");
+      displayGraph("month");
     })
 
     function fillTotalActiveUsers() {
@@ -143,10 +143,7 @@ block content
 
       if (groupKey === "hour") {
         timeFormat = {
-          format: "HH:mm",
-          displayFormats: {
-            hour: 'HH:mm'
-          }
+          format: "HH:mm"
         };
       }
 
@@ -157,13 +154,6 @@ block content
         type: "GET",
         dataType: "json",
         success: function(data) {
-          console.log(data)
-            console.log(data.map(e => {
-
-                      let date = Object.values(e._id);
-                      date[1] = date[1]--;
-                      return groupKey === "hour" ? new Date(... date).getHours().toString() + ":00" : new Date(... date);
-                      }))
             let myChart = new Chart(document.getElementById('myChart'), {
                 type: 'line',
                 hover: true,
