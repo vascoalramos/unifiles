@@ -144,7 +144,7 @@ module.exports.getFilters = (query) => {
         },
         {
             $limit: Number(query.lim),
-        }
+        },
     ]);
 };
 
@@ -317,4 +317,89 @@ module.exports.DeleteComment = (data) => {
 
 module.exports.getAllDistinctTags = () => {
     return Resource.distinct("tags");
+};
+
+module.exports.getTop10Tags = () => {
+    return Resource.aggregate([
+        { $unwind: "$tags" },
+        {
+            $group: {
+                _id: "$tags",
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+    ]);
+};
+
+module.exports.getTop10Users = () => {
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: "$author._id",
+                name: { $first: "$author.name" },
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+        { $project: { _id: 0, user: { _id: "$_id", name: "$name" }, total: 1 } },
+    ]);
+};
+
+module.exports.getTotalResourcesGroupByTime = (groupKey) => {
+    let groupId = {
+        year: { $year: "$date_added" },
+        month: { $month: "$date_added" },
+        day: { $dayOfMonth: "$date_added" },
+        hour: { $hour: "$date_added" },
+    };
+
+    let lim = 24;
+
+    if (groupKey === "day") {
+        delete groupId.hour;
+        lim = 25;
+    } else if (groupKey === "month") {
+        delete groupId.hour;
+        delete groupId.day;
+        lim = 13;
+    }
+
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: groupId,
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                _id: -1,
+            },
+        },
+        {
+            $limit: lim,
+        },
+        {
+            $sort: {
+                _id: 1,
+            },
+        },
+    ]);
 };

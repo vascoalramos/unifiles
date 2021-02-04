@@ -175,7 +175,7 @@ function handleResource(req, res) {
 
                         if (req.method === "POST") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : undefined;
-                            data["date_added"] = new Date().getTime();
+                            data["date_added"] = fields.date_added ? new Date(fields.date_added) : new Date().getTime();
                             data.author = {
                                 _id: user._id,
                                 name: user.first_name + " " + user.last_name,

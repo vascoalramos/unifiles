@@ -16,7 +16,17 @@ router.get("/resources", passport.authenticate("jwt", { session: false }), (req,
     const { user } = req;
 
     if (user.is_admin) {
-        res.render("admin/all-resources", { user: user });
+        res.render("admin/resources", { user: user });
+    } else {
+        res.render("403", { user: user });
+    }
+});
+
+router.get("/dashboard", passport.authenticate("jwt", { session: false }), (req, res) => {
+    const { user } = req;
+
+    if (user.is_admin) {
+        res.render("admin/dashboard", { user: user });
     } else {
         res.render("403", { user: user });
     }

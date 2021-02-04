@@ -196,6 +196,10 @@ $(document).ready(function () {
     $(document).on("click", ".reset-filters", function () {
         window.location = host;
     });
+
+    $(document).on("click", ".ok-btn", function () {
+        window.location = host;
+    });
 });
 
 function deleteComments(commentId) {
@@ -274,14 +278,11 @@ function confirmRecoverPassword() {
             enctype: "multipart/form-data",
             url: host + "/api/users/confirmRecoverPassword",
             data: data,
-            beforeSend: function() {
-                // Adicionar Modal!!! Load
-            },
             success: function (data) {
                 removeErrors(); // Remove errors
 
-                // Adicionar Modal!!! Click Ok vai para o login
-                
+                $("#successModalMessage").text("Your password has been changed.");
+                $("#successModal").modal("toggle");
             },
             error: function (errors) {
                 displayErrors("#form-recover-confirm-password", errors);
@@ -300,13 +301,11 @@ function recoverPassword() {
             enctype: "multipart/form-data",
             url: host + "/api/users/recoverPassword",
             data: data,
-            beforeSend: function() {
-                // Adicionar Modal!!! Load
-            },
             success: function (data) {
                 removeErrors(); // Remove errors
 
-                // Adicionar Modal!!! "Check your email address!"
+                $("#successModalMessage").text("Email was sent! Please, check your email.");
+                $("#successModal").modal("toggle");
             },
             error: function (errors) {
                 displayErrors("#form-recover-password", errors);
