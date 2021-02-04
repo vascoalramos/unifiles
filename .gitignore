@@ -114,8 +114,8 @@ dist
 .vscode-test
 
 # Uploads
-app/uploads
-app/imgs
+# app/uploads
+# app/imgs
 
 # Resources
 _data/files
