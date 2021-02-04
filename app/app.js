@@ -62,13 +62,14 @@ app.use("/admin", adminRouter);
 const authAPI = require("./routes/api/auth");
 const usersAPI = require("./routes/api/users");
 const resourcesAPI = require("./routes/api/resources");
+const statsAPI = require("./routes/api/stats");
 app.use("/api/auth", authAPI);
 app.use("/api/users", usersAPI);
 app.use("/api/resources", resourcesAPI);
+app.use("/api/stats", statsAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-    res.render("404");
     next(createError(404));
 });
 
@@ -80,7 +81,8 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render("error");
+    if (err.static === 404) res.render("404");
+    else res.render("error");
 });
 
 module.exports = app;

@@ -3,7 +3,7 @@ const path = require("path");
 
 const { createUsers } = require("./populate");
 
-const NUMBER_OF_RECORDS = 50;
+const NUMBER_OF_RECORDS = 5000;
 
 let main = async () => {
     console.log("Populate users...");
