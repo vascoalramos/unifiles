@@ -62,8 +62,18 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
                 });
             })
             .catch((err) => {
-                console.log(err);
-                res.render("error", { user: user, error: err.response });
+                if(err.response.status == 400){
+                    user.accessToken = null;
+                    user.token = null;
+                    axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
+                        res.clearCookie("token");
+                        return res.redirect("/");
+                    });
+                }else{
+                    console.log(err);
+                    res.render("error", { user: user, error: err.response });
+                }
+               
             });
     } else {
         user.accessToken = null;

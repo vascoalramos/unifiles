@@ -448,6 +448,13 @@ button#status {
       transform: translate3d(1px, 0, 0);
     }
   }
+  .fa-bell{
+    color: white!important;
+  }
+
+  .fa-bell:hover{
+    color: rgba(255,255,255,.5)!important;
+  }
 .notificationsparent {
     position: absolute!important;
     top: 100%;
