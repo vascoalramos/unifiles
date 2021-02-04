@@ -58522,5 +58522,17 @@
         "position": "District Communications Agent",
         "is_admin": true,
         "is_active": true
+    },
+    {
+        "first_name": "Admin Test",
+        "last_name": "User",
+        "username": "admin",
+        "email": "myadmin12345@admin.com",
+        "password": "z70Ti^bZqe",
+        "confirm_password": "z70Ti^bZqe",
+        "institution": "Soares - Paiva",
+        "position": "Senior Branding Strategist",
+        "is_admin": true,
+        "is_active": true
     }
 ]
