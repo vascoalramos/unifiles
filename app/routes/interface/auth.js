@@ -54,34 +54,45 @@ router.get("/logout", passport.authenticate("jwt", { session: false }), (req, re
         axios
             .post("https://accounts.google.com/o/oauth2/revoke?token=" + user.accessToken)
             .then(() => {
-                user.accessToken = null;
-                user.token = null;
-                axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
-                    res.clearCookie("token");
-                    return res.redirect("/");
-                });
-            })
-            .catch((err) => {
-                if(err.response.status == 400){
-                    user.accessToken = null;
-                    user.token = null;
-                    axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
+                axios
+                    .put(
+                        "auth/tokens",
+                        { username: user.username, accessToken: null, token: null },
+                        { headers: { Cookie: `token=${req.cookies.token}` } },
+                    )
+                    .then(() => {
                         res.clearCookie("token");
                         return res.redirect("/");
                     });
-                }else{
+            })
+            .catch((err) => {
+                if (err.response.status == 400) {
+                    axios
+                        .put(
+                            "auth/tokens",
+                            { username: user.username, accessToken: null, token: null },
+                            { headers: { Cookie: `token=${req.cookies.token}` } },
+                        )
+                        .then(() => {
+                            res.clearCookie("token");
+                            return res.redirect("/");
+                        });
+                } else {
                     console.log(err);
                     res.render("error", { user: user, error: err.response });
                 }
-               
             });
     } else {
-        user.accessToken = null;
-        user.token = null;
-        axios.put("auth/tokens", user, { headers: { Cookie: `token=${req.cookies.token}` } }).then(() => {
-            res.clearCookie("token");
-            return res.redirect("/");
-        });
+        axios
+            .put(
+                "auth/tokens",
+                { username: user.username, accessToken: null, token: null },
+                { headers: { Cookie: `token=${req.cookies.token}` } },
+            )
+            .then(() => {
+                res.clearCookie("token");
+                return res.redirect("/");
+            });
     }
 });
 
