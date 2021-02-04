@@ -57,6 +57,32 @@ module.exports = {
             await sleep(125);
         }
 
+        password = faker.internet.password(20, false, null, "z_A_1");
+
+        user = {
+            first_name: "Admin Test",
+            last_name: "User",
+            username: "admin",
+            email: "myadmin12345@admin.com",
+            password: password,
+            confirm_password: password,
+            institution: faker.company.companyName(),
+            position: faker.name.jobTitle(),
+            is_admin: true,
+            is_active: true,
+        };
+
+        axios
+            .post("users", user)
+            .then(() => {
+                users.push(user);
+            })
+            .catch((err) => {
+                console.log(err.response.data.generalErrors);
+            });
+
+        await sleep(125);
+
         return users;
     },
 
