@@ -15,6 +15,7 @@ router.get("/", (req, res) => {
                 .get("resources/tags", { headers: { Cookie: `token=${req.cookies.token}` } })
                 .then((data) => {
                     res.render("index", { user: user, tags: data.data });
+
                 })
                 .catch((e) => res.render("error", { user: user, error: e }));
         }

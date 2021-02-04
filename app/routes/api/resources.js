@@ -10,6 +10,8 @@ const path = require("path");
 
 const { isAuthor } = require("../../middleware/authorization");
 const Resources = require("../../controllers/resources");
+const User = require("../../controllers/users");
+let socketapi = require("../../middleware/io"); 
 
 const router = express.Router();
 const magic = new Magic(MAGIC_MIME_TYPE);
@@ -113,7 +115,21 @@ function saveResource(data, res, id = null) {
 
     query
         .then((resource) => {
-            res.status(201).jsonp(resource);
+            var resourceNotification = {
+                text: 'A new resource was added',
+                name: resource.author.name,
+                date: new Date().getTime(),
+                read: false,
+                resourceId: resource._id
+            }
+            User.updateNotifications(resource.author._id, resourceNotification).then((notification) => {
+                socketapi.sendNotification(resourceNotification, resource.author._id)
+                res.status(201).jsonp(notification);
+            })
+            .catch((err) => {
+                console.log(err)
+                res.status(400).jsonp(err);
+            })                 
         })
         .catch((error) => {
             res.status(400).jsonp(error);
@@ -304,10 +320,27 @@ router.put(
                     name: user.first_name + " " + user.last_name,
                     user_id: user._id,
                 };
-
-                res.status(201).jsonp(dataReturn);
+                var ratingNotification = {
+                    text: 'A new comment was added',
+                    name: user.first_name +' '+ user.last_name,
+                    date: new Date().getTime(),
+                    read: false,
+                    resourceId: data.resource_id
+                }
+                if(newData.author._id != data.user_id){
+                    User.updateNotificationsRatingAndComments(newData.author._id, ratingNotification).then((notification) => {
+                        socketapi.sendNotificationComments(ratingNotification, newData.author._id)
+                        res.status(201).jsonp(dataReturn);
+                    }).catch((error) => {
+                        console.log(error)
+                        res.status(400).jsonp(error);
+                    });
+                }else{
+                    res.status(201).jsonp(dataReturn);
+                }
             })
             .catch((error) => {
+                console.log(error)
                 res.status(400).jsonp(error);
             });
     },
@@ -318,6 +351,8 @@ router.put(
     [body("rating").not().isEmpty().withMessage("Rating field is required.")],
     passport.authenticate("jwt", { session: false }),
     (req, res) => {
+        const { user } = req;
+
         let data = req.body;
 
         var generalErrors = [];
@@ -330,10 +365,28 @@ router.put(
         if (generalErrors.length > 0) return res.status(400).json({ generalErrors });
 
         Resources.Rating(data)
-            .then((newData) => {
-                res.status(200).jsonp("Success!");
+            .then(() => {
+                var ratingNotification = {
+                    text: 'A new rating was given with '+ data.rating +' stars',
+                    name: user.first_name +' '+ user.last_name,
+                    date: new Date().getTime(),
+                    read: false,
+                    resourceId: data.resource_id
+                }
+                if(data.resourceAuthor != user._id){
+                    User.updateNotificationsRatingAndComments(data.resourceAuthor, ratingNotification).then((notification) => {
+                        socketapi.sendNotificationRating(ratingNotification, data.resourceAuthor)
+                        res.status(200).jsonp("Success!");                   
+                    }).catch((error) => {
+                        console.log(error)
+                        res.status(400).jsonp(error);
+                    });
+                }else{
+                    res.status(200).jsonp("Success!");                   
+                }
             })
             .catch((error) => {
+                console.log(error)
                 res.status(400).jsonp(error);
             });
     },

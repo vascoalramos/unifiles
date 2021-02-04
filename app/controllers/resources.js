@@ -26,6 +26,8 @@ module.exports.GetAll = (skip, lim) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
+
             },
         },
         {
@@ -43,6 +45,7 @@ module.exports.GetAll = (skip, lim) => {
 };
 
 module.exports.insert = (resource) => {
+
     var newResource = new Resource(resource);
     return newResource.save();
 };
@@ -65,8 +68,7 @@ module.exports.getFilters = (query) => {
     else queryCond.image = { $eq: "images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
-    console.log(queryCond)
-    console.log(query)
+
     return Resource.aggregate([
         {
             $match: queryCond,
@@ -94,6 +96,8 @@ module.exports.getFilters = (query) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
+
             },
         },
     ]);;
@@ -133,6 +137,7 @@ module.exports.GetResourceById = (id) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
             },
         },
     ]);
