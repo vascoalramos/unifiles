@@ -124,7 +124,26 @@ router.post(
             });
     },
 );
-
+router.get("/getAllNotifications", (req, res) => {
+    let data = req.query;
+    User.getAllNotifications(data)
+        .then((latestNotification) => {
+            res.status(200).jsonp(latestNotification);
+        })
+        .catch((err) => {
+            res.status(400).jsonp(err);
+        });
+});
+router.put("/updateNotification", (req, res) => {
+    let data = req.body;
+    User.updateReadedNotifications(data)
+        .then((user) => {
+            res.status(200).jsonp(data);
+        })
+        .catch((err) => {
+            res.status(400).jsonp(err);
+        });
+});
 router.put(
     "/confirmRecoverPassword",
     [body("confirm_password").not().isEmpty().withMessage("Confirm Password field is required.")],
@@ -302,6 +321,7 @@ router.get("/:username", (req, res) => {
     let data = req.params;
     User.findByAuthUsername(data)
         .then((user) => {
+            user.notifications.reverse();
             res.status(200).jsonp(user);
         })
         .catch((error) => {

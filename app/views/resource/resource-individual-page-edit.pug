@@ -70,10 +70,7 @@ block content
                   i.fas.fa-check(style="color:green")
                 h4.text-center(id="successModalMessage")
               .modal-footer(style="border:0")
-                if user.is_admin && resource.author._id !== user._id
-                  button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick=`window.location = "/"`) Ok
-                else
-                  button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick=`window.location = "/myResources"`) Ok
+                button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick=`window.location = "/"`) Ok
 
       .col-12
         #deleteModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')

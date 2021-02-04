@@ -71,6 +71,54 @@ module.exports.updateAccessToken = (user) => {
         },
     );
 };
+module.exports.updateNotifications = (resourceauthorid, resourceNotification) => {
+    return User.updateMany(
+        {_id:{$ne: resourceauthorid }}, 
+        {"$push": {notifications: resourceNotification}}   ,{new :true}   
+        );
+
+};
+module.exports.updateNotificationsRatingAndComments = (resourceauthorid, resourceNotification) => {
+    return User.updateMany(
+        {_id:{$eq: resourceauthorid }}, 
+        {"$push": {notifications: resourceNotification}}   ,{new :true}   
+        );
+
+};
+
+module.exports.getAllNotifications = (dataNotifications) => {
+    return User.aggregate([
+        {
+          '$unwind': {
+            'path': '$notifications'
+          }
+        }, {
+          '$match': {
+            '_id': new mongoose.mongo.ObjectId(dataNotifications.id), 
+            'notifications.date': {
+              '$gt': new Date(dataNotifications.date)
+            }
+          }
+        }, 
+        {
+            '$project': {
+              'notifications': 1
+            }
+          }
+        ])
+};
+module.exports.updateReadedNotifications = (id) => {
+    return User.updateOne({
+        _id:  new mongoose.mongo.ObjectId(id.userId),
+        notifications: {
+        $elemMatch: {_id: new mongoose.mongo.ObjectId(id.notificationId)}
+        }
+        }, {
+        $set: {
+            "notifications.$.read": true
+        }
+        });
+};
 
 module.exports.updateTokens = (user) => {
     return User.findOneAndUpdate(
@@ -92,8 +140,7 @@ module.exports.updatePassword = (data) => {
                 if (error) {
                     console.log(error);
                 } else {
-
-                    item.password = data.password; 
+                    item.password = data.password;
 
                     item.save()
                         .then((result) => {
@@ -169,4 +216,8 @@ module.exports.getUserImage = async (id) => {
 
 module.exports.list = () => {
     return User.find();
+};
+
+module.exports.getTotalActiveUsers = () => {
+    return User.find({ is_active: true }).countDocuments();
 };

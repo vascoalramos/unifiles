@@ -26,6 +26,8 @@ module.exports.GetAll = (skip, lim) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
+                "comments": 0,
             },
         },
         {
@@ -67,6 +69,7 @@ module.exports.GetAllWithoutLimits = () => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "comments": 0,
             },
         },
         {
@@ -78,6 +81,7 @@ module.exports.GetAllWithoutLimits = () => {
 };
 
 module.exports.insert = (resource) => {
+
     var newResource = new Resource(resource);
     return newResource.save();
 };
@@ -92,11 +96,12 @@ module.exports.deleteResourceById = (id) => {
 
 module.exports.getFilters = (query) => {
     var queryCond = {};
-    
+
+    if (query.myResource) queryCond = {"author._id" : new mongoose.mongo.ObjectId(query.myResource)}
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = Number(query.year);
-    if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
-    else if (query.img != "all") queryCond.image = { $eq: "images/ResourceDefault.png" };
+    // if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
+    // else if (query.img != "all") queryCond.image = { $eq: "images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
 
@@ -127,6 +132,9 @@ module.exports.getFilters = (query) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
+                "comments": 0,
+
             },
         },
         {
@@ -139,17 +147,18 @@ module.exports.getFilters = (query) => {
         },
         {
             $limit: Number(query.lim),
-        }
+        },
     ]);
 };
 
 module.exports.GetFiltersTotal = (query) => {
     var queryCond = {};
 
+    if (query.myResource) queryCond = {"author._id" : new mongoose.mongo.ObjectId(query.myResource)}
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = Number(query.year);
-    if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
-    else if (query.img != "all") queryCond.image = { $eq: "images/ResourceDefault.png" };
+    //if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
+    //else if (query.img != "all") queryCond.image = { $eq: "images/ResourceDefault.png" };
     if (query.tags && query.tags.length > 0) queryCond.tags = { $in: query.tags };
     if (query.types && query.types.length > 0) queryCond.type = { $in: query.types };
 
@@ -200,6 +209,7 @@ module.exports.GetResourceById = (id) => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
+                "author.notifications": 0,
             },
         },
     ]);
@@ -311,4 +321,89 @@ module.exports.DeleteComment = (data) => {
 
 module.exports.getAllDistinctTags = () => {
     return Resource.distinct("tags");
+};
+
+module.exports.getTop10Tags = () => {
+    return Resource.aggregate([
+        { $unwind: "$tags" },
+        {
+            $group: {
+                _id: "$tags",
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+    ]);
+};
+
+module.exports.getTop10Users = () => {
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: "$author._id",
+                name: { $first: "$author.name" },
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                total: -1,
+            },
+        },
+        { $limit: 10 },
+        { $project: { _id: 0, user: { _id: "$_id", name: "$name" }, total: 1 } },
+    ]);
+};
+
+module.exports.getTotalResourcesGroupByTime = (groupKey) => {
+    let groupId = {
+        year: { $year: "$date_added" },
+        month: { $month: "$date_added" },
+        day: { $dayOfMonth: "$date_added" },
+        hour: { $hour: "$date_added" },
+    };
+
+    let lim = 24;
+
+    if (groupKey === "day") {
+        delete groupId.hour;
+        lim = 25;
+    } else if (groupKey === "month") {
+        delete groupId.hour;
+        delete groupId.day;
+        lim = 13;
+    }
+
+    return Resource.aggregate([
+        {
+            $group: {
+                _id: groupId,
+                total: {
+                    $sum: 1,
+                },
+            },
+        },
+        {
+            $sort: {
+                _id: -1,
+            },
+        },
+        {
+            $limit: lim,
+        },
+        {
+            $sort: {
+                _id: 1,
+            },
+        },
+    ]);
 };
