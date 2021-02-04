@@ -413,8 +413,8 @@ function applyFilter() {
 
     var params = window.location.search.substr(1).split("=");
 
-    if (params[0] == "tag" && !isNaN(params[1])) {
-        data.push({"name": "tags", value: Number(params[1])})
+    if (params[0] == "tag") {
+        data.push({"name": "tags", value: params[1]})
     }
 
     dataFiltering = data;
@@ -858,7 +858,7 @@ function addDataToDOM(data) {
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
-                (location.pathname === "/myResources" || userLoggedIn.is_admin || userLoggedIn._id === element.author._id
+                (userLoggedIn.is_admin || userLoggedIn._id === element.author._id
                     ? `  <a class="dropdown-item" href="/resources/${element._id}/edit">Edit</a>
                                     <button class="dropdown-item" onclick="openDeleteConfirmModal('${element._id}')">Delete</button>`
                     : "") +

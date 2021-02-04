@@ -7,7 +7,10 @@ block content
         .row.my-3(style="align-items: center;")
           .col-12.hedersidenav.mb-2
             h3.pb-1 Filter
-          //span.reset-filters Reset  
+          .col-md-12.col-xl-1.mb-3.mb-xl-0
+            span.reset-filters
+              i.fa.fa-trash-alt(style="padding-right: 3px;")
+              | Clear All
           .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
             input.form-control(type="text" name="subject" style="outline: none!important;font-size: 12px;height: auto;box-shadow: none !important;" placeholder="Title")
           .col-md-12.col-xl-2.mb-3.mb-xl-0(style="height:100%;")
@@ -26,13 +29,19 @@ block content
               option(value="book") Book
               option(value="report") Report
               option(value="aplication") Aplication
+          //- .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
+          //-   b.cImage(style="margin-right:6%")
+          //-     | With Image  
+          //-   label.switch.m-0
+          //-     input(type='checkbox' checked='' name="img")
+          //-     span.slider.round
           .col-md-12.col-xl-2.mb-3.mb-xl-0(style="display: flex;align-items: center;")
-            b.cImage(style="margin-right:6%")
-              | With Image  
+            b.owner(style="margin-right:6%")
+              | Only Mine
             label.switch.m-0
-              input(type='checkbox' checked='' name="img")
+              input(type='checkbox' name="myResource" value=user._id)
               span.slider.round
-          .col-md-12.col-xl-4.mb-xl-0(style="height:100%;")
+          .col-md-12.col-xl-3.mb-xl-0(style="height:100%;")
             button.col-12.btn.btn-primary#filter-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Search
   .container.maincontainer(style="max-width:800px;")
     .row.m-0.mb-4
