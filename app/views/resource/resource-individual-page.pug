@@ -19,15 +19,15 @@ block content
           .d-flex
             .resource-rating.mr-2
               .rating
-                input#star5(type='radio' name='rating' value='5')
+                input#star5(type='radio' name='rating' value='5' data-aux-authorId=resource.author._id  data-id=resource._id)
                 label.mb-0(for='star5' title='5') 5 stars
-                input#star4(type='radio' name='rating' value='4')
+                input#star4(type='radio' name='rating' value='4' data-aux-authorId=resource.author._id  data-id=resource._id)
                 label.mb-0(for='star4' title='4') 4 stars
-                input#star3(type='radio' name='rating' value='3')
+                input#star3(type='radio' name='rating' value='3' data-aux-authorId=resource.author._id  data-id=resource._id)
                 label.mb-0(for='star3' title='3') 3 stars
-                input#star2(type='radio' name='rating' value='2')
+                input#star2(type='radio' name='rating' value='2' data-aux-authorId=resource.author._id  data-id=resource._id)
                 label.mb-0(for='star2' title='2') 2 stars
-                input#star1(type='radio' name='rating' value='1')
+                input#star1(type='radio' name='rating' value='1' data-aux-authorId=resource.author._id  data-id=resource._id)
                 label.mb-0(for='star1' title='1') 1 star
               .clearfix
             if user.is_admin || user._id === resource.author._id

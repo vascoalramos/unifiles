@@ -420,6 +420,56 @@ button#status {
     z-index: 1;
     transition: 0.2s all linear;
 }
+.eachNote:hover, .eachNote.unread {
+    background: rgba(137,83,187, 0.1);
+}
+.shakebell {
+    animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both infinite;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%,
+    80% {
+      transform: translate3d(1px, 0, 0);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(1px, 0, 0);
+    }
+  }
+  .fa-bell{
+    color: white!important;
+  }
+
+  .fa-bell:hover{
+    color: rgba(255,255,255,.5)!important;
+  }
+.notificationsparent {
+    position: absolute!important;
+    top: 100%;
+    right: 0;
+    z-index: 1000;
+    min-width: 17rem;
+    max-height: 300px;
+    overflow: auto;
+    color: #212529;
+    text-align: left;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 0.25rem!important;
+    box-shadow: 0 12px 28px 0 rgb(0 0 0 / 20%), 0 2px 4px 0 rgb(0 0 0 / 10%), inset 0 0 0 1px rgb(255 255 255 / 50%);
+}
 .customheaderside {
     display: none;
 }

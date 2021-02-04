@@ -66,6 +66,23 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null,
     },
+    notifications: [{
+        text: {
+            type: String
+        },
+        name: {
+            type: String
+        },
+        date:{
+            type: Date
+        },
+        read:{
+            type: Boolean,
+        },
+        resourceId:{
+            type: mongoose.Types.ObjectId
+        },
+    }]
 });
 
 userSchema.pre("save", function (next) {

@@ -47,8 +47,17 @@ $(document).ready(function () {
         loginUser();
     });
     $(".x[data-show-id]").each(function (index) {
+        //alert("data");
         var $el = $(this);
         $el.html(mydiff($el.attr("data-show-id")));
+    });
+    $(document).on("hide.bs.dropdown shown.bs.dropdown", ".linotification", function () {
+        $("#notifications").removeClass("shakebell");
+        $("#notifications").css("color","rgba(255,255,255,.5)");
+    });
+    $(document).on("mouseenter", ".eachNote", function () {
+        updateReadNotification($(this))
+        $(this).removeClass("unread");
     });
     $("#register-confirm").click(function (e) {
         e.preventDefault();
@@ -90,8 +99,9 @@ $(document).ready(function () {
             (code == 13 &&
                 $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
                 $(".removeTag").length < 5 &&
-                $.trim($(this).val()) != "") ||
-            e.type == "change"
+                $.trim($(this).val()) != "") || (e.type == "change" && $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
+                $(".removeTag").length < 5 &&
+                $.trim($(this).val()) != "")
         ) {
             //Enter keycode
             $("#tags").before(
@@ -183,7 +193,7 @@ $(document).ready(function () {
 
     // Click on the stars
     $(".rating").on("click", "input:radio[name=rating]", function () {
-        applyRating($("input:radio[name=rating]:checked").val());
+        applyRating($("input:radio[name=rating]:checked"));
     });
 
     // Delete comments
@@ -222,10 +232,39 @@ function deleteComments(commentId) {
         false,
     );
 }
+function updateReadNotification(notification) {
+    if($(notification).attr("data-show-id"))
+    {
+        var info = $(notification).attr("data-show-id").split(',')
+        var data = {
+            notificationId: info[0],
+            userId: info[1]
 
+        }
+        
+        $.ajax(
+            {
+                type: "PUT",
+                enctype: "multipart/form-data",
+                url: host + "/api/users/updateNotification",
+                data: data,
+                success: function () {
+                    $(notification).removeAttr("data-show-id")
+                },
+                error: function (errors) {
+                    console.log(errors);
+                },
+            },
+            false,
+        );
+    }
+    
+}
 function applyRating(value) {
-    var _id = window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
-    var data = { rating: value, resource_id: _id };
+    var authorId = value.attr("data-aux-authorId")
+    var _id = value.attr("data-id")
+
+    var data = { rating: value.val(), resource_id: _id, resourceAuthor: authorId};
 
     $.ajax(
         {
@@ -446,7 +485,6 @@ function applyFilter() {
 
 function replyCommentResource(id) {
     var data = $("#" + id).serializeArray();
-
     $.ajax(
         {
             type: "PUT",
@@ -464,7 +502,7 @@ function replyCommentResource(id) {
                 }
             },
             error: function (errors) {
-                alert(errors.responseJSON.generalErrors[0].msg);
+                console.log(errors)
             },
         },
         false,
@@ -563,6 +601,7 @@ function updateScrollComments(data) {
 }
 
 function mydiff(date1) {
+    
     var second = 1000,
         minute = second * 60,
         hour = minute * 60,
@@ -692,11 +731,12 @@ function deleteResource(id) {
 function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
-    if (errors.responseJSON.error != undefined) {
+
+    if (errors.responseJSON!=undefined && errors.responseJSON.error != undefined) {
         errors.responseJSON.error.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
-    } else if (errors.responseJSON.generalErrors != undefined) {
+    } else if (errors.responseJSON!=undefined && errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
             if (element.field == "username") {
                 $("#username").addClass("form-control.is-invalid, was-validated, form-control:invalid");
@@ -815,6 +855,7 @@ $(document).on("click", ".maincontainer", function () {
     $(".rightmenu.show").toggleClass("show");
     $(".maincontainer.hide").toggleClass("hide");
 });
+
 
 function addDataToDOM(data) {
     if (data.resource.length == 0 && (skipGetResource == 0 && skipGetResourceFiltering == 0)) {
