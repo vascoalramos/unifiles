@@ -8,8 +8,8 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const zip = require("express-easy-zip");
-
 const mongoose = require("mongoose");
+//mongoose.set('debug', true);
 
 mongoose.set("debug", process.env.NODE_ENV !== "production");
 
@@ -50,10 +50,13 @@ app.use(function (req, res, next) {
 
 const indexRouter = require("./routes/interface/index");
 const authRouter = require("./routes/interface/auth");
-const resourceRouter = require("./routes/interface/resource");
+const resourcesRouter = require("./routes/interface/resources");
+const adminRouter = require("./routes/interface/admin");
+
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
-app.use("/resources", resourceRouter);
+app.use("/resources", resourcesRouter);
+app.use("/admin", adminRouter);
 
 // API routes
 const authAPI = require("./routes/api/auth");
@@ -65,6 +68,7 @@ app.use("/api/resources", resourcesAPI);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+    res.render("404");
     next(createError(404));
 });
 

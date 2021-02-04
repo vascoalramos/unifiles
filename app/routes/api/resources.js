@@ -8,7 +8,7 @@ const fsPath = require("fs-path");
 const { MAGIC_MIME_TYPE, Magic } = require("mmmagic");
 const path = require("path");
 
-const { isAuthor } = require("../../middleware/authorization");
+const { checkAuthorization } = require("../../middleware/authorization");
 const Resources = require("../../controllers/resources");
 
 const router = express.Router();
@@ -126,6 +126,12 @@ function handleResource(req, res) {
     const form = formidable({ multiples: true });
 
     form.parse(req, (err, fields, uploads) => {
+        if (err) {
+            return res.status(400).jsonp({
+                generalErrors: [{ field: "files", msg: "The package is too big to upload: max 200MB" }],
+            });
+        }
+
         if (fields.type == "") generalErrors.push({ field: "type", msg: "Please insert a valid Type" });
         if (fields.subject == "") generalErrors.push({ field: "subject", msg: "Please insert a Title" });
         if (fields.year == "") generalErrors.push({ field: "year", msg: "Please insert a Year" });
@@ -142,10 +148,6 @@ function handleResource(req, res) {
         let imagePathFinal = "";
         let pathFolder = `uploads/${fields.type}/${user.username}/${new Date().getTime()}`;
 
-        if (err) {
-            console.log(err);
-            return res.status(500).jsonp(err);
-        }
         if (uploads.files.size > 0) {
             // single upload
 
@@ -165,10 +167,6 @@ function handleResource(req, res) {
                             mime_type: mime_type,
                             type: fields.type,
                             description: fields.description,
-                            author: {
-                                _id: user._id,
-                                name: user.first_name + " " + user.last_name,
-                            },
                             year: fields.year,
                             size: size,
                             subject: fields.subject,
@@ -178,6 +176,10 @@ function handleResource(req, res) {
                         if (req.method === "POST") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : undefined;
                             data["date_added"] = new Date().getTime();
+                            data.author = {
+                                _id: user._id,
+                                name: user.first_name + " " + user.last_name,
+                            };
                         } else if (req.method === "PUT") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : "images/ResourceDefault.png";
                         }
@@ -189,7 +191,7 @@ function handleResource(req, res) {
                             saveResource(data, res, req.params.id);
                         }
                     } else {
-                        res.status(400).jsonp("The package is not valid");
+                        res.status(400).jsonp({ generalErrors: [{ field: "files", msg: "The package is not valid" }] });
                     }
                 });
             } else res.status(400).jsonp(errorZip);
@@ -251,23 +253,32 @@ router.get("/", passport.authenticate("jwt", { session: false }), (req, res) => 
     var skip = req.query.skip || 0;
     let response = {};
 
-    Resources.GetAll(Number(skip), Number(lim))
-        .then((data) => {
-            response["resources"] = data;
-            Resources.GetTotal()
-                .then((data) => {
-                    response["total"] = data;
-                    res.status(200).jsonp(response);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    res.status(400).jsonp(error);
-                });
-        })
-        .catch((error) => {
-            console.log(error);
-            res.status(400).jsonp(error);
-        });
+    if (req.query.admin) {
+        Resources.GetAllWithoutLimits()
+            .then((data) => {
+                res.status(200).jsonp(data);
+            })
+            .catch((error) => {
+                res.status(400).jsonp(error);
+            });
+    } else {
+        Resources.GetAll(Number(skip), Number(lim))
+            .then((data) => {
+                response["resources"] = data;
+                Resources.GetTotal()
+                    .then((data) => {
+                        response["total"] = data;
+                        res.status(200).jsonp(response);
+                    })
+                    .catch((error) => {
+                        res.status(400).jsonp(error);
+                    });
+            })
+            .catch((error) => {
+                console.log(error);
+                res.status(400).jsonp(error);
+            });
+    }
 });
 
 router.get("/tags", passport.authenticate("jwt", { session: false }), (req, res) => {
@@ -376,9 +387,9 @@ router.delete(
 
 router.post("/", passport.authenticate("jwt", { session: false }), handleResource);
 
-router.put("/:id", passport.authenticate("jwt", { session: false }), isAuthor, handleResource);
+router.put("/:id", passport.authenticate("jwt", { session: false }), checkAuthorization, handleResource);
 
-router.delete("/:id", passport.authenticate("jwt", { session: false }), isAuthor, (req, res) => {
+router.delete("/:id", passport.authenticate("jwt", { session: false }), checkAuthorization, (req, res) => {
     Resources.deleteResourceById(req.params.id)
         .then(() => {
             res.status(204).send();
@@ -389,9 +400,26 @@ router.delete("/:id", passport.authenticate("jwt", { session: false }), isAuthor
 });
 
 router.get("/filters", passport.authenticate("jwt", { session: false }), (req, res) => {
+    if (!Array.isArray(req.query.tags) && req.query.tags != undefined) {
+        var tagsArray = [];
+        tagsArray.push(req.query.tags);
+        req.query.tags = new Array();
+        req.query.tags.push(tagsArray[0]);
+    }
+    let response = {};
+
     Resources.getFilters(req.query)
         .then((resources) => {
-            res.status(200).jsonp(resources);
+            response["resources"] = resources;
+            Resources.GetFiltersTotal(req.query)
+                .then((data) => {
+                    response["total"] = data[0] && data[0].count ? data[0].count : 0;
+                    res.status(200).jsonp(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(400).jsonp(error);
+                });
         })
         .catch((error) => {
             res.status(400).jsonp(error);
@@ -400,7 +428,7 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
 
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
-
+    console.log(12121);
     Resources.GetResourceById(id)
         .then((data) => {
             console.log(data);

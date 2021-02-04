@@ -1,0 +1,273 @@
+extends ../layout
+
+block content
+  .container-fluid.p-5(style="margin-top: 75px;")
+    .form-user.p-5
+      h3.title-admin-table List of Users
+      button.form-control.add-new-user-admin(data-toggle='modal' data-target='#modalInsert')
+        | Add new
+      // Modal
+      #modalInsert.modal.fade(tabindex='-1' role='dialog' aria-labelledby='modalInsertLabel' aria-hidden='true' data-keyboard="false")
+        .modal-dialog.modal-dialog-centered.modal-lg(role='document')
+          .modal-content
+            .modal-header.py-2.px-0.mx-3
+              h5#modalInsertLabel.modal-title.col-12.px-0.text-center(style="font-size: 1.25rem;font-weight: bold;color: black;") New User
+              button.close(type='button' data-dismiss='modal' aria-label='Close' style="outline:none!important;position:absolute;top:6px;right:16px;background: #e4e6eb;margin: 0px;border-radius: 50%;padding: 6px 12px;font-size: 24px;")
+                span(aria-hidden='true') &times;
+            form.px-4.py-3.needs-validation#form-register(method='POST', enctype='multipart/form-data', novalidate='')
+              .row
+                .col-sm
+                  .form-group.first_name
+                    label(for='first_name') First Name
+                    input#first_name.form-control(type='text' placeholder='Joe' name='first_name' required='')
+                .col-sm
+                  .form-group.last_name
+                    label(for='last_name') Last Name
+                    input#last_name.form-control(type='text' placeholder='Brown' name='last_name' required='') 
+              .row
+                .col-sm
+                  .form-group.username
+                    label(for='username') Username
+                    input#username.form-control(type='text' placeholder='jb_12345' name='username' required='', minlength=2)
+                .col-sm
+                  .form-group.email
+                    label(for='email') Email
+                    input#email.form-control(type='email' placeholder='pg12345@alunos.uminho.pt' name='email' required='')
+              .row
+                .col-sm
+                  .form-group.institution
+                    label(for='institution') Institution
+                    input#institution.form-control(type='text' placeholder='Univ. Minho' name='institution' required='', minlength=2)
+                .col-sm
+                  .form-group.position
+                      label(for='position') Position
+                      input#position.form-control(type='text' placeholder='student' name='position' required='', minlength=2)
+              .row
+                .col-sm
+                  .form-group.password
+                    label(for='password') Password
+                    input#password.form-control(type='password' placeholder='*******' name='password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+                .col-sm
+                  .form-group.confirm_password
+                      label(for='confirm_password') Confirm Password
+                      input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
+
+              .modal-footer(style="border:0")
+                button.col-12.btn.btn-primary#register-confirm(type='button' style="background:#343a40;border:0;box-shadow: none!important") Create
+
+      // Modal success    
+      .col-12
+        #successModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='successModalLabel' aria-hidden='true')
+          .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+            .modal-content
+              .modal-body.pb-o.text-center
+                h2
+                  i.fas.fa-check(style="color:green")
+                h4.text-center(id="successModalMessage")
+              .modal-footer(style="border:0")
+                button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick='location.reload()') Ok
+
+      table.display#usersTable(style="width:100%")
+        thead
+          tr
+            th Name
+            th Email
+            th Institution
+            th Position
+            th Is Active
+            th Is Admin
+        tbody
+    
+    .col-12
+      #adminSuccessModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-check(style="color: green")
+              h4.text-center#adminSuccessModalMessage
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#adminSuccessModal').modal('hide')") Ok
+
+    .col-12
+      #adminConfirmModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered.modal-sm(role='document')
+          .modal-content
+            .modal-body.pb-o.text-center
+              h2
+                i.fas.fa-exclamation-triangle(style="color: gold")
+              h4#adminConfirmModalMessage
+            .modal-footer(style="border:0")
+              button.col-12.btn.btn-danger(id="adminConfirmModalBtn" style="border:0;box-shadow: none!important") Yes
+              button.col-12.btn.btn-primary(style="background:#343a40;border:0;box-shadow: none!important" onclick="$('#adminConfirmModal').modal('hide')") No
+
+    script(type="text/javascript").
+      function openModal(username, id, grant, isAccessLevel = false) {
+        if (isAccessLevel)
+          $("#adminConfirmModalMessage").html("Are you sure you want to <b>" + (grant ? "grant" : "revoke") + "</b> ADMIN access level " + (grant ? "to " : "from ") + "this user?");
+        else
+          $("#adminConfirmModalMessage").html("Are you sure you want to <b>" + (grant ? "activate" : "deactivate") + "</b> this user account?");
+
+        $(document).on("click","#adminConfirmModalBtn", function() {
+          updateAccessControl(username, id, grant, isAccessLevel);
+        });
+
+        $("#adminConfirmModal").modal('show');
+      }
+
+      function updateAccessControl(username, id, grant, isAccessLevel) {
+        let data = {id: id};
+        if (isAccessLevel) {
+          data.is_admin = grant;
+        } else {
+          data.is_active = grant;
+          if (!grant) {
+            data.token = null,
+            data.accessToken = null
+          }
+        }
+
+        let elementId;
+        
+        $.ajax(
+        {
+            type: "PUT",
+            url: `${host}/api/users/${username}}/accessControl`,
+            data: data,
+            success: function (data) {
+                elementId = "#" + (isAccessLevel ? "admin_" : "active_") + id
+
+                if (grant) {
+                  $(elementId).attr('onClick',`openModal('${username}', '${id}', ${!grant}, ${isAccessLevel})`);
+                  $(elementId).parent().removeClass("unchecked-cell").addClass("checked-cell");
+                  $(elementId).css({"color": "green"});
+                  $(elementId).parent().css({"opacity": 1});
+                  $(elementId).show();
+                } else {
+                  $(elementId).attr('onClick',`openModal('${username}', '${id}', ${!grant}, ${isAccessLevel})`);
+                  $(elementId).parent().removeClass("checked-cell").addClass("unchecked-cell");
+                  $(elementId).css({"color": "black"});
+                  $(elementId).hide();
+                }
+
+                if (isAccessLevel)
+                  $("#adminSuccessModalMessage").html("You successfully <b>" + (grant ? "granted" : "revoked") + "</b> ADMIN access level " + (grant ? "to " : "from ") + "this user!");
+                else
+                  $("#adminSuccessModalMessage").html("You successfully <b>" + (grant ? "activated" : "deactivated") + "</b> this user account!");
+
+                $("#adminConfirmModal").modal('hide');
+                $("#adminSuccessModal").modal('show');
+            },
+            error: function (errors) {
+                console.log(errors);
+            },
+        });
+      }
+
+      $(document).ready( function () {
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).find(".fa-check-circle").show()
+          },
+          mouseleave: function () {
+             $(this).find(".fa-check-circle").hide()
+          }
+        }, ".unchecked-cell");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).css("color", "red");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).css("color", "green");
+          }
+        }, ".checked-cell .fa-check-circle");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).parent().css("opacity", "1");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).parent().css("opacity", "0.5");
+          }
+        }, ".unchecked-cell .fa-check-circle");
+
+
+        $("#usersTable").DataTable({
+          scrollY: "600px",
+          scrollCollapse: true,
+          ajax: {
+            url: `${host}/api/users`,
+            method: "GET", 
+            dataSrc: ""
+          },
+          rowCallback: function(row, data, index) {
+            if (userLoggedIn._id !== data._id) {
+              if (data.is_admin)
+                $('td:eq(5)', row).addClass('checked-cell');
+              else
+                $('td:eq(5)', row).addClass('unchecked-cell');
+
+              if (data.is_active)
+                $('td:eq(4)', row).addClass('checked-cell');
+              else
+                $('td:eq(4)', row).addClass('unchecked-cell');
+            } else {
+              $('td:eq(4)', row).prop("disabled",true); 
+              $('td:eq(5)', row).prop("disabled",true); 
+            }
+          },
+          columns: [
+              {
+                data: null,
+                wrap: true,
+                render: (item) => {
+                  return `
+                    ${item.first_name} ${item.last_name}
+                  `
+                }
+              },
+              { data: "email" },
+              { data: "filiation.institution" },
+              { data: "filiation.position" },
+              {
+                data: null,
+                wrap: true,
+                orderable: false,
+                className: "text-center",
+                render: (item) => {
+                  if (userLoggedIn._id === item._id) {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; color: green; opacity: 0.5" class="far fa-check-circle"></i>`;
+                  } else if (item.is_active) {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', false)"></i>`;
+                  } else {
+                    return `<i id="active_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle" onclick="openModal('${item.username}', '${item._id}', true)"></i>`;
+                  }
+                }
+              },
+              {
+                data: null,
+                wrap: true,
+                className: "text-center",
+                orderable: false,
+                render: (item) => {
+                  if (userLoggedIn._id === item._id) {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; color: green; opacity: 0.5" class="far fa-check-circle access-level"></i>`;
+                  }
+                  else if (item.is_admin) {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; color: green" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', false, true)"></i>`;
+                  } else {
+                    return `<i id="admin_${item._id}" style="font-size: 1.5em; display: none" class="far fa-check-circle access-level" onclick="openModal('${item.username}', '${item._id}', true, true)"></i>`;
+                  }
+                }
+              }
+          ]
+        });
+      });

@@ -82,6 +82,32 @@ module.exports.updateTokens = (user) => {
     );
 };
 
+module.exports.updatePassword = (data) => {
+    return new Promise(function (resolve, reject) {
+        User.findOne(
+            {
+                email: data.email,
+            },
+            function (error, item) {
+                if (error) {
+                    console.log(error);
+                } else {
+
+                    item.password = data.password; 
+
+                    item.save()
+                        .then((result) => {
+                            resolve(result);
+                        })
+                        .catch((err) => {
+                            reject(err);
+                        });
+                }
+            },
+        );
+    });
+};
+
 module.exports.listResources = (userId, skip = 0, lim = 5) => {
     return Resource.aggregate([
         {
@@ -139,4 +165,8 @@ module.exports.getUserImage = async (id) => {
         imagePath = `/public/${imagePath}`;
     }
     return imagePath;
+};
+
+module.exports.list = () => {
+    return User.find();
 };

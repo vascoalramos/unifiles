@@ -71,6 +71,7 @@ router.put("/updateAccessToken", (req, res, next) => {
 
 router.put("/tokens", passport.authenticate("jwt", { session: false }), (req, res, next) => {
     let data = req.body;
+    
     User.updateTokens(data)
         .then((user) => {
             res.status(200).jsonp(user);

@@ -1,0 +1,90 @@
+extends ../layout
+
+block content
+  .container-fluid.p-5(style="margin-top: 75px;")
+    .form-user.p-5
+      h3.title-admin-table List of Resources
+      table.display#resourcesTable(style="width:100%")
+        thead
+          tr
+            th Author
+            th Type
+            th Subject
+            th Year
+            th Options
+        tbody
+
+    script(type="text/javascript").
+
+      $(document).ready( function () {
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).find(".fa-check-circle").show()
+          },
+          mouseleave: function () {
+             $(this).find(".fa-check-circle").hide()
+          }
+        }, ".unchecked-cell");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).css("color", "red");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).css("color", "green");
+          }
+        }, ".checked-cell .fa-check-circle");
+
+        $(document).on({
+          mouseenter: function () {
+              $(this).css("cursor", "pointer");
+              $(this).css("box-shadow", "0 0 20px rgba(33, 33, 33, 0.2)");
+              $(this).parent().css("opacity", "1");
+          },
+          mouseleave: function () {
+              $(this).css("box-shadow", "none");
+              $(this).parent().css("opacity", "0.5");
+          }
+        }, ".unchecked-cell .fa-check-circle");
+
+
+        $("#resourcesTable").DataTable({
+          scrollY: "600px",
+          scrollCollapse: true,
+          ajax: {
+            url: `${host}/api/resources?admin=true`,
+            method: "GET", 
+            dataSrc: ""
+          },
+          columns: [
+              {
+                data: null,
+                wrap: true,
+                render: (item) => {
+                  return `
+                    <img style="border-radius:50%;width:20px;height:20px;margin-top:-3px" src=/api/users/${item.author._id}/avatar> </img> ${item.author.first_name} ${item.author.last_name}
+                  `
+                }
+              },
+              { data: "type" },
+              { data: "subject" },
+              { data: "year" },
+              {
+                data: null,
+                wrap: true,
+                orderable: false,
+                className: "text-center",
+                render: (item) => {
+                  return `
+                    <a href="/resources/${item._id}"><i class="fa fa-info-circle"></i></a>
+                    <a href="/resources/${item._id}/edit"><i class="fa fa-edit"></i></a>
+                  `
+                }
+              }
+          ]
+        });
+      });
