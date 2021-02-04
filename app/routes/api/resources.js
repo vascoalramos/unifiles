@@ -183,7 +183,16 @@ function handleResource(req, res) {
                         } else if (req.method === "PUT") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : "images/ResourceDefault.png";
                         }
+                        
+                        // Remove spaces from tags
+                        var tagsWithoutSpaces = []
+                        data.tags.forEach(tag => {
+                            tag = tag.replace(/\s/g, '');
+                            tagsWithoutSpaces.push(tag)
+                        });
 
+                        data.tags = tagsWithoutSpaces
+                        
                         storeResource(filesDecompressed, pathFolder);
                         if (req.method === "POST") {
                             saveResource(data, res);
