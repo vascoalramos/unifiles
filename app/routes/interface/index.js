@@ -17,7 +17,7 @@ router.get("/", (req, res) => {
                     res.render("index", { user: user, tags: data.data });
 
                 })
-                .catch((e) => res.render("error", { user: user, error: e }));
+                .catch((e) => res.render("error", { user: user, error: e.response }));
         }
     })(req, res);
 });
@@ -26,18 +26,6 @@ router.get("/profile", passport.authenticate("jwt", { session: false }), (req, r
     const { user } = req;
 
     res.render("profile", { title: "Edit Profile", user: user });
-});
-
-router.get("/myResources", (req, res) => {
-    passport.authenticate("jwt", { session: false }, (err, user) => {
-        if (err || !user) res.redirect("/auth/login");
-        axios
-            .get("resources/tags", { headers: { Cookie: `token=${req.cookies.token}` } })
-            .then((data) => {
-                res.render("myResources", { user: user, tags: data.data });
-            })
-            .catch((e) => res.render("error", { user: user, error: e }));
-    })(req, res);
 });
 
 module.exports = router;

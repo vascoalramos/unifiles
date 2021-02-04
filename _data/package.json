@@ -3,8 +3,9 @@
     "version": "1.0.0",
     "description": "Tool to create UniFiles base dataset",
     "main": "create_dataset.js",
-    "scripts":  {
-        "start": "node src/create_dataset.js",
+    "scripts": {
+        "create-users": "node src/create_users.js",
+        "create-resources": "node src/create_resources.js",
         "bagit": "node src/bag_files.js",
         "zipit": "node src/zip_bags.js",
         "test": "echo \"Error: no test specified\" && exit 1"

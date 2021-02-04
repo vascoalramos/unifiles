@@ -1,4 +1,15 @@
 var host = "http://localhost:3000";
+var limitGetResource = 5;
+var skipGetResource = 0;
+var counterGetResource = 0;
+var totalResource = 0;
+
+var filtering = false;
+var dataFiltering = null;
+var skipGetResourceFiltering  = 0;
+var limitGetResourceFiltering = 5;
+var counterGetResourceFiltering = 0;
+var totalResourceFiltering = 0;
 
 // Errors forms boostrasp
 (function () {
@@ -52,9 +63,27 @@ $(document).ready(function () {
         e.preventDefault();
         registerUser();
     });
+
     $("#filter-confirm").click(function (e) {
+        skipGetResourceFiltering = 0;
+        counterGetResourceFiltering = 0;
+        totalResourceFiltering = 0;
+        skipGetResource = 0;
+        counterGetResource = 0;
+        totalResource = 0;
+
         e.preventDefault();
         applyFilter();
+    });
+
+    $("#recover-password-confirm").click(function (e) {
+        e.preventDefault();
+        recoverPassword();
+    });
+
+    $("#recover-password-update-confirm").click(function (e) {
+        e.preventDefault();
+        confirmRecoverPassword();
     });
 
     // Upload confirm
@@ -172,6 +201,15 @@ $(document).ready(function () {
         e.preventDefault();
         deleteComments($(this).attr("id"));
     });
+
+    // Reset filters
+    $(document).on("click", ".reset-filters", function () {
+        window.location = host;
+    });
+
+    $(document).on("click", ".ok-btn", function () {
+        window.location = host;
+    });
 });
 
 function deleteComments(commentId) {
@@ -270,6 +308,52 @@ function loginUser() {
     );
 }
 
+function confirmRecoverPassword() {
+    var data = $("#form-recover-confirm-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "PUT",
+            enctype: "multipart/form-data",
+            url: host + "/api/users/confirmRecoverPassword",
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                $("#successModalMessage").text("Your password has been changed.");
+                $("#successModal").modal("toggle");
+            },
+            error: function (errors) {
+                displayErrors("#form-recover-confirm-password", errors);
+            },
+        },
+        false,
+    );
+}
+
+function recoverPassword() {
+    var data = $("#form-recover-password").serializeArray();
+
+    $.ajax(
+        {
+            type: "POST",
+            enctype: "multipart/form-data",
+            url: host + "/api/users/recoverPassword",
+            data: data,
+            success: function (data) {
+                removeErrors(); // Remove errors
+
+                $("#successModalMessage").text("Email was sent! Please, check your email.");
+                $("#successModal").modal("toggle");
+            },
+            error: function (errors) {
+                displayErrors("#form-recover-password", errors);
+            },
+        },
+        false,
+    );
+}
+
 function registerUser() {
     var data = $("#form-register").serializeArray();
 
@@ -282,19 +366,25 @@ function registerUser() {
             success: function (data) {
                 removeErrors(); // Remove errors
 
-                // Create cookie and login
-                $.ajax({
-                    type: "POST",
-                    enctype: "multipart/form-data",
-                    url: host + "/auth/login",
-                    data: data,
-                    success: function (d) {
-                        window.location = host;
-                    },
-                    error: function (errors) {
-                        displayErrors("#form-register", errors);
-                    },
-                });
+                if (location.pathname == "/admin/users") {
+                    $("#successModalMessage").text("User " + data.first_name + " " + data.last_name + " was successfully created!");
+                    $("#successModal, #modalInsert").modal("toggle");
+                }
+                else {
+                    // Create cookie and login
+                    $.ajax({
+                        type: "POST",
+                        enctype: "multipart/form-data",
+                        url: host + "/auth/login",
+                        data: data,
+                        success: function (d) {
+                            window.location = host;
+                        },
+                        error: function (errors) {
+                            displayErrors("#form-register", errors);
+                        },
+                    });
+                }
             },
             error: function (errors) {
                 displayErrors("#form-register", errors);
@@ -358,16 +448,32 @@ function editContent(id) {
 
 function applyFilter() {
     var data = $("#form-filter").serializeArray();
-    var htmlFeed = "";
+    data.push({"name": "skip", value: skipGetResourceFiltering}, {"name": "lim", value: limitGetResourceFiltering})
+
+    var params = window.location.search.substr(1).split("=");
+
+    if (params[0] == "tag") {
+        data.push({"name": "tags", value: params[1]})
+    }
+
+    dataFiltering = data;
+
     $.ajax(
         {
             type: "GET",
             enctype: "multipart/form-data",
             url: host + "/api/resources/filters",
             data: data,
-            success: function (data) {
+            success: function (resourceData) {
                 $("#feed").empty();
-                addDataToDOM({ resource: data });
+                $("#feed").append("<div class='loading'><div class='ball'></div><div class='ball'></div><div class='ball'></div></div>"); // Add loading
+
+                const data = { resource: resourceData.resources };
+                totalResourceFiltering = resourceData.total;
+                filtering = true;
+                counterGetResourceFiltering++;
+
+                addDataToDOM(data);
             },
             error: function (errors) {
                 console.log(errors);
@@ -633,7 +739,6 @@ function displayErrors(formId, errors) {
     } else if (errors.responseJSON!=undefined && errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
             if (element.field == "username") {
-                alert();
                 $("#username").addClass("form-control.is-invalid, was-validated, form-control:invalid");
             }
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
@@ -662,11 +767,6 @@ function removeErrors() {
 
 /* Resource Feed */
 
-var limitGetResource = 5;
-var skipGetResource = 0;
-var counterGetResource = 0;
-var totalResource = 0;
-
 if (location.pathname == "/") getResource();
 
 window.addEventListener("scroll", () => {
@@ -683,7 +783,37 @@ function showLoading() {
     document.querySelector(".loading").classList.add("show");
 
     // load more data
-    setTimeout(getResource, 1000);
+    if (filtering) setTimeout(getResourceFiltering, 1000);
+    else setTimeout(getResource, 1000);
+}
+
+async function getResourceFiltering() {
+    counterGetResourceFiltering++;
+    skipGetResourceFiltering = counterGetResourceFiltering == 1 ? 0 : skipGetResourceFiltering + 5;
+
+    if (skipGetResourceFiltering <= totalResourceFiltering) {
+        let url = new URL(host + '/api/resources/filters');
+
+        var i = 0;
+        dataFiltering.forEach(element => {
+            if (element.name == "types[]")
+                url.searchParams.set(element.name + i++, element.value);
+            else if (element.name != "skip" && element.name != "lim")
+                url.searchParams.set(element.name, element.value);
+        });
+
+        url = url + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering 
+
+        var resourceResponse = await fetch(url);
+
+        const resourceData = await resourceResponse.json();
+        const data = { resource: resourceData.resources };
+        totalResourceFiltering = resourceData.total;
+
+        addDataToDOM(data);
+
+    }
+    else document.querySelector(".loading").classList.remove("show");
 }
 
 async function getResource() {
@@ -691,14 +821,28 @@ async function getResource() {
     skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
 
     if (skipGetResource <= totalResource) {
-        const resourceResponse = await fetch(
-            host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
-        );
+
+        var params = window.location.search.substr(1).split("=");
+        var resourceResponse = null;
+
+        if (params[0] == "tag") {
+            var resourceResponse = await fetch(
+                host + "/api/resources/filters?tags=" + params[1] + "&img=all&skip=" + skipGetResource + "&lim=" + limitGetResource,
+            );
+        }
+        else 
+        {
+            resourceResponse = await fetch(
+                host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
+            );
+        }
+
         const resourceData = await resourceResponse.json();
         const data = { resource: resourceData.resources };
         totalResource = resourceData.total;
 
         addDataToDOM(data);
+
     } else document.querySelector(".loading").classList.remove("show");
 }
 
@@ -706,6 +850,7 @@ $(document).on("click", ".customheaderside", function () {
     $(".rightmenu").toggleClass("show");
     $(".maincontainer").toggleClass("hide");
 });
+
 $(document).on("click", ".maincontainer", function () {
     $(".rightmenu.show").toggleClass("show");
     $(".maincontainer.hide").toggleClass("hide");
@@ -713,7 +858,7 @@ $(document).on("click", ".maincontainer", function () {
 
 
 function addDataToDOM(data) {
-    if (data.resource.length == 0) {
+    if (data.resource.length == 0 && (skipGetResource == 0 && skipGetResourceFiltering == 0)) {
         $(".feed").append(`
             <div class='without-resources-box'>
                 <p class='without-resources'> No resources yet!</p>
@@ -722,9 +867,10 @@ function addDataToDOM(data) {
         data.resource.forEach((element) => {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
-            var overallRating =
-                element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
+
+            var overallRating = element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
             var pathImg = "";
+
             if (element.image == "/images/ResourceDefault.png") pathImg = "/images/ResourceDefault.png";
             else pathImg = "/api/resources/" + element._id + "/image";
 
@@ -753,7 +899,7 @@ function addDataToDOM(data) {
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/api/resources/${element._id}/download">Download</a>` +
-                (location.pathname === "/myResources" || userLoggedIn._id === element.author._id
+                (userLoggedIn.is_admin || userLoggedIn._id === element.author._id
                     ? `  <a class="dropdown-item" href="/resources/${element._id}/edit">Edit</a>
                                     <button class="dropdown-item" onclick="openDeleteConfirmModal('${element._id}')">Delete</button>`
                     : "") +
@@ -773,17 +919,11 @@ function addDataToDOM(data) {
                         </a>
                     </div>
                 </div>
-                <div class="resource-tags m-0 float-none text-right">
+            </div>
+            <div class="resource-tags m-0 float-none text-right">
                     ${Object.keys(element.tags)
                         .map(function (key) {
-                            return (
-                                "<a style='font-size:14px;' href='#" +
-                                element.tags[key] +
-                                "'" +
-                                ">#" +
-                                element.tags[key] +
-                                "</a>"
-                            );
+                            return "<a style='font-size:14px;' href='/?tag=" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
                         })
                         .join(" ")}   
                 </div>
