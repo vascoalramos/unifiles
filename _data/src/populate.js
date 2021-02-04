@@ -134,7 +134,7 @@ module.exports = {
                     console.log(error.response.data.generalErrors);
                 });
 
-            await sleep(1500);
+            await sleep(4500);
         }
     },
 };
