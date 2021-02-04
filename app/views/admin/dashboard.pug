@@ -16,13 +16,13 @@ block content
       .col-sm
         .card.shadow
           .card-body
-            h5.card-title.text-center Top 10 Tags (Most Used)
+            h5.card-title.text-center Top Tags (Most Used)
             .container.card-text.mt-4.mb-2.px-5
               ul.top10#top10Tags(style="list-style: none;")
       .col-sm
         .card.shadow
           .card-body
-            h5.card-title.text-center Top 10 Users (Most Resources)
+            h5.card-title.text-center Top Users (Most Resources)
             .container.card-text.mt-4.mb-2.px-5
               ul.top10#top10Users(style="list-style: none;")
     
@@ -81,7 +81,7 @@ block content
         success: function(topTags) {
           let maxValue = topTags[0].total;
 
-          topTags.forEach((tag) => {
+          topTags.filter(e => e.total > 1).forEach((tag) => {
             $("#top10Tags").append(`
               <li>
                 <div class="row h-100">
@@ -113,7 +113,7 @@ block content
         success: function(topUsers) {
           let maxValue = topUsers[0].total;
 
-          topUsers.forEach((user) => {
+          topUsers.filter(e => e.total > 1).forEach((user) => {
             $("#top10Users").append(`
               <li>
                 <div class="row h-100">
