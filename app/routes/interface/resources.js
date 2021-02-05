@@ -33,6 +33,7 @@ router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) 
     axios
         .get("/resources/" + id, { headers: { Cookie: `token=${req.cookies.token}` } })
         .then((data) => {
+            console.log(data);
             res.render("resource/resource-individual-page", { user: user, resource: data.data });
         })
         .catch((e) => {

@@ -14,7 +14,7 @@ block content
           .d-flex(style="align-items:center;")
             img(src=`/api/users/${resource.author._id}/avatar`)
             .d-flex.ml-1(style="flex-direction:column")
-              span.m-0 #{resource.author.first_name + " " +resource.author.last_name}
+              span.m-0 #{resource.author.name}
               p.resource-type-year.m-0.x(data-show-id=resource.date_added)
           .d-flex
             .resource-rating.mr-2

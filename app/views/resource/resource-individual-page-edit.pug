@@ -11,7 +11,7 @@ block content
             .col-12(style="display:flex;align-items: center;")
               img.mr-3(style="border-radius:50%;width:35px;height:35px" src=`/api/users/${resource.author._id}/avatar`)
               div.tags(style="display:flex;flex-direction:column;flex-grow: 1;overflow: hidden;")
-                p.mb-0(style="font-size:12px;") #{resource.author.first_name} #{resource.author.last_name} 
+                p.mb-0(style="font-size:12px;") #{resource.author.name} 
                 div(style="display:flex;border-bottom:1px solid black")
                   div.d-flex(style="display: flex;width: 100%;flex-wrap: wrap;")
                     each tag in resource.tags
