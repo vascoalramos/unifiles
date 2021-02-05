@@ -1,25 +1,55 @@
 extends layout
 
 block content
-  .container.center-div
-    .form-user
-      h2.login-title Login
-      h5.register-title
-        | Are you new? 
-        a(href='register' style="color: black") Register
-      .row
-        .col-6
-          form.px-4.py-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
-            .form-group.username
-              label(for='username') Username
-              input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
-            .form-group.password
-              label(for='password') Password
-              input#password.form-control(type='password' placeholder='*******' name='password' required='')
-            p.forgot-password 
-              a(href='recoverPassword') Forgot password?
-            button.btn.btn-primary.btn-bottom#login-confirm Sign in
-        .col-6.text-center.pl-5.pr-5.d-flex(style="align-items:center;")  
-          .container.pl-3.pr-3
-            form(action='/auth/google' method='get')
-              button.btn.btn-primary.btn-bottom(type='submit') Sign in with Google
+  style.  
+    [role="main"]{
+      min-height: calc(100vh - 109px);
+      background: url(/images/paper.png);
+      background-repeat: no-repeat;
+      background-position: 96% 95%;
+      background-size: 50%;
+    }
+    .navbar, footer{
+      display:none;
+    }
+   
+  .innerContainer
+    .inside
+      .ofVisible
+        .addPadding
+          img(src='https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png' style="height: 70px;margin-left: -5px;margin-top:-10px;")
+          span.ml-2(style="font-weight: bolder;font-size:20px;") UniFiles
+          h5.registerT.pt-3
+            | Add a new account
+          .registerBorder.pt-2
+            .widthFixed
+              a.registerButton(href='register')
+                .iDiv
+                  i.bg-dark.img.fas.fa-plus.iPlus
+                .registerText Register
+      .or
+        .or-line
+        .or-label Or
+      .loginDiv
+        .innerLogin
+          h2.login-title Welcome
+          .row.m-0
+            .col-12.p-0
+              form.px-4.pb-3.needs-validation#form-login(method='POST', enctype='multipart/form-data', novalidate='')
+                .form-group.username
+                  label(for='username') Username
+                  input#username.form-control(type='text' placeholder='pg12345' name='username' required='')
+                .form-group.password
+                  label(for='password') Password
+                  input#password.form-control(type='password' placeholder='*******' name='password' required='')
+                p.forgot-password 
+                  a(href='recoverPassword') Forgot password?
+                button.btn.bg-dark.btn-bottom#login-confirm(style="color:white;") Sign in
+            .col-12.px-5
+              hr.pt-1(style="border-color:rgba(0,0,0,0.1);")
+            .col-12.text-center.p-0(style="align-items:center;")  
+              .px-4
+                form(action='/auth/google' method='get')
+                  button.btn.bg-dark.btn-bottom(type='submit' style="color:white;") Sign in with Google
+                    i.fab.fa-google.ml-2 
+                    

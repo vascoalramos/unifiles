@@ -27,130 +27,131 @@ html
         let userLoggedIn = !{JSON.stringify(user)};
           
     script(src='/javascripts/script.js')
-    script(type="text/javascript" ).
-      var socket = io();
-      let userLogged = !{JSON.stringify(user)};
-      let allUsers = {};
-      socket.on('connect', () => {
-        socket.emit('addUserLogged', userLogged);
-      });
+    if user 
+      script(type="text/javascript" ).
+        var socket = io();
+        let userLogged = !{JSON.stringify(user)};
+        let allUsers = {};
+        socket.on('connect', () => {
+          socket.emit('addUserLogged', userLogged);
+        });
 
-      socket.on('get_info', (msg, authorId) => {
-        notifyMe(msg, 'Resource')
-      });
+        socket.on('get_info', (msg, authorId) => {
+          notifyMe(msg, 'Resource')
+        });
 
-      socket.on('get_infoRating', (msg, authorId) => {
-        if(authorId == userLogged._id){
-          notifyMe(msg, 'Rating')
-        }          
-      });
-      socket.on('get_infoUpdateRating', (msg, authorId) => {
-        if(authorId == userLogged._id){
-          activeNotification()   
-        }
-      });
-
-
-      socket.on('get_infoComments', (msg, authorId) => {
-        if(authorId == userLogged._id){
-          notifyMe(msg, 'Comment')
-        }          
-      });
-      socket.on('get_infoUpdateComments', (msg, authorId) => {
-        if(authorId == userLogged._id){
-          activeNotification()   
-        }
-      });
-
-      
-      socket.on('get_infoUpdate', (msg, authorId) => {
-        if(authorId != userLogged._id){
-          activeNotification()   
-        }
-      });
-      function activeNotification(){
-        $("#notifications").addClass("shakebell");
-          $("#notifications").attr("style", "color: red !important");
-          var data = {
-            id: userLogged._id,
-            date: $(".notificationeach .eachNote:first-child").attr("data-aux")
+        socket.on('get_infoRating', (msg, authorId) => {
+          if(authorId == userLogged._id){
+            notifyMe(msg, 'Rating')
+          }          
+        });
+        socket.on('get_infoUpdateRating', (msg, authorId) => {
+          if(authorId == userLogged._id){
+            activeNotification()   
           }
-          $.ajax(
-              {
-                  type: "GET",
-                  enctype: "multipart/form-data",
-                  url: host + "/api/users/getAllNotifications",
-                  data: data,
-                  success: function (data) {
-                    data.forEach(el => {
-                      var date = mydiff(el.notifications.date)
-                      $(".notificationeach")
-                        .prepend(` 
-                          <a class="d-block unread py-2 px-3 eachNote" data-aux='${el.notifications.date}' href='${host}/resources/${el.notifications.resourceId}' data-show-id='${el.notifications._id},${userLogged._id}' target='_blank' style="text-decoration:none;color:black;font-size:12px;">
-                            <p class="mb-0"> ${el.notifications.text} by ${el.notifications.name} </p>
-                            <span style="font-size:10px;font-family: 'Source Sans Pro', sans-serif;">${date}</span>                          
-                          </a>
-                        `)
-                    }); 
-                     
-                  },
-                  error: function (errors) {
-                      console.log(errors);
-                  },
-              },
-              false,
-          );
-      }
-      function notifyMe(msg, info) {
-        if (!("Notification" in window)) {
-          alert("This browser does not support desktop notification");
-        }
-        else if (Notification.permission === "granted") {
-          var options = {
-            body: msg.text,
-            dir : "ltr",
-            icon: "https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png"
-          };
-          var notification = ''
-          if(info == 'Resource')
-            notification = new Notification(msg.name + " Posted a new resource", options);
-          else if(info == 'Rating')
-            notification = new Notification("You have a new rating by " + msg.name , options);
-          else if(info == 'Comment')
-            notification = new Notification("You have a new comment by " + msg.name , options);
-        }
-        else if (Notification.permission !== 'denied') {
-          Notification.requestPermission(function (permission) {
-            if (!('permission' in Notification)) {
-              Notification.permission = permission;
+        });
+
+
+        socket.on('get_infoComments', (msg, authorId) => {
+          if(authorId == userLogged._id){
+            notifyMe(msg, 'Comment')
+          }          
+        });
+        socket.on('get_infoUpdateComments', (msg, authorId) => {
+          if(authorId == userLogged._id){
+            activeNotification()   
+          }
+        });
+
+        
+        socket.on('get_infoUpdate', (msg, authorId) => {
+          if(authorId != userLogged._id){
+            activeNotification()   
+          }
+        });
+        function activeNotification(){
+          $("#notifications").addClass("shakebell");
+            $("#notifications").attr("style", "color: red !important");
+            var data = {
+              id: userLogged._id,
+              date: $(".notificationeach .eachNote:first-child").attr("data-aux")
             }
-            if (permission === "granted") {
-              var options = {
-                body: msg.text,
-                dir : "ltr",
-                iconUrl: "https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png",
+            $.ajax(
+                {
+                    type: "GET",
+                    enctype: "multipart/form-data",
+                    url: host + "/api/users/getAllNotifications",
+                    data: data,
+                    success: function (data) {
+                      data.forEach(el => {
+                        var date = mydiff(el.notifications.date)
+                        $(".notificationeach")
+                          .prepend(` 
+                            <a class="d-block unread py-2 px-3 eachNote" data-aux='${el.notifications.date}' href='${host}/resources/${el.notifications.resourceId}' data-show-id='${el.notifications._id},${userLogged._id}' target='_blank' style="text-decoration:none;color:black;font-size:12px;">
+                              <p class="mb-0"> ${el.notifications.text} by ${el.notifications.name} </p>
+                              <span style="font-size:10px;font-family: 'Source Sans Pro', sans-serif;">${date}</span>                          
+                            </a>
+                          `)
+                      }); 
+                      
+                    },
+                    error: function (errors) {
+                        console.log(errors);
+                    },
+                },
+                false,
+            );
+        }
+        function notifyMe(msg, info) {
+          if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+          }
+          else if (Notification.permission === "granted") {
+            var options = {
+              body: msg.text,
+              dir : "ltr",
+              icon: "https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png"
+            };
+            var notification = ''
+            if(info == 'Resource')
+              notification = new Notification(msg.name + " Posted a new resource", options);
+            else if(info == 'Rating')
+              notification = new Notification("You have a new rating by " + msg.name , options);
+            else if(info == 'Comment')
+              notification = new Notification("You have a new comment by " + msg.name , options);
+          }
+          else if (Notification.permission !== 'denied') {
+            Notification.requestPermission(function (permission) {
+              if (!('permission' in Notification)) {
+                Notification.permission = permission;
+              }
+              if (permission === "granted") {
+                var options = {
+                  body: msg.text,
+                  dir : "ltr",
+                  iconUrl: "https://freeiconshop.com/wp-content/uploads/edd/zip-flat.png",
+                  
+                };
+                var notification = ''
+                if(info == 'Resource')
+                  notification = new Notification(msg.name + " Posted a new resource", options);
+                else if(info == 'Rating')
+                  notification = new Notification("You have a new rating by " + msg.name , options);
+                else if(info == 'Comment')
+                  notification = new Notification("You have a new comment by " + msg.name , options);
                 
-              };
-              var notification = ''
-              if(info == 'Resource')
-                notification = new Notification(msg.name + " Posted a new resource", options);
-              else if(info == 'Rating')
-                notification = new Notification("You have a new rating by " + msg.name , options);
-              else if(info == 'Comment')
-                notification = new Notification("You have a new comment by " + msg.name , options);
-              
+              }
+            });
+          }
+          if(notification != undefined)
+          {
+            notification.onclick = function(event) {
+              var link=host + "/resources/" + msg.resourceId;
+              event.preventDefault(); // prevent the browser from focusing the Notification's tab
+              window.open(link, '_blank');
             }
-          });
-        }
-        if(notification != undefined)
-        {
-          notification.onclick = function(event) {
-            var link=host + "/resources/" + msg.resourceId;
-            event.preventDefault(); // prevent the browser from focusing the Notification's tab
-            window.open(link, '_blank');
           }
         }
-      }
   body
     nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark(style="flex-flow: row nowrap;justify-content: flex-start;")
       a.navbar-brand(href="/")
@@ -205,7 +206,7 @@ html
             li.nav-item
               a.nav-link(href="/auth/login") Login
 
-    main.mb-5(role="main")
+    main(role="main")
       block content
 
   footer.p-3(style="background-color: white")

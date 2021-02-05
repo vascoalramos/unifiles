@@ -66,7 +66,7 @@ block content
                 wrap: true,
                 render: (item) => {
                   return `
-                    <img style="border-radius:50%;width:20px;height:20px;margin-top:-3px" src=/api/users/${item.author._id}/avatar> </img> ${item.author.first_name} ${item.author.last_name}
+                    <img style="border-radius:50%;width:20px;height:20px;margin-top:-3px" src=/api/users/${item.author._id}/avatar> </img> ${item.author.name}
                   `
                 }
               },

@@ -122,17 +122,17 @@ function saveResource(data, res, id = null) {
                 read: false,
                 resourceId: resource._id,
             };
-            User.updateNotifications(resource.author._id, resourceNotification)
-                .then((notification) => {
-                    socketapi.sendNotification(resourceNotification, resource.author._id);
-                    res.status(201).jsonp(notification);
-                })
-                .catch((err) => {
+
+            if (!id) {
+                User.updateNotifications(resource.author._id, resourceNotification).catch((err) => {
                     console.log(err);
-                    res.status(400).jsonp(err);
                 });
+                socketapi.sendNotification(resourceNotification, resource.author._id);
+            }
+            res.status(201).jsonp(resource);
         })
         .catch((error) => {
+            console.log("here");
             res.status(400).jsonp(error);
         });
 }
@@ -221,56 +221,7 @@ function handleResource(req, res) {
                     }
                 });
             } else res.status(400).jsonp(errorZip);
-        }
-        // else if (files.files.length > 1 && files.files.size == undefined) { // multi upload
-        //     var zipExists = true;
-        //     files.files.forEach(element => {
-        //         if (fileFilter(element.name)) {
-        //             size += element.size;
-        //             decompress(element.path).then(filesDecompressed => {
-        //                 if(bagItConventions(filesDecompressed)){
-        //                     var zippedCreated = checkZips(element, pathFolder)
-        //                     paths.push(zippedCreated)
-
-        //                 }
-        //                 else{
-        //                     zipExists = false;
-        //                     res.status(401).jsonp("The folder does not contain the right files");
-        //                 }
-        //             });
-
-        //         }
-        //         else
-        //             res.status(401).jsonp(errorZip);
-
-        //     });
-        //     if(zipExists){
-        //         if(files.image.size > 0){
-        //             imagePathFinal = checkImage(files, pathFolder);
-        //             mime_type = files.image.type;
-        //         }
-        //     }
-        //     var data = {
-        //         files: paths,
-        //         mime_type: mime_type,
-        //         image: imagePathFinal != ""?  imagePathFinal: undefined,
-        //         type: fields.type,
-        //         description: fields.description,
-        //         author: {
-        //             _id:user._id,
-        //             name:  user.first_name+ ' ' +user.last_name
-        //         },
-        //         year: fields.year,
-        //         size: size,
-        //         date_added: new Date().getTime(),
-        //         subject: fields.subject,
-        //         tags: fields.tags
-        //     };
-        //      //console.log(data)
-
-        //     // res.status(201).jsonp("Success!");
-
-        // }
+        } else res.status(401).jsonp(errorZip);
     });
 }
 
@@ -349,15 +300,11 @@ router.put(
                     resourceId: data.resource_id,
                 };
                 if (newData.author._id != data.user_id) {
-                    User.updateNotificationsRatingAndComments(newData.author._id, ratingNotification)
-                        .then((notification) => {
-                            socketapi.sendNotificationComments(ratingNotification, newData.author._id);
-                            res.status(201).jsonp(dataReturn);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            res.status(400).jsonp(error);
-                        });
+                    User.updateNotificationsRatingAndComments(newData.author._id, ratingNotification).catch((error) => {
+                        console.log(error);
+                    });
+                    socketapi.sendNotificationComments(ratingNotification, newData.author._id);
+                    res.status(201).jsonp(dataReturn);
                 } else {
                     res.status(201).jsonp(dataReturn);
                 }
@@ -397,15 +344,13 @@ router.put(
                     resourceId: data.resource_id,
                 };
                 if (data.resourceAuthor != user._id) {
-                    User.updateNotificationsRatingAndComments(data.resourceAuthor, ratingNotification)
-                        .then((notification) => {
-                            socketapi.sendNotificationRating(ratingNotification, data.resourceAuthor);
-                            res.status(200).jsonp("Success!");
-                        })
-                        .catch((error) => {
+                    User.updateNotificationsRatingAndComments(data.resourceAuthor, ratingNotification).catch(
+                        (error) => {
                             console.log(error);
-                            res.status(400).jsonp(error);
-                        });
+                        },
+                    );
+                    socketapi.sendNotificationRating(ratingNotification, data.resourceAuthor);
+                    res.status(200).jsonp("Success!");
                 } else {
                     res.status(200).jsonp("Success!");
                 }

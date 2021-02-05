@@ -321,7 +321,6 @@ router.get("/:username", (req, res) => {
     let data = req.params;
     User.findByAuthUsername(data)
         .then((user) => {
-            user.notifications.reverse();
             res.status(200).jsonp(user);
         })
         .catch((error) => {
