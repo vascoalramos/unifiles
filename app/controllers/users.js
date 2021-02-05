@@ -73,51 +73,55 @@ module.exports.updateAccessToken = (user) => {
 };
 module.exports.updateNotifications = (resourceauthorid, resourceNotification) => {
     return User.updateMany(
-        {_id:{$ne: resourceauthorid }}, 
-        {"$push": {notifications: resourceNotification}}   ,{new :true}   
-        );
-
+        { _id: { $ne: resourceauthorid } },
+        { $push: { notifications: { $each: [resourceNotification], $position: 0, $slice: 50 } } },
+        { new: true },
+    );
 };
 module.exports.updateNotificationsRatingAndComments = (resourceauthorid, resourceNotification) => {
     return User.updateMany(
-        {_id:{$eq: resourceauthorid }}, 
-        {"$push": {notifications: resourceNotification}}   ,{new :true}   
-        );
-
+        { _id: { $eq: resourceauthorid } },
+        { $push: { notifications: { $each: [resourceNotification], $position: 0, $slice: 50 } } },
+        { new: true },
+    );
 };
 
 module.exports.getAllNotifications = (dataNotifications) => {
     return User.aggregate([
         {
-          '$unwind': {
-            'path': '$notifications'
-          }
-        }, {
-          '$match': {
-            '_id': new mongoose.mongo.ObjectId(dataNotifications.id), 
-            'notifications.date': {
-              '$gt': new Date(dataNotifications.date)
-            }
-          }
-        }, 
+            $unwind: {
+                path: "$notifications",
+            },
+        },
         {
-            '$project': {
-              'notifications': 1
-            }
-          }
-        ])
+            $match: {
+                _id: new mongoose.mongo.ObjectId(dataNotifications.id),
+                "notifications.date": {
+                    $gt: new Date(dataNotifications.date),
+                },
+            },
+        },
+        {
+            $project: {
+                notifications: 1,
+            },
+        },
+    ]);
 };
 module.exports.updateReadedNotifications = (id) => {
-    return User.updateOne({
-        _id:  new mongoose.mongo.ObjectId(id.userId),
-        notifications: {
-        $elemMatch: {_id: new mongoose.mongo.ObjectId(id.notificationId)}
-        }
-        }, {
-        $set: {
-            "notifications.$.read": true
-        }
-        });
+    return User.updateOne(
+        {
+            _id: new mongoose.mongo.ObjectId(id.userId),
+            notifications: {
+                $elemMatch: { _id: new mongoose.mongo.ObjectId(id.notificationId) },
+            },
+        },
+        {
+            $set: {
+                "notifications.$.read": true,
+            },
+        },
+    );
 };
 
 module.exports.updateTokens = (user) => {
