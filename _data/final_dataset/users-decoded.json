@@ -27756,6 +27756,18 @@
         "is_active": false
     },
     {
+        "first_name": "Admin Test",
+        "last_name": "User",
+        "username": "admin",
+        "email": "myadmin12345@admin.com",
+        "password": "z70Ti^bZqe",
+        "confirm_password": "z70Ti^bZqe",
+        "institution": "Soares - Paiva",
+        "position": "Senior Branding Strategist",
+        "is_admin": true,
+        "is_active": true
+    },
+    {
         "first_name": "Diana",
         "last_name": "Maia",
         "username": "diana_maia",
@@ -58520,18 +58532,6 @@
         "confirm_password": "z_A_1RV2MrWStVHSwDgr",
         "institution": "Morais - Neto",
         "position": "District Communications Agent",
-        "is_admin": true,
-        "is_active": true
-    },
-    {
-        "first_name": "Admin Test",
-        "last_name": "User",
-        "username": "admin",
-        "email": "myadmin12345@admin.com",
-        "password": "z70Ti^bZqe",
-        "confirm_password": "z70Ti^bZqe",
-        "institution": "Soares - Paiva",
-        "position": "Senior Branding Strategist",
         "is_admin": true,
         "is_active": true
     }
