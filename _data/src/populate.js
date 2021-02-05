@@ -87,7 +87,7 @@ module.exports = {
     },
 
     createResources: async (users, numResources, resourceTypes) => {
-        let user, token, form, config;
+        let user, token, form, config, response;
         let zips = fs
             .readdirSync(ZIPS_DIR, { withFileTypes: true })
             .filter((dirent) => dirent.isFile())
@@ -96,45 +96,38 @@ module.exports = {
         for (let i = 0; i < numResources; i++) {
             user = users.random();
 
-            axios
-                .post("auth/login", { username: user.username, password: user.password })
-                .then((response) => {
-                    token = response.data.token;
+            try {
+                response = await axios.post("auth/login", { username: user.username, password: user.password });
+                token = response.data.token;
 
-                    form = new FormData();
-                    form.append("type", resourceTypes.random());
-                    form.append("description", faker.lorem.sentences(Math.floor(Math.random() * (15 - 3 + 1)) + 3));
-                    form.append("subject", faker.lorem.sentence(Math.floor(Math.random() * (30 - 5 + 1)) + 5));
-                    form.append("year", new Date(faker.date.between("2015-01-01", "2021-02-10")).getFullYear());
-                    form.append("date_added", `${faker.date.between("2019-06-01 00:00:00", "2021-02-05 00:00:00")}`);
+                form = new FormData();
+                form.append("type", resourceTypes.random());
+                form.append("description", faker.lorem.sentences(Math.floor(Math.random() * (15 - 3 + 1)) + 3));
+                form.append("subject", faker.lorem.sentence(Math.floor(Math.random() * (30 - 5 + 1)) + 5));
+                form.append("year", new Date(faker.date.between("2015-01-01", "2021-02-10")).getFullYear());
+                form.append("date_added", `${faker.date.between("2019-06-01 00:00:00", "2021-02-05 00:00:00")}`);
 
-                    for (let j = 0; j < Math.floor(Math.random() * (5 - 1 + 1)) + 1; j++) {
-                        form.append("tags[]", faker.lorem.word());
-                    }
-                    form.append("files", fs.createReadStream(path.join(__dirname, `../${ZIPS_DIR}/${zips.random()}`)));
+                for (let j = 0; j < Math.floor(Math.random() * (5 - 1 + 1)) + 1; j++) {
+                    form.append("tags[]", faker.lorem.word());
+                }
+                form.append("files", fs.createReadStream(path.join(__dirname, `../${ZIPS_DIR}/${zips.random()}`)));
 
-                    config = {
-                        method: "post",
-                        url: "resources",
-                        maxContentLength: Infinity,
-                        maxBodyLength: Infinity,
-                        headers: {
-                            Cookie: `token=${token}`,
-                            ...form.getHeaders(),
-                        },
-                        data: form,
-                    };
+                config = {
+                    method: "post",
+                    url: "resources",
+                    maxContentLength: Infinity,
+                    maxBodyLength: Infinity,
+                    headers: {
+                        Cookie: `token=${token}`,
+                        ...form.getHeaders(),
+                    },
+                    data: form,
+                };
 
-                    axios(config).catch(function (error) {
-                        console.log(error);
-                    });
-                })
-                .catch((error) => {
-                    console.log(error);
-                    console.log(error.response.data.generalErrors);
-                });
-
-            await sleep(4500);
+                await axios(config);
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
 };

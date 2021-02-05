@@ -27,7 +27,7 @@ module.exports.GetAll = (skip, lim) => {
                 "author.email": 0,
                 "author.password": 0,
                 "author.notifications": 0,
-                "comments": 0,
+                comments: 0,
             },
         },
         {
@@ -69,7 +69,7 @@ module.exports.GetAllWithoutLimits = () => {
                 "author.filiation": 0,
                 "author.email": 0,
                 "author.password": 0,
-                "comments": 0,
+                comments: 0,
             },
         },
         {
@@ -81,7 +81,6 @@ module.exports.GetAllWithoutLimits = () => {
 };
 
 module.exports.insert = (resource) => {
-
     var newResource = new Resource(resource);
     return newResource.save();
 };
@@ -97,7 +96,7 @@ module.exports.deleteResourceById = (id) => {
 module.exports.getFilters = (query) => {
     var queryCond = {};
 
-    if (query.myResource) queryCond = {"author._id" : new mongoose.mongo.ObjectId(query.myResource)}
+    if (query.myResource) queryCond = { "author._id": new mongoose.mongo.ObjectId(query.myResource) };
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = Number(query.year);
     // if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
@@ -133,8 +132,7 @@ module.exports.getFilters = (query) => {
                 "author.email": 0,
                 "author.password": 0,
                 "author.notifications": 0,
-                "comments": 0,
-
+                comments: 0,
             },
         },
         {
@@ -154,7 +152,7 @@ module.exports.getFilters = (query) => {
 module.exports.GetFiltersTotal = (query) => {
     var queryCond = {};
 
-    if (query.myResource) queryCond = {"author._id" : new mongoose.mongo.ObjectId(query.myResource)}
+    if (query.myResource) queryCond = { "author._id": new mongoose.mongo.ObjectId(query.myResource) };
     if (query.subject) queryCond.subject = { $regex: query.subject, $options: "i" };
     if (query.year) queryCond.year = Number(query.year);
     //if (query.img == "on") queryCond.image = { $ne: "images/ResourceDefault.png" };
@@ -381,6 +379,10 @@ module.exports.getTotalResourcesGroupByTime = (groupKey) => {
         delete groupId.hour;
         delete groupId.day;
         lim = 13;
+    } else if (groupKey === "year") {
+        delete groupId.hour;
+        delete groupId.day;
+        delete groupId.month;
     }
 
     return Resource.aggregate([
