@@ -221,8 +221,7 @@ function handleResource(req, res) {
                     }
                 });
             } else res.status(400).jsonp(errorZip);
-        }
-        res.status(401).jsonp(errorZip);
+        } else res.status(401).jsonp(errorZip);
     });
 }
 
