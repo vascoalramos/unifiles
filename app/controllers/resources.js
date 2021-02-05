@@ -2,82 +2,16 @@ const Resource = require("../models/resource");
 const mongoose = require("mongoose");
 
 module.exports.GetAll = (skip, lim) => {
-    return Resource.aggregate([
-        {
-            $lookup: {
-                from: "users",
-                localField: "author._id",
-                foreignField: "_id",
-                as: "author",
-            },
-        },
-        {
-            $unwind: {
-                path: "$author",
-            },
-        },
-        {
-            $project: {
-                "author.is_admin": 0,
-                "author.is_active": 0,
-                "author.token": 0,
-                "author.accessToken": 0,
-                "author.username": 0,
-                "author.filiation": 0,
-                "author.email": 0,
-                "author.password": 0,
-                "author.notifications": 0,
-                comments: 0,
-            },
-        },
-        {
-            $sort: {
-                date_added: -1,
-            },
-        },
-        {
-            $skip: skip,
-        },
-        {
-            $limit: lim,
-        },
-    ]);
+    return Resource.find()
+        .sort({
+            date_added: -1,
+        })
+        .skip(skip)
+        .limit(lim);
 };
 
 module.exports.GetAllWithoutLimits = () => {
-    return Resource.aggregate([
-        {
-            $lookup: {
-                from: "users",
-                localField: "author._id",
-                foreignField: "_id",
-                as: "author",
-            },
-        },
-        {
-            $unwind: {
-                path: "$author",
-            },
-        },
-        {
-            $project: {
-                "author.is_admin": 0,
-                "author.is_active": 0,
-                "author.token": 0,
-                "author.accessToken": 0,
-                "author.username": 0,
-                "author.filiation": 0,
-                "author.email": 0,
-                "author.password": 0,
-                comments: 0,
-            },
-        },
-        {
-            $sort: {
-                date_added: -1,
-            },
-        },
-    ]);
+    return Resource.find().sort({ date_added: -1 });
 };
 
 module.exports.insert = (resource) => {
@@ -107,33 +41,6 @@ module.exports.getFilters = (query) => {
     return Resource.aggregate([
         {
             $match: queryCond,
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "author._id",
-                foreignField: "_id",
-                as: "author",
-            },
-        },
-        {
-            $unwind: {
-                path: "$author",
-            },
-        },
-        {
-            $project: {
-                "author.is_admin": 0,
-                "author.is_active": 0,
-                "author.token": 0,
-                "author.accessToken": 0,
-                "author.username": 0,
-                "author.filiation": 0,
-                "author.email": 0,
-                "author.password": 0,
-                "author.notifications": 0,
-                comments: 0,
-            },
         },
         {
             $sort: {
@@ -178,39 +85,7 @@ module.exports.GetTotal = () => {
 };
 
 module.exports.GetResourceById = (id) => {
-    return Resource.aggregate([
-        {
-            $match: {
-                _id: new mongoose.mongo.ObjectId(id),
-            },
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "author._id",
-                foreignField: "_id",
-                as: "author",
-            },
-        },
-        {
-            $unwind: {
-                path: "$author",
-            },
-        },
-        {
-            $project: {
-                "author.is_admin": 0,
-                "author.is_active": 0,
-                "author.token": 0,
-                "author.accessToken": 0,
-                "author.username": 0,
-                "author.filiation": 0,
-                "author.email": 0,
-                "author.password": 0,
-                "author.notifications": 0,
-            },
-        },
-    ]);
+    return Resource.find({ _id: id });
 };
 
 module.exports.GetResourceImage = async (id) => {
