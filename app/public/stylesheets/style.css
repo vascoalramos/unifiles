@@ -107,17 +107,164 @@ input:checked + .slider:before {
 .login-title {
     text-align: center;
     width: 100%;
+    position: relative;
+    font: 400 25px Helvetica,Arial,sans-serif;
+    letter-spacing: -.05em;
+    line-height: 20px;
+    margin: 10px 0 30px;
+}
+.login-title:before {
+    background: #7e7e7e;
+    background: linear-gradient(right,#7e7e7e 0,#fff 100%);
+    left: 0;
+}
+.login-title:after {
+    background: #7e7e7e;
+    background: linear-gradient(left,#7e7e7e 0,#fff 100%);
+    right: 0;
+}
+.login-title:after, .login-title:before {
+    content: "";
+    height: 1px;
+    position: absolute;
+    top: 10px;
+    width: 20%;
 }
 
 .register-title {
     text-align: center;
     width: 100%;
+    position: relative;
+    font: 400 25px Helvetica,Arial,sans-serif;
+    letter-spacing: -.05em;
+    line-height: 20px;
+    margin: 15px 0 10px;
+}
+.register-title:before {
+    background: #7e7e7e;
+    background: linear-gradient(right,#7e7e7e 0,#fff 100%);
+    left: 0;
+}
+.register-title:after {
+    background: #7e7e7e;
+    background: linear-gradient(left,#7e7e7e 0,#fff 100%);
+    right: 0;
+}
+.register-title:after, .register-title:before {
+    content: "";
+    height: 1px;
+    position: absolute;
+    top: 10px;
+    width:35%;
 }
 
+
+
+.registerT {
+    width: 100%;
+}
+.vl {
+    border-left: 6px solid green;
+    height: 500px;
+  }
 .forgot-password {
     text-align: right;
     font-size: 12px;
 }
+
+.innerContainer{
+    padding-top: 92px;
+}
+.ofVisible{
+    overflow: visible;
+}
+.addPadding{
+    padding: 8px 0 16px 0;
+}
+.registerBorder{
+    flex: 0 0 33.3333%;
+    margin: 0 0 20px 0;
+}
+.widthFixed {
+    width: 160px;
+}
+.registerButton{
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px #dddfe2;
+    display: block;
+    transition: all .2s ease-out;
+}
+.iDiv{
+    align-items: center;
+    background-color: #f5f6f7;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    height: 160px;
+    justify-content: center;
+    width: 160px;
+}
+.inside{
+    display: flex;
+    margin: auto;
+    width:980px;
+    justify-content: space-between;
+}
+.iPlus{
+    color: white;
+    padding: 6px 10px;
+    border-radius: 100%;
+    line-height: inherit !important;;
+}
+
+.registerText{
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    padding: 12px;
+    width: 100%;
+    text-align:center;
+    color:#1d2124!important
+}
+.loginDiv{
+    height: 456px;
+    width: 396px;
+}
+.innerLogin{
+    padding-bottom: 24px;
+    padding-top: 10px;
+    align-items: center;
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+    box-sizing: border-box;
+    margin: 40px 0 0;padding: 20px 0 28px;
+    width: 396px;
+}
+
+.or {
+    position: relative;
+    width: 20%;
+    display: flex;
+    /* align-content: center; */
+    align-items: center;
+}
+.or-line {
+    width: 50%;
+    border-right: 1px solid #aaa;
+    height: 50%;
+}
+.or-label {
+    background: #e4e6eb;
+    color: #aaa;
+    left: 50%;
+    position: absolute;
+    text-transform: uppercase;
+    top: 50%;
+    transform: translate(-50%);
+}
+
+
 
 .btn-bottom {
     width: 100%;
@@ -128,13 +275,6 @@ a {
 }
 [role="main"] {
     min-height: calc(100vh - 109px);
-}
-footer {
-    /*position: fixed;
-    left: 50%;
-    transform: translate(-50%, 0);
-    bottom: 0;
-    width: 100%;*/
 }
 
 .resource-general-color {
@@ -423,6 +563,12 @@ button#status {
 .eachNote:hover, .eachNote.unread {
     background: rgba(137,83,187, 0.1);
 }
+
+.showprogressnmb {  /* no quotes around attribute name! */
+    position: absolute;
+    line-height: 7px;
+    font-size:14px;
+}
 .shakebell {
     animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both infinite;
     transform: translate3d(0, 0, 0);
@@ -520,11 +666,13 @@ button#status {
 }
 
 .profileAvatar {
-    width: 150px;
-    height: 150px;
+    /*width: 150px;
+    height: 150px; */
     object-fit: cover;
     border: 3px solid black;
     border-radius: 50%;
+    width: 100%;
+    max-width: 150px;
 }
 
 /* Admin */
@@ -552,4 +700,82 @@ button#status {
 
 .my-dropdown-toggle::after {
     display: inline-block !important;
+}
+@media only screen and (max-width: 991px) {
+    .inside {
+        display: flex;
+        margin: auto;
+        width: 100%;
+        justify-content: unset;
+        flex-wrap: wrap;
+        flex-direction: column-reverse;
+    }
+    .ofVisible {
+        overflow: unset; 
+        flex: 0 0 100%;
+        max-width: 100%;
+        text-align: center;
+        padding-top: 15px;
+    }
+    .or {
+        position: relative;
+        width: unset;
+        display: flex;
+        align-content: unset;
+        align-items: center;
+        flex: 0 0 100%;
+        max-width: 100%;
+        min-height: 4px;
+        margin-bottom: 25px;
+    }
+    
+    .or-line {
+        width: 80%;
+        border-top: 1px solid #aaa;
+        height: unset; 
+        margin: 0 auto;
+    }
+    .or-label {
+        background: #e4e6eb;
+        color: #aaa;
+        left: 50%;
+        position: absolute;
+        text-transform: uppercase;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .loginDiv {
+        height: auto;
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .innerLogin {
+        padding-bottom: 24px;
+        padding-top: 10px;
+        align-items: center;
+        background-color: #fff;
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+        box-sizing: border-box;
+        margin: 40px 0 0;
+        padding: 20px 0 28px;
+        width: 100%;
+        max-width:396px;
+        margin: 0 auto;
+    }
+    .widthFixed {
+        width: 160px;
+        margin:0 auto;
+    }
+    .innerContainer{
+        padding-top: 45px;
+    }
+    
+    [role="main"]{
+      background-size: 100%!important;
+    }
 }

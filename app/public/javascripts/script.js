@@ -908,9 +908,11 @@ function addDataToDOM(data) {
                             </div>
                         </div>
                     </div>
-                    <img src="${pathImg}"  class="card-img-top mt-4" style="margin: 0 auto;width:50%;" alt="${
-                    element.image
-                }">
+                    <a class="text-center" href="resources/${element._id}">
+                        <img src="${pathImg}"  class="card-img-top mt-4" style="margin: 0 auto;width:50%;" alt="${
+                        element.image
+                    }"></a>
+
                     <div class="card-body">
                         <a class="resource-link" href="resources/${element._id}">
                             <h2 class="resource-title card-title">${element.subject}</h2>

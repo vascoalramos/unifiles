@@ -1,10 +1,10 @@
 extends layout
 
 block content
-  .container.center-div
+  .container.mb-5.mb-md-0.innerContainer
     .row.form-user
       .col-sm
-        h2 Register
+        h2.register-title Register
         form.px-4.py-3.needs-validation#form-register(method='POST', enctype='multipart/form-data', novalidate='')
           .row
             .col-sm
@@ -51,7 +51,7 @@ block content
               .form-group.confirm_password
                   label(for='confirm_password') Confirm Password
                   input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
-          button.btn.btn-primary.btn-bottom#register-confirm Register
+          button.btn.bg-dark.btn-bottom#register-confirm(style="color:white;") Register
         .dropdown-divider
 
 

@@ -1,14 +1,15 @@
 extends layout
 
 block content
-  .container.center-div
+  .container.pt-5.mt-md-5.pb-5.pb-md-0
     .row.form-user
       .col-sm
         .row
-          .col-sm-8.py-2
+          .col-lg-6.py-2
             h2 Edit Profile
-          .col-sm-2.pr-0
-            button.btn.btn-secondary(style="color: white" type="button" data-toggle='modal' data-target='#exampleModal') Change Password
+          .col-12.col-lg-6.text-left.text-md-right
+            button.mr-3.btn.btn-secondary(style="color: white" type="button" data-toggle='modal' data-target='#exampleModal') Change Password
+            button.btn.btn-danger(style="color: white" type="button" onclick=`openDeleteAccountConfirmModal("${user.username}")`) Delete Account
             #exampleModal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true')
               .modal-dialog.modal-dialog-centered.modal-sm(role='document')
                 .modal-content
@@ -27,13 +28,11 @@ block content
                               label(for='confirm_password') Confirm Password
                               input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
                   .modal-footer(style="border:0")
-                    button.btn.btn-primary.btn-bottom(onclick=`editPassword("${user.username}");return false`) Edit Password
-          .col-sm-2.pl-0
-            button.btn.btn-danger(style="color: white" type="button" onclick=`openDeleteAccountConfirmModal("${user.username}")`) Delete Account
+                    button.btn.btn-primary.btn-bottom(onclick=`editPassword("${user.username}");return false`) Edit Password            
         form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
           input.form-control(type='text' name='id' value=user._id hidden)
           .row
-            .col-sm-3(style="text-align: center")
+            .col-md-3(style="text-align: center")
               .form-group.mt-1
                 .col-12.align-self-center.mb-3
                   img.profileAvatar#profileAvatar(src=`/api/users/${user._id}/avatar` alt="avatar")
@@ -42,7 +41,7 @@ block content
                   div(style="visibility: hidden;")
                     input#photoInput(type="file" name="avatar" accept="image/*")
 
-            .col-sm-9
+            .col-md-9
               .row
                 .col-sm
                   .form-group.username
