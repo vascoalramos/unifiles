@@ -6,7 +6,7 @@ var totalResource = 0;
 
 var filtering = false;
 var dataFiltering = null;
-var skipGetResourceFiltering  = 0;
+var skipGetResourceFiltering = 0;
 var limitGetResourceFiltering = 5;
 var counterGetResourceFiltering = 0;
 var totalResourceFiltering = 0;
@@ -53,10 +53,10 @@ $(document).ready(function () {
     });
     $(document).on("hide.bs.dropdown shown.bs.dropdown", ".linotification", function () {
         $("#notifications").removeClass("shakebell");
-        $("#notifications").css("color","rgba(255,255,255,.5)");
+        $("#notifications").css("color", "rgba(255,255,255,.5)");
     });
     $(document).on("mouseenter", ".eachNote", function () {
-        updateReadNotification($(this))
+        updateReadNotification($(this));
         $(this).removeClass("unread");
     });
     $("#register-confirm").click(function (e) {
@@ -99,7 +99,9 @@ $(document).ready(function () {
             (code == 13 &&
                 $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
                 $(".removeTag").length < 5 &&
-                $.trim($(this).val()) != "") || (e.type == "change" && $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
+                $.trim($(this).val()) != "") ||
+            (e.type == "change" &&
+                $("input[value='" + $.trim($(this).val()) + "']").length == 0 &&
                 $(".removeTag").length < 5 &&
                 $.trim($(this).val()) != "")
         ) {
@@ -233,15 +235,13 @@ function deleteComments(commentId) {
     );
 }
 function updateReadNotification(notification) {
-    if($(notification).attr("data-show-id"))
-    {
-        var info = $(notification).attr("data-show-id").split(',')
+    if ($(notification).attr("data-show-id")) {
+        var info = $(notification).attr("data-show-id").split(",");
         var data = {
             notificationId: info[0],
-            userId: info[1]
+            userId: info[1],
+        };
 
-        }
-        
         $.ajax(
             {
                 type: "PUT",
@@ -249,7 +249,7 @@ function updateReadNotification(notification) {
                 url: host + "/api/users/updateNotification",
                 data: data,
                 success: function () {
-                    $(notification).removeAttr("data-show-id")
+                    $(notification).removeAttr("data-show-id");
                 },
                 error: function (errors) {
                     console.log(errors);
@@ -258,13 +258,12 @@ function updateReadNotification(notification) {
             false,
         );
     }
-    
 }
 function applyRating(value) {
-    var authorId = value.attr("data-aux-authorId")
-    var _id = value.attr("data-id")
+    var authorId = value.attr("data-aux-authorId");
+    var _id = value.attr("data-id");
 
-    var data = { rating: value.val(), resource_id: _id, resourceAuthor: authorId};
+    var data = { rating: value.val(), resource_id: _id, resourceAuthor: authorId };
 
     $.ajax(
         {
@@ -367,10 +366,11 @@ function registerUser() {
                 removeErrors(); // Remove errors
 
                 if (location.pathname == "/admin/users") {
-                    $("#successModalMessage").text("User " + data.first_name + " " + data.last_name + " was successfully created!");
+                    $("#successModalMessage").text(
+                        "User " + data.first_name + " " + data.last_name + " was successfully created!",
+                    );
                     $("#successModal, #modalInsert").modal("toggle");
-                }
-                else {
+                } else {
                     // Create cookie and login
                     $.ajax({
                         type: "POST",
@@ -448,12 +448,12 @@ function editContent(id) {
 
 function applyFilter() {
     var data = $("#form-filter").serializeArray();
-    data.push({"name": "skip", value: skipGetResourceFiltering}, {"name": "lim", value: limitGetResourceFiltering})
+    data.push({ name: "skip", value: skipGetResourceFiltering }, { name: "lim", value: limitGetResourceFiltering });
 
     var params = window.location.search.substr(1).split("=");
 
     if (params[0] == "tag") {
-        data.push({"name": "tags", value: params[1]})
+        data.push({ name: "tags", value: params[1] });
     }
 
     dataFiltering = data;
@@ -466,7 +466,9 @@ function applyFilter() {
             data: data,
             success: function (resourceData) {
                 $("#feed").empty();
-                $("#feed").append("<div class='loading'><div class='ball'></div><div class='ball'></div><div class='ball'></div></div>"); // Add loading
+                $("#feed").append(
+                    "<div class='loading'><div class='ball'></div><div class='ball'></div><div class='ball'></div></div>",
+                ); // Add loading
 
                 const data = { resource: resourceData.resources };
                 totalResourceFiltering = resourceData.total;
@@ -502,7 +504,7 @@ function replyCommentResource(id) {
                 }
             },
             error: function (errors) {
-                console.log(errors)
+                console.log(errors);
             },
         },
         false,
@@ -601,7 +603,6 @@ function updateScrollComments(data) {
 }
 
 function mydiff(date1) {
-    
     var second = 1000,
         minute = second * 60,
         hour = minute * 60,
@@ -732,11 +733,11 @@ function displayErrors(formId, errors) {
     $(formId).addClass("was-validated"); // Display red boxes
     removeErrors(); // Remove errors
 
-    if (errors.responseJSON!=undefined && errors.responseJSON.error != undefined) {
+    if (errors.responseJSON != undefined && errors.responseJSON.error != undefined) {
         errors.responseJSON.error.generalErrors.forEach((element) => {
             $("div ." + element.field).append('<span class="error-format">' + element.msg + "</span>");
         });
-    } else if (errors.responseJSON!=undefined && errors.responseJSON.generalErrors != undefined) {
+    } else if (errors.responseJSON != undefined && errors.responseJSON.generalErrors != undefined) {
         errors.responseJSON.generalErrors.forEach((element) => {
             if (element.field == "username") {
                 $("#username").addClass("form-control.is-invalid, was-validated, form-control:invalid");
@@ -792,17 +793,15 @@ async function getResourceFiltering() {
     skipGetResourceFiltering = counterGetResourceFiltering == 1 ? 0 : skipGetResourceFiltering + 5;
 
     if (skipGetResourceFiltering <= totalResourceFiltering) {
-        let url = new URL(host + '/api/resources/filters');
+        let url = new URL(host + "/api/resources/filters");
 
         var i = 0;
-        dataFiltering.forEach(element => {
-            if (element.name == "types[]")
-                url.searchParams.set(element.name + i++, element.value);
-            else if (element.name != "skip" && element.name != "lim")
-                url.searchParams.set(element.name, element.value);
+        dataFiltering.forEach((element) => {
+            if (element.name == "types[]") url.searchParams.set(element.name + i++, element.value);
+            else if (element.name != "skip" && element.name != "lim") url.searchParams.set(element.name, element.value);
         });
 
-        url = url + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering 
+        url = url + "&skip=" + skipGetResourceFiltering + "&lim=" + limitGetResourceFiltering;
 
         var resourceResponse = await fetch(url);
 
@@ -811,9 +810,7 @@ async function getResourceFiltering() {
         totalResourceFiltering = resourceData.total;
 
         addDataToDOM(data);
-
-    }
-    else document.querySelector(".loading").classList.remove("show");
+    } else document.querySelector(".loading").classList.remove("show");
 }
 
 async function getResource() {
@@ -821,17 +818,20 @@ async function getResource() {
     skipGetResource = counterGetResource == 1 ? 0 : skipGetResource + 5;
 
     if (skipGetResource <= totalResource) {
-
         var params = window.location.search.substr(1).split("=");
         var resourceResponse = null;
 
         if (params[0] == "tag") {
             var resourceResponse = await fetch(
-                host + "/api/resources/filters?tags=" + params[1] + "&img=all&skip=" + skipGetResource + "&lim=" + limitGetResource,
+                host +
+                    "/api/resources/filters?tags=" +
+                    params[1] +
+                    "&img=all&skip=" +
+                    skipGetResource +
+                    "&lim=" +
+                    limitGetResource,
             );
-        }
-        else 
-        {
+        } else {
             resourceResponse = await fetch(
                 host + "/api/resources?skip=" + skipGetResource + "&lim=" + limitGetResource,
             );
@@ -842,7 +842,6 @@ async function getResource() {
         totalResource = resourceData.total;
 
         addDataToDOM(data);
-
     } else document.querySelector(".loading").classList.remove("show");
 }
 
@@ -856,9 +855,8 @@ $(document).on("click", ".maincontainer", function () {
     $(".maincontainer.hide").toggleClass("hide");
 });
 
-
 function addDataToDOM(data) {
-    if (data.resource.length == 0 && (skipGetResource == 0 && skipGetResourceFiltering == 0)) {
+    if (data.resource.length == 0 && skipGetResource == 0 && skipGetResourceFiltering == 0) {
         $(".feed").append(`
             <div class='without-resources-box'>
                 <p class='without-resources'> No resources yet!</p>
@@ -868,7 +866,8 @@ function addDataToDOM(data) {
             const resourceElement = document.createElement("div");
             resourceElement.classList.add("resource-post");
 
-            var overallRating = element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
+            var overallRating =
+                element.rating.votes == 0 ? 0 : (element.rating.score / element.rating.votes).toFixed(1);
             var pathImg = "";
 
             if (element.image == "/images/ResourceDefault.png") pathImg = "/images/ResourceDefault.png";
@@ -884,7 +883,7 @@ function addDataToDOM(data) {
                         <div class="d-flex" style="align-items:center">
                             <img src="/api/users/${element.author._id}/avatar" />
                             <div class="d-flex ml-1" style="flex-direction:column">
-                                <span class="m-0">${element.author.first_name + " " + element.author.last_name}</span>
+                                <span class="m-0">${element.author.name}</span>
                                 <p class="resource-type-year m-0">${showmdiff}</p>
                             </div>
                         </div>
@@ -925,7 +924,14 @@ function addDataToDOM(data) {
             <div class="resource-tags m-0 float-none text-right">
                     ${Object.keys(element.tags)
                         .map(function (key) {
-                            return "<a style='font-size:14px;' href='/?tag=" + element.tags[key] + "'" + ">#" + element.tags[key] + "</a>";
+                            return (
+                                "<a style='font-size:14px;' href='/?tag=" +
+                                element.tags[key] +
+                                "'" +
+                                ">#" +
+                                element.tags[key] +
+                                "</a>"
+                            );
                         })
                         .join(" ")}   
                 </div>

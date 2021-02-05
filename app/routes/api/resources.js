@@ -11,7 +11,7 @@ const path = require("path");
 const { checkAuthorization } = require("../../middleware/authorization");
 const Resources = require("../../controllers/resources");
 const User = require("../../controllers/users");
-let socketapi = require("../../middleware/io"); 
+let socketapi = require("../../middleware/io");
 
 const router = express.Router();
 const magic = new Magic(MAGIC_MIME_TYPE);
@@ -116,20 +116,21 @@ function saveResource(data, res, id = null) {
     query
         .then((resource) => {
             var resourceNotification = {
-                text: 'A new resource was added',
+                text: "A new resource was added",
                 name: resource.author.name,
                 date: new Date().getTime(),
                 read: false,
-                resourceId: resource._id
-            }
-            User.updateNotifications(resource.author._id, resourceNotification).then((notification) => {
-                socketapi.sendNotification(resourceNotification, resource.author._id)
-                res.status(201).jsonp(notification);
-            })
-            .catch((err) => {
-                console.log(err)
-                res.status(400).jsonp(err);
-            })                 
+                resourceId: resource._id,
+            };
+            User.updateNotifications(resource.author._id, resourceNotification)
+                .then((notification) => {
+                    socketapi.sendNotification(resourceNotification, resource.author._id);
+                    res.status(201).jsonp(notification);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(400).jsonp(err);
+                });
         })
         .catch((error) => {
             res.status(400).jsonp(error);
@@ -199,16 +200,16 @@ function handleResource(req, res) {
                         } else if (req.method === "PUT") {
                             data["image"] = imagePathFinal !== "" ? imagePathFinal : "images/ResourceDefault.png";
                         }
-                        
+
                         // Remove spaces from tags
-                        var tagsWithoutSpaces = []
-                        data.tags.forEach(tag => {
-                            tag = tag.replace(/\s/g, '');
-                            tagsWithoutSpaces.push(tag)
+                        var tagsWithoutSpaces = [];
+                        data.tags.forEach((tag) => {
+                            tag = tag.replace(/\s/g, "");
+                            tagsWithoutSpaces.push(tag);
                         });
 
-                        data.tags = tagsWithoutSpaces
-                        
+                        data.tags = tagsWithoutSpaces;
+
                         storeResource(filesDecompressed, pathFolder);
                         if (req.method === "POST") {
                             saveResource(data, res);
@@ -341,26 +342,28 @@ router.put(
                     user_id: user._id,
                 };
                 var ratingNotification = {
-                    text: 'A new comment was added',
-                    name: user.first_name +' '+ user.last_name,
+                    text: "A new comment was added",
+                    name: user.first_name + " " + user.last_name,
                     date: new Date().getTime(),
                     read: false,
-                    resourceId: data.resource_id
-                }
-                if(newData.author._id != data.user_id){
-                    User.updateNotificationsRatingAndComments(newData.author._id, ratingNotification).then((notification) => {
-                        socketapi.sendNotificationComments(ratingNotification, newData.author._id)
-                        res.status(201).jsonp(dataReturn);
-                    }).catch((error) => {
-                        console.log(error)
-                        res.status(400).jsonp(error);
-                    });
-                }else{
+                    resourceId: data.resource_id,
+                };
+                if (newData.author._id != data.user_id) {
+                    User.updateNotificationsRatingAndComments(newData.author._id, ratingNotification)
+                        .then((notification) => {
+                            socketapi.sendNotificationComments(ratingNotification, newData.author._id);
+                            res.status(201).jsonp(dataReturn);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            res.status(400).jsonp(error);
+                        });
+                } else {
                     res.status(201).jsonp(dataReturn);
                 }
             })
             .catch((error) => {
-                console.log(error)
+                console.log(error);
                 res.status(400).jsonp(error);
             });
     },
@@ -387,26 +390,28 @@ router.put(
         Resources.Rating(data)
             .then(() => {
                 var ratingNotification = {
-                    text: 'A new rating was given with '+ data.rating +' stars',
-                    name: user.first_name +' '+ user.last_name,
+                    text: "A new rating was given with " + data.rating + " stars",
+                    name: user.first_name + " " + user.last_name,
                     date: new Date().getTime(),
                     read: false,
-                    resourceId: data.resource_id
-                }
-                if(data.resourceAuthor != user._id){
-                    User.updateNotificationsRatingAndComments(data.resourceAuthor, ratingNotification).then((notification) => {
-                        socketapi.sendNotificationRating(ratingNotification, data.resourceAuthor)
-                        res.status(200).jsonp("Success!");                   
-                    }).catch((error) => {
-                        console.log(error)
-                        res.status(400).jsonp(error);
-                    });
-                }else{
-                    res.status(200).jsonp("Success!");                   
+                    resourceId: data.resource_id,
+                };
+                if (data.resourceAuthor != user._id) {
+                    User.updateNotificationsRatingAndComments(data.resourceAuthor, ratingNotification)
+                        .then((notification) => {
+                            socketapi.sendNotificationRating(ratingNotification, data.resourceAuthor);
+                            res.status(200).jsonp("Success!");
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            res.status(400).jsonp(error);
+                        });
+                } else {
+                    res.status(200).jsonp("Success!");
                 }
             })
             .catch((error) => {
-                console.log(error)
+                console.log(error);
                 res.status(400).jsonp(error);
             });
     },
@@ -490,12 +495,9 @@ router.get("/filters", passport.authenticate("jwt", { session: false }), (req, r
 
 router.get("/:id", passport.authenticate("jwt", { session: false }), (req, res) => {
     var id = req.params.id;
-    console.log(12121);
     Resources.GetResourceById(id)
         .then((data) => {
-            console.log(data);
             if (data.length === 0) return res.status(404).jsonp("Resource not found");
-
             res.status(200).jsonp(data[0]);
         })
         .catch((error) => {

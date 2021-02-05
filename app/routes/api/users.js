@@ -132,7 +132,6 @@ router.get("/getAllNotifications", (req, res) => {
         })
         .catch((err) => {
             res.status(400).jsonp(err);
-            
         });
 });
 router.put("/updateNotification", (req, res) => {
@@ -143,7 +142,6 @@ router.put("/updateNotification", (req, res) => {
         })
         .catch((err) => {
             res.status(400).jsonp(err);
-            
         });
 });
 router.put(
@@ -323,7 +321,7 @@ router.get("/:username", (req, res) => {
     let data = req.params;
     User.findByAuthUsername(data)
         .then((user) => {
-            user.notifications.reverse()
+            user.notifications.reverse();
             res.status(200).jsonp(user);
         })
         .catch((error) => {
