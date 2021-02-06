@@ -80,8 +80,9 @@ block content
             .resource-comment
               if user._id == comments.author._id
                 span.dropdown-menu-comments.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
-                .dropdown-menu.dropdown-comments-options
+                .dropdown-menu.dropdown-comments-options.pl-2(style="min-width:unset;background:white;color:#343a40;font-size:12px;") 
                   span.delete-comment(id=index) Delete
+                    i.pl-1.fas.fa-trash
               .resource-comment-info
                 p.resource-comment-author #{comments.author.name} 
                 span.resource-general-color #{comments.description}
@@ -92,8 +93,10 @@ block content
                 .resource-comment.resource-comment-reply
                   if user._id == comments_comments.author._id
                     span.dropdown-menu-comments.dropdown-toggle(type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
-                    .dropdown-menu.dropdown-comments-options
+                    .dropdown-menu.dropdown-comments-options.pl-2(style="min-width:unset;background:white;color:#343a40;font-size:12px;") 
                       span.delete-comment(id=index + '-' + index_reply) Delete
+                        i.pl-1.fas.fa-trash
+
                   .resource-comment-info 
                     p.resource-comment-author #{comments_comments.author.name} 
                     span.resource-general-color #{comments_comments.description}
