@@ -20,15 +20,15 @@ block content
                       input.form-control(type='text' name='id' value=user._id hidden)
                       .row
                         .col-12
-                          .form-group.password
+                          .form-group.password(style="text-align: left;")
                             label(for='password') Password
                             input#password.form-control(type='password' placeholder='*******' name='password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
                         .col-12
-                          .form-group.confirm_password
+                          .form-group.confirm_password(style="text-align: left;")
                               label(for='confirm_password') Confirm Password
                               input#confirm_password.form-control(type='password' placeholder='*******' name='confirm_password' required='', pattern='^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])([ \\W\\w\\d]+)$', minlength=8)
                   .modal-footer(style="border:0")
-                    button.btn.btn-primary.btn-bottom(onclick=`editPassword("${user.username}");return false`) Edit Password            
+                    button.btn.bg-dark.btn-bottom(onclick=`editPassword("${user.username}");return false` style="color: white;") Edit Password            
         form.px-4.py-3.needs-validation#form-edit-profile(novalidate='')
           input.form-control(type='text' name='id' value=user._id hidden)
           .row
@@ -73,7 +73,7 @@ block content
                   label(for='position') Position
                   input#position.form-control(type='text' placeholder='student' name='position' required='' minlength=2 value=user.filiation.position)
           
-          button.btn.btn-primary.btn-bottom(onclick=`editProfile("${user.username}");return false`) Edit Profile
+          button.btn.bg-dark.btn-bottom(onclick=`editProfile("${user.username}");return false` style="color: white;") Edit Profile
         .dropdown-divider
   
 

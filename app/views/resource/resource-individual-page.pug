@@ -19,16 +19,12 @@ block content
           .d-flex
             .resource-rating.mr-2
               .rating
-                input#star5(type='radio' name='rating' value='5' data-aux-authorId=resource.author._id  data-id=resource._id)
-                label.mb-0(for='star5' title='5') 5 stars
-                input#star4(type='radio' name='rating' value='4' data-aux-authorId=resource.author._id  data-id=resource._id)
-                label.mb-0(for='star4' title='4') 4 stars
-                input#star3(type='radio' name='rating' value='3' data-aux-authorId=resource.author._id  data-id=resource._id)
-                label.mb-0(for='star3' title='3') 3 stars
-                input#star2(type='radio' name='rating' value='2' data-aux-authorId=resource.author._id  data-id=resource._id)
-                label.mb-0(for='star2' title='2') 2 stars
-                input#star1(type='radio' name='rating' value='1' data-aux-authorId=resource.author._id  data-id=resource._id)
-                label.mb-0(for='star1' title='1') 1 star
+                - var n = 5;
+                while n >= 1
+                  - var media = `${resource.rating.votes == 0 ? 0 : (resource.rating.score / resource.rating.votes).toFixed(0)}`
+                  input(type='radio' name='rating' value=n data-aux-authorId=resource.author._id  data-id=resource._id id='star'+n checked = (media > 0 && media<=n))
+                  label.mb-0(for='star'+n title=n) #{n--} star #{media}
+                  
               .clearfix
             if user.is_admin || user._id === resource.author._id
               .ml-3
