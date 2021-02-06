@@ -504,6 +504,7 @@ function replyCommentResource(id) {
                 }
             },
             error: function (errors) {
+                alert(errors.responseJSON.generalErrors[0].msg);
                 console.log(errors);
             },
         },
@@ -538,7 +539,9 @@ function updateScrollComments(data) {
                 ` +
                 (data.user_id == element.author._id
                     ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
-                           <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${index}>Delete</span></div>`
+                           <div class="dropdown-menu dropdown-comments-options pl-2" style="min-width:unset;background:white;color:#343a40;font-size:12px;"> 
+                            <span class="delete-comment" id=${index}>Delete <i class="pl-1 fas fa-trash"></i></span>
+                           </div>`
                     : ``) +
                 `<div class='resource-comment-info'>
                     <p class='resource-comment-author'>${element.author.name}</p>
@@ -563,9 +566,10 @@ function updateScrollComments(data) {
                         ` +
                     (data.user_id == el.author._id
                         ? `<span class="dropdown-menu-comments dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></span>
-                                <div class="dropdown-menu dropdown-comments-options"><span class="delete-comment" id=${
-                                    index + "-" + index_reply
-                                }>Delete</span></div>`
+                                <div class="dropdown-menu dropdown-comments-options pl-2" style="min-width:unset;background:white;color:#343a40;font-size:12px;"> 
+                                <span class="delete-comment" id=${index + "-" + index_reply}>Delete <i class=" pl-1 fas fa-trash"></i></span>
+                                
+                                </div>`
                         : ``) +
                     `<div class="resource-comment-info">
                             <p class="resource-comment-author">${el.author.name}</p>
@@ -615,15 +619,15 @@ function mydiff(date1) {
     var showdiff = 0;
     showdiffWeek = Math.floor(timediff / week);
     showdiffDay = Math.floor(timediff / day);
-    cshowdiffHour = Math.floor(timediff / hour);
+    showdiffHour = Math.floor(timediff / hour);
     showdiffMinute = Math.floor(timediff / minute);
     showdiffSecond = Math.floor(timediff / second);
 
     if (showdiffSecond <= 59) showdiff = showdiffSecond + " seconds";
     else if (showdiffMinute <= 59) showdiff = showdiffMinute + " minutes";
-    else if (cshowdiffHour < 24) showdiff = cshowdiffHour + " hours";
+    else if (showdiffHour < 24) showdiff = showdiffHour + " hours";
     else if (showdiffDay <= 7) showdiff = showdiffDay + " days";
-    else if (showdiffWeek > 7) showdiff = showdiffWeek + " weeks";
+    else if (showdiffWeek >= 1) showdiff = showdiffWeek + " weeks";
     else showdiff = undefined;
 
     return showdiff;

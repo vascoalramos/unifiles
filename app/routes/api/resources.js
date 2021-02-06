@@ -387,6 +387,7 @@ router.delete(
                 var dataReturn = {
                     data: newData,
                     user_id: user._id,
+                    name: user.first_name + " " + user.last_name
                 };
 
                 res.status(200).jsonp(dataReturn);

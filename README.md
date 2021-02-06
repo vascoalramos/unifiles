@@ -42,6 +42,9 @@ Running the app in "production" mode.
 npm start
 ```
 
+### Dataset
+An example dataset can be downloaded from this [link](https://uminho365-my.sharepoint.com/:f:/g/personal/pg42852_uminho_pt/Em_WDO5N2v5CvGkANJy-BO8B8zlrcuwpXV2_2Hq5uJWS3Q?e=6FMP2R).
+
 ## :handshake: Authors
 
 -   **Fábio Gonçalves:** [FabioGoncalves](https://github.com/FabioGoncalves)
