@@ -615,15 +615,15 @@ function mydiff(date1) {
     var showdiff = 0;
     showdiffWeek = Math.floor(timediff / week);
     showdiffDay = Math.floor(timediff / day);
-    cshowdiffHour = Math.floor(timediff / hour);
+    showdiffHour = Math.floor(timediff / hour);
     showdiffMinute = Math.floor(timediff / minute);
     showdiffSecond = Math.floor(timediff / second);
 
     if (showdiffSecond <= 59) showdiff = showdiffSecond + " seconds";
     else if (showdiffMinute <= 59) showdiff = showdiffMinute + " minutes";
-    else if (cshowdiffHour < 24) showdiff = cshowdiffHour + " hours";
+    else if (showdiffHour < 24) showdiff = showdiffHour + " hours";
     else if (showdiffDay <= 7) showdiff = showdiffDay + " days";
-    else if (showdiffWeek > 7) showdiff = showdiffWeek + " weeks";
+    else if (showdiffWeek >= 1) showdiff = showdiffWeek + " weeks";
     else showdiff = undefined;
 
     return showdiff;
