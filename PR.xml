@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pr SYSTEM "PR.dtd">
+<pr>
+    <meta>
+        <key>daw_projeto</key>
+        <title>Projeto (UniFiles) - DAW 2020/2021</title>
+        <subtitle>Relatório produzido no contexto do trabalho prático (projeto) da cadeira de DAW do MEI, ano letivo 2020/21</subtitle>
+        <bdate>01 de Dezembro de 2020</bdate>
+        <edate>07 de Fevereiro de 2021</edate>
+        <supervisor url="http://www4.di.uminho.pt/~jcr">José Carlos Ramalho</supervisor>
+    </meta>
+    <team>
+        <member id="PG42852">
+            <name>Vasco António Lopes Ramos</name>
+            <email>vascoalramos@gmail.com</email>
+            <link url="https://vascoalramos.me"></link>
+        </member>
+        <member id="PG42827">
+            <name>Fábio Gonçalves</name>
+            <email>pg42827@alunos.uminho.pt</email>
+        </member>
+        <member id="PG42837">
+            <name>Joel Costa Carvalho</name>
+            <email>pg42837@alunos.uminho.pt</email>
+        </member>
+    </team>
+    <abstract>
+        <p>Projeto realizado na UC Desenvolvimento de Aplicações <i>WEB</i> com o objetivo de desenvolver uma aplicação para partilha de recursos.</p>
+        <p>Para informação detalhada sobre o projeto, ver o relatório.</p>
+    </abstract>
+    <deliverables>
+        <link url="_data/">Pasta referente a toda a construção do modelo de dados e dataset</link>
+        <link url="app/">Pasta referente a toda a aplicação</link>
+        <link url="report.pdf">Relatório do projeto</link>
+    </deliverables>
+</pr>
